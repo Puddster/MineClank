@@ -345,8 +345,13 @@ function Dashboard() {
                   <span className="metric-value"><Server size={14} />{selectedBot.host}:{selectedBot.port}</span>
                 </div>
                 <div className="metric">
-                  <span className="metric-label">POSITION</span>
-                  <span className="metric-value"><MapPin size={14} />{selectedBot.position ? `${selectedBot.position.x}, ${selectedBot.position.y}, ${selectedBot.position.z}` : '—'}</span>
+                  <span className="metric-label">POSITION / DIMENSION</span>
+                  <span className="metric-value">
+                    <MapPin size={14} />
+                    {selectedBot.position
+                      ? `${selectedBot.position.x}, ${selectedBot.position.y}, ${selectedBot.position.z}${selectedBot.dimension ? ` · ${selectedBot.dimension}` : ''}`
+                      : '—'}
+                  </span>
                 </div>
               </div>
 

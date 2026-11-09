@@ -14,6 +14,7 @@ class FakeBot extends EventEmitter {
         this.sent = [];
             this.completionRequests = [];
         this.entity = { position: { x: 1.24, y: 64, z: -8.86 } };
+        this.game = { dimension: 'overworld' };
         this._client = {
             state: 'play',
             profileKeys: {},
@@ -94,6 +95,7 @@ test('starts configured bots sequentially and sends chat and commands', async t 
     assert.equal(bots[0].options.physicsEnabled, false);
     assert.equal(bots[1].options.physicsEnabled, true);
     assert.deepEqual(manager.getSnapshot()[0].position, { x: 1.2, y: 64, z: -8.9 });
+    assert.equal(manager.getSnapshot()[0].dimension, 'overworld');
     assert.ok(manager.getSnapshot()[0].logs.some(entry => (
         entry.text === 'Chat security: required; profile key available; chat session available'
     )));

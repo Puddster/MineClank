@@ -72,6 +72,7 @@ export class BotManager extends EventEmitter {
 
     publicState(record) {
         const entityPosition = record.status === 'online' ? record.bot?.entity?.position : null;
+        const dimension = record.status === 'online' ? record.bot?.game?.dimension ?? null : null;
         return {
             id: record.id,
             username: record.config.username,
@@ -84,6 +85,7 @@ export class BotManager extends EventEmitter {
                 y: Number(entityPosition.y.toFixed(1)),
                 z: Number(entityPosition.z.toFixed(1))
             } : null,
+            dimension,
             lastError: record.lastError,
             logs: [...record.logs]
         };
