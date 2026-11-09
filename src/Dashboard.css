@@ -108,7 +108,7 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
 .color-toggle[aria-pressed="false"] { color: #a3ada6; }
 .log-stream { min-height: 210px; max-height: 300px; flex: 1; overflow: auto; padding: 10px 12px; border-radius: 6px; color: #d2e0d7; background: #17241f; font: 11px/1.65 var(--mono); scrollbar-color: #52645a #17241f; }
 .log-line { display: grid; grid-template-columns: 63px minmax(0, 1fr); gap: 10px; padding: 2px 0; overflow-wrap: anywhere; }
-.log-line time { color: #81958a; }
+.log-line time { min-width: 80px; color: #81958a; }
 .log-line span { color: #d2e0d7; white-space: pre-wrap; }
 .empty-log { height: 100%; min-height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: #84958b; font-family: var(--sans); font-size: 12px; }
 .command-area { margin-top: 16px; padding-top: 15px; border-top: 1px solid var(--line); }
