@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import {
   Activity,
   ArrowUpRight,
@@ -7,12 +7,14 @@ import {
   CircleCheck,
   LoaderCircle,
   MapPin,
+  Moon,
   Palette,
   Play,
   Radio,
   Send,
   Server,
   Square,
+  Sun,
   Terminal,
   Wifi,
   WifiOff,
@@ -20,7 +22,16 @@ import {
 import { getWebSocketUrl } from './client.js'
 import './Dashboard.css'
 
+const THEME_STORAGE_KEY = 'mineclank-theme'
+
 function Dashboard() {
+  const [theme, setTheme] = useState(() => {
+    const storedTheme = window.localStorage.getItem(THEME_STORAGE_KEY)
+    return storedTheme === 'light' || storedTheme === 'dark' ? storedTheme : 'system'
+  })
+  const [systemTheme, setSystemTheme] = useState(() => (
+    window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  ))
   const [bots, setBots] = useState([])
   const [selectedId, setSelectedId] = useState(null)
   const [connection, setConnection] = useState('connecting')
@@ -35,6 +46,35 @@ function Dashboard() {
   const completionTimerRef = useRef(null)
   const commandInputRef = useRef(null)
   const logEndRef = useRef(null)
+
+  useEffect(() => {
+    const colorScheme = window.matchMedia('(prefers-color-scheme: dark)')
+    const updateSystemTheme = event => setSystemTheme(event.matches ? 'dark' : 'light')
+    colorScheme.addEventListener('change', updateSystemTheme)
+    return () => colorScheme.removeEventListener('change', updateSystemTheme)
+  }, [])
+
+  const activeTheme = theme === 'system' ? systemTheme : theme
+
+  useLayoutEffect(() => {
+    document.documentElement.dataset.theme = activeTheme
+    document.querySelector('meta[name="theme-color"]')?.setAttribute(
+      'content',
+      activeTheme === 'dark' ? '#111a16' : '#f3f6f3'
+    )
+  }, [activeTheme])
+
+  useEffect(() => {
+    if (theme === 'system') {
+      window.localStorage.removeItem(THEME_STORAGE_KEY)
+    } else {
+      window.localStorage.setItem(THEME_STORAGE_KEY, theme)
+    }
+  }, [theme])
+
+  function toggleTheme() {
+    setTheme(activeTheme === 'dark' ? 'light' : 'dark')
+  }
 
   useEffect(() => {
     let active = true
@@ -430,6 +470,17 @@ function Dashboard() {
       <footer className="app-footer">
         <span><span className="footer-mark" /> MINECLANK CONTROL</span>
         <span>{bots.length} CONFIGURED <span className="footer-separator">/</span> {onlineCount} ONLINE</span>
+        <button
+          className="theme-toggle"
+          type="button"
+          aria-label="Toggle dark mode"
+          aria-pressed={activeTheme === 'dark'}
+          onClick={toggleTheme}
+        >
+          {activeTheme === 'dark' ? <Moon size={14} /> : <Sun size={14} />}
+          <span>{activeTheme === 'dark' ? 'Dark' : 'Light'}</span>
+          <span className="theme-switch" aria-hidden="true"><span /></span>
+        </button>
       </footer>
     </main>
   )
