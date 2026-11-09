@@ -1,0 +1,1 @@
+Add one `<bot-id>.json` file per bot here. Use `../bots.example.json` as a template. Files are loaded in alphabetical order and each bot connects after the previous bot spawns.
