@@ -17,7 +17,7 @@ export class BotManager extends EventEmitter {
         reconnectBaseMs = 5_000,
         reconnectMaxMs = 120_000,
         maxLogs = 200,
-        joinCommandDelayMs = 2_000
+        joinCommandDelayMs = 6_000
     }) {
         super();
         if (!configDir || !authDir) throw new Error('configDir and authDir are required');
@@ -161,10 +161,10 @@ export class BotManager extends EventEmitter {
 
     sendCommand(id, command) {
         const record = this.requireRecord(id);
-        if (typeof command !== 'string' || !command.trim()) throw new Error('Command cannot be empty');
-        if (command.length > 256) throw new Error('Command cannot exceed 256 characters');
-        if (/[\r\n]/.test(command)) throw new Error('Commands must be a single line');
-        if (!command.trim().startsWith('/') || command.trim() === '/') throw new Error('Command must be a slash command');
+        if (typeof command !== 'string' || !command.trim()) throw new Error('Message cannot be empty');
+        if (command.length > 256) throw new Error('Message cannot exceed 256 characters');
+        if (/[\r\n]/.test(command)) throw new Error('Messages must be a single line');
+        if (command.trim() === '/') throw new Error('Command cannot be empty');
         if (record.status !== 'online' || !record.bot || record.bot._client?.state !== 'play') {
             throw new Error(`${record.config.username} is not online`);
         }
@@ -228,6 +228,7 @@ export class BotManager extends EventEmitter {
                 port: config.port,
                 auth: config.auth,
                 profilesFolder: config.profilesFolder,
+                physicsEnabled: config.physicsEnabled,
                 ...(config.version ? { version: config.version } : {})
             });
         } catch (error) {
@@ -261,6 +262,15 @@ export class BotManager extends EventEmitter {
                 record.lastError = null;
                 record.connectedAt = Date.now();
                 this.appendLog(record, `Connected to ${config.host}:${config.port}`);
+                const client = bot._client;
+                const secureChat = client?.serverFeatures?.enforcesSecureChat;
+                this.appendLog(
+                    record,
+                    `Chat security: ${secureChat === undefined ? 'unknown' : secureChat ? 'required' : 'not required'}; ` +
+                    `profile key ${client?.profileKeys ? 'available' : 'missing'}; ` +
+                    `chat session ${client?._session ? 'available' : 'missing'}`
+                );
+                this.appendLog(record, `Physics simulation: ${config.physicsEnabled ? 'enabled' : 'disabled'}`);
                 this.emitState(record);
                 void this.runOnJoin(record, bot);
                 resolveConnect(this.publicState(record));

@@ -3,5 +3,6 @@
   "host": "play.example.com",
   "port": 25565,
   "auth": "microsoft",
+  "physicsEnabled": true,
   "onJoin": []
 }

@@ -17,9 +17,9 @@ Each bot is configured by one JSON file in `configs/bots/`. The filename, withou
   Copy-Item configs/bots.example.json configs/bots/8JUO.json
   notepad configs/bots/8JUO.json
   ```
-2. Set `username` to the Minecraft name for the account, `host` to the server address, and `port` if it is not `25565`. Keep `auth` as `microsoft` for Microsoft-authenticated accounts. `version` is optional and should only be set when you need to pin a protocol version.
+2. Set `username` to the Minecraft name for the account, `host` to the server address, and `port` if it is not `25565`. Keep `auth` as `microsoft` for Microsoft-authenticated accounts. `version` is optional and should only be set when you need to pin a protocol version. `physicsEnabled` defaults to `true`; set it to `false` to disable Mineflayer's physics simulation for an idle bot.
 
-3. Optionally add an `onJoin` array of slash commands. The manager waits two seconds after each spawn, then sends each command in array order with `bot.chat()`. It repeats this on reconnect. Each entry must be a single-line slash command; up to 20 commands of at most 256 characters are accepted.
+3. Optionally add an `onJoin` array of slash commands. The manager waits six seconds after each spawn, then sends each command in array order with `bot.chat()`. It repeats this on reconnect. Each entry must be a single-line slash command; up to 20 commands of at most 256 characters are accepted.
 
 Example:
 
@@ -29,13 +29,14 @@ Example:
   "host": "play.example.com",
   "port": 25565,
   "auth": "microsoft",
+  "physicsEnabled": true,
   "onJoin": [
     "/survival"
   ]
 }
 ```
 
-The supported keys are `username`, `host`, `port`, `auth`, `version`, and `onJoin`. The loader rejects unknown keys and invalid values. Config files are loaded in alphabetical filename order; startup connects bots sequentially, waiting for each bot to spawn or time out before proceeding.
+The supported keys are `username`, `host`, `port`, `auth`, `version`, `physicsEnabled`, and `onJoin`. The loader rejects unknown keys and invalid values. Config files are loaded in alphabetical filename order; startup connects bots sequentially, waiting for each bot to spawn or time out before proceeding.
 
 Local files in `configs/bots/*.json` are intentionally git-ignored, so bot names and server settings are not included in commits. The example profile remains tracked.
 

@@ -123,7 +123,7 @@ function Dashboard() {
           const errorMessage = message.error === 'Unsupported action' && action === 'bot:complete'
             ? 'Restart the backend to enable command completion'
             : message.error
-          setNotice(message.ok ? (action === 'bot:command' ? 'Command sent' : 'Bot action complete') : errorMessage)
+          setNotice(message.ok ? (action === 'bot:command' ? 'Message sent' : 'Bot action complete') : errorMessage)
           window.setTimeout(() => setNotice(''), 3500)
         }
       })
@@ -189,25 +189,23 @@ function Dashboard() {
   function sendAction(type, values = {}) {
     if (socketRef.current?.readyState !== WebSocket.OPEN) {
       setNotice('Control service is offline')
-      return
+      return false
     }
     const requestId = crypto.randomUUID()
     pendingRef.current[requestId] = type
     setPending({ ...pendingRef.current })
     socketRef.current.send(JSON.stringify({ type, id: selectedBot?.id, requestId, ...values }))
+    return true
   }
 
-  function submitCommand(event) {
+  function submitMessage(event) {
     event.preventDefault()
     const value = command.trim()
     if (!selectedBot || !value) return
-    if (!value.startsWith('/')) {
-      setNotice('Enter a slash command')
-      return
+    if (sendAction('bot:command', { command: value })) {
+      setSuggestions([])
+      setCommand('')
     }
-    sendAction('bot:command', { command: value })
-    setSuggestions([])
-    setCommand('')
   }
 
   function applySuggestion(suggestion) {
@@ -399,7 +397,7 @@ function Dashboard() {
 
               <div className="command-area">
                 <div className="command-topline">
-                  <span className="panel-kicker"><Terminal size={13} /> SERVER COMMAND</span>
+                  <span className="panel-kicker"><Terminal size={13} /> SERVER CHAT / COMMAND</span>
                   <span className="command-target">TO {selectedBot.username}</span>
                 </div>
                 <div className="quick-commands">
@@ -410,13 +408,13 @@ function Dashboard() {
                   ))}
                 </div>
                 <div className="command-entry">
-                  <form className="command-form" autoComplete="off" onSubmit={submitCommand}>
+                  <form className="command-form" autoComplete="off" onSubmit={submitMessage}>
                     <input
                       ref={commandInputRef}
                       id="command-input"
-                      name="minecraft-command"
+                      name="minecraft-message"
                       role="combobox"
-                      aria-label="Slash command"
+                      aria-label="Chat message or slash command"
                       aria-autocomplete="list"
                       aria-controls="command-suggestions"
                       aria-expanded={suggestions.length > 0}
@@ -427,11 +425,11 @@ function Dashboard() {
                       onKeyDown={handleCommandKeyDown}
                       value={command}
                       onChange={event => setCommand(event.target.value)}
-                      placeholder="/command"
+                      placeholder="Message or /command"
                       maxLength={256}
                       disabled={selectedBot.status !== 'online'}
                     />
-                    <button type="submit" aria-label="Send command" title="Send command" disabled={selectedBot.status !== 'online' || !command.trim()}>
+                    <button type="submit" aria-label="Send message or command" title="Send message or command" disabled={selectedBot.status !== 'online' || !command.trim()}>
                       <Send size={16} />
                     </button>
                   </form>

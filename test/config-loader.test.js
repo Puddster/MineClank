@@ -11,7 +11,13 @@ test('loads bot configs in filename order with isolated auth folders', async () 
     const authPath = join(root, 'auth');
     await mkdir(configsPath);
     await writeFile(join(configsPath, 'zeta.json'), JSON.stringify({ username: 'Zed', host: 'server.test' }));
-    await writeFile(join(configsPath, 'alpha.json'), JSON.stringify({ username: 'Alpha', host: 'server.test', port: 25566, onJoin: ['/survival'] }));
+    await writeFile(join(configsPath, 'alpha.json'), JSON.stringify({
+        username: 'Alpha',
+        host: 'server.test',
+        port: 25566,
+        onJoin: ['/survival'],
+        physicsEnabled: false
+    }));
     await writeFile(join(configsPath, 'ignored.json.example'), 'not json');
 
     try {
@@ -20,6 +26,8 @@ test('loads bot configs in filename order with isolated auth folders', async () 
         assert.equal(configs[0].port, 25566);
         assert.equal(configs[1].port, 25565);
         assert.equal(configs[0].auth, 'microsoft');
+        assert.equal(configs[0].physicsEnabled, false);
+        assert.equal(configs[1].physicsEnabled, true);
         assert.deepEqual(configs[0].onJoin, ['/survival']);
         assert.equal(configs[0].profilesFolder, join(authPath, 'alpha'));
     } finally {
@@ -43,6 +51,10 @@ test('rejects custom auth paths and invalid ports', async () => {
         await rm(join(configsPath, 'bad.json'));
         await writeFile(join(configsPath, 'bad.json'), JSON.stringify({ username: 'Bot', host: 'server.test', onJoin: ['hello'] }));
         await assert.rejects(loadBotConfigs(configsPath, join(root, 'auth')), /onJoin must be an array/);
+
+        await rm(join(configsPath, 'bad.json'));
+        await writeFile(join(configsPath, 'bad.json'), JSON.stringify({ username: 'Bot', host: 'server.test', physicsEnabled: 'false' }));
+        await assert.rejects(loadBotConfigs(configsPath, join(root, 'auth')), /physicsEnabled must be a boolean/);
     } finally {
         await rm(root, { recursive: true, force: true });
     }

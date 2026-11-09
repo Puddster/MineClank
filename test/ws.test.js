@@ -74,6 +74,22 @@ test('streams a snapshot and dispatches validated bot commands', async t => {
     });
     assert.deepEqual(manager.commands, [{ id: 'alpha', command: '/survival' }]);
 
+    const chatResult = new Promise((resolve, reject) => {
+        socket.once('message', data => resolve(JSON.parse(data.toString())));
+        socket.once('error', reject);
+    });
+    socket.send(JSON.stringify({ type: 'bot:command', id: 'alpha', command: 'Hello server', requestId: 'chat-1' }));
+    assert.deepEqual(await chatResult, {
+        type: 'action:result',
+        requestId: 'chat-1',
+        ok: true,
+        result: { id: 'alpha', sent: 'Hello server' }
+    });
+    assert.deepEqual(manager.commands, [
+        { id: 'alpha', command: '/survival' },
+        { id: 'alpha', command: 'Hello server' }
+    ]);
+
     const completionResult = new Promise((resolve, reject) => {
         socket.once('message', data => resolve(JSON.parse(data.toString())));
         socket.once('error', reject);

@@ -3,7 +3,7 @@ import { basename, resolve } from 'node:path';
 
 const idPattern = /^[a-z0-9][a-z0-9_-]{0,47}$/i;
 const supportedAuth = new Set(['microsoft', 'offline']);
-const supportedKeys = new Set(['username', 'host', 'port', 'auth', 'version', 'onJoin']);
+const supportedKeys = new Set(['username', 'host', 'port', 'auth', 'version', 'onJoin', 'physicsEnabled']);
 
 function parseConfig(id, text, authDir) {
     if (!idPattern.test(id)) {
@@ -45,6 +45,9 @@ function parseConfig(id, text, authDir) {
     if (raw.version != null && (typeof raw.version !== 'string' || !raw.version.trim())) {
         throw new Error(`${id}.json version must be a non-empty string when provided.`);
     }
+    if (raw.physicsEnabled != null && typeof raw.physicsEnabled !== 'boolean') {
+        throw new Error(`${id}.json physicsEnabled must be a boolean when provided.`);
+    }
     const onJoin = raw.onJoin ?? [];
     if (!Array.isArray(onJoin) || onJoin.length > 20 || onJoin.some(command =>
         typeof command !== 'string' || command.length > 256 || /[\r\n]/.test(command) || !command.trim().startsWith('/') || command.trim() === '/'
@@ -59,6 +62,7 @@ function parseConfig(id, text, authDir) {
         port,
         auth,
         ...(raw.version ? { version: raw.version.trim() } : {}),
+        physicsEnabled: raw.physicsEnabled ?? true,
         onJoin: onJoin.map(command => command.trim()),
         profilesFolder: resolve(authDir, id)
     };
