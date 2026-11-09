@@ -10,12 +10,38 @@ A local web console for managing Mineflayer bots. The Node service owns Minecraf
 
 ## Configure bots
 
-Copy `configs/bots.example.json` to `configs/bots/<id>.json` for each bot, then set its username, host, port, and auth mode. The ID is the filename without `.json`; use letters, numbers, underscores, and hyphens. Optional `version` can pin a Mineflayer protocol version.
-Copy `configs/bots.example.json` to `configs/bots/<id>.json` for each bot, then set its username, host, port, and auth mode. The ID is the filename without `.json`; use letters, numbers, underscores, and hyphens. Optional `version` can pin a Mineflayer protocol version. `onJoin` is an optional ordered array of slash commands; the manager waits two seconds after each spawn and then sends each command with `bot.chat()`.
+Each bot is configured by one JSON file in `configs/bots/`. The filename, without `.json`, is the bot ID and may contain letters, numbers, underscores, and hyphens.
 
-Bot files load in alphabetical order. The manager starts them sequentially, waiting for each bot to spawn before attempting the next. If a connection fails or times out, it schedules a retry and continues the initial queue. No bot profiles are checked in by default.
+1. Copy the example profile and open it for editing:
+  ```powershell
+  Copy-Item configs/bots.example.json configs/bots/8JUO.json
+  notepad configs/bots/8JUO.json
+  ```
+2. Set `username` to the Minecraft name for the account, `host` to the server address, and `port` if it is not `25565`. Keep `auth` as `microsoft` for Microsoft-authenticated accounts. `version` is optional and should only be set when you need to pin a protocol version.
 
-Microsoft auth profiles are created independently under `.auth/<id>` on first connection. Keep `.auth` private and do not copy auth-cache files from another Mineflayer installation. Use `auth: "offline"` only for servers that permit offline accounts.
+3. Optionally add an `onJoin` array of slash commands. The manager waits two seconds after each spawn, then sends each command in array order with `bot.chat()`. It repeats this on reconnect. Each entry must be a single-line slash command; up to 20 commands of at most 256 characters are accepted.
+
+Example:
+
+```json
+{
+  "username": "YourMinecraftUsername",
+  "host": "play.example.com",
+  "port": 25565,
+  "auth": "microsoft",
+  "onJoin": [
+    "/survival"
+  ]
+}
+```
+
+The supported keys are `username`, `host`, `port`, `auth`, `version`, and `onJoin`. The loader rejects unknown keys and invalid values. Config files are loaded in alphabetical filename order; startup connects bots sequentially, waiting for each bot to spawn or time out before proceeding.
+
+Local files in `configs/bots/*.json` are intentionally git-ignored, so bot names and server settings are not included in commits. The example profile remains tracked.
+
+### Authentication cache
+
+Microsoft auth profiles are stored separately per bot under `.auth/<id>/`. Mineflayer creates the directory on first login. To reuse an existing cache, copy the **contents** of that account's Mineflayer cache folder into the matching `.auth/<id>/` directory, preserving the hashed cache filenames. Keep `.auth/` private and never commit or share its files; they contain authentication tokens. Use `auth: "offline"` only for servers that permit offline accounts.
 
 ## Run locally
 
