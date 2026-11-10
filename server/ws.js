@@ -99,6 +99,12 @@ export function createControlServer({
                     const suggestions = await manager.completeCommand(request.id, request.command);
                     sendJson(socket, { type: 'bot:completion', requestId, suggestions });
                     return;
+                } else if (request.type === 'bot:inventory-move') {
+                    result = await manager.moveInventoryItem(request.id, request.sourceSlot, request.destinationSlot);
+                } else if (request.type === 'bot:inventory-drop-one') {
+                    result = await manager.dropInventoryItem(request.id, request.slot);
+                } else if (request.type === 'bot:inventory-drop-stack') {
+                    result = await manager.dropInventoryStack(request.id, request.slot);
                 } else {
                     throw new Error('Unsupported action');
                 }

@@ -52,6 +52,25 @@ class FakeBot extends EventEmitter {
         this.sent.push(message);
     }
 
+    async moveSlotItem(sourceSlot, destinationSlot) {
+        const item = this.inventory.slots[sourceSlot];
+        this.inventory.slots[sourceSlot] = null;
+        this.inventory.slots[destinationSlot] = item;
+        if (item) item.slot = destinationSlot;
+    }
+
+    async clickWindow(slot, mouseButton, mode) {
+        if (mode !== 4 || mouseButton !== 0) throw new Error('Unexpected click');
+        const item = this.inventory.slots[slot];
+        if (!item) throw new Error('Empty slot');
+        if (item.count > 1) item.count -= 1;
+        else this.inventory.slots[slot] = null;
+    }
+
+    async tossStack(item) {
+        this.inventory.slots[item.slot] = null;
+    }
+
     async tabComplete(command, assumeCommand, sendBlockInSight, timeout) {
         this.completionRequests.push({ command, assumeCommand, sendBlockInSight, timeout });
         this.activeCompletions += 1;
@@ -143,6 +162,16 @@ test('starts configured bots sequentially and sends chat and commands', async t 
     });
     assert.equal(JSON.stringify(manager.getSnapshot()[0].inventory).includes('privateValue'), false);
     assert.equal(manager.getSnapshot()[0].inventory[36].customName, 'Common Crate Key');
+    assert.deepEqual(await manager.moveInventoryItem('alpha', 36, 39), {
+        id: 'alpha', sourceSlot: 36, destinationSlot: 39, moved: 1
+    });
+    assert.equal(manager.getSnapshot()[0].inventory[36], null);
+    assert.equal(manager.getSnapshot()[0].inventory[39].customName, 'Common Crate Key');
+    await assert.rejects(manager.moveInventoryItem('alpha', 9, 39), /Destination slot must be empty/);
+    assert.deepEqual(await manager.dropInventoryItem('alpha', 9), { id: 'alpha', slot: 9, dropped: 1 });
+    assert.equal(manager.getSnapshot()[0].inventory[9].count, 2);
+    assert.deepEqual(await manager.dropInventoryStack('alpha', 39), { id: 'alpha', slot: 39, dropped: 1 });
+    assert.equal(manager.getSnapshot()[0].inventory[39], null);
     assert.ok(manager.getSnapshot()[0].logs.some(entry => (
         entry.text === 'Chat security: required; profile key available; chat session available'
     )));

@@ -211,6 +211,16 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
 .inventory-grid { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 6px; }
 .inventory-slot { position: relative; aspect-ratio: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 8px 3px 4px; overflow: hidden; border: 1px solid var(--line); border-radius: 5px; color: var(--muted); background: var(--surface-input); }
 .inventory-slot.filled { border-color: var(--border-action); color: var(--ink-soft); background: var(--surface-action); }
+.inventory-slot { text-align: center; font: inherit; cursor: pointer; }
+.inventory-slot:disabled { opacity: .55; cursor: default; }
+.inventory-slot.selected { outline: 2px solid var(--green-selected); outline-offset: -2px; }
+.inventory-slot.move-target { border-style: dashed; border-color: var(--green-selected); background: var(--surface-selected); }
+.inventory-move-target-mark { color: var(--green-selected); font: 8px var(--mono); }
+.inventory-slot { text-align: center; font: inherit; cursor: pointer; }
+.inventory-slot:disabled { opacity: .55; cursor: default; }
+.inventory-slot.selected { outline: 2px solid var(--green-selected); outline-offset: -2px; }
+.inventory-slot.move-target { border-style: dashed; border-color: var(--green-selected); background: var(--surface-selected); }
+.inventory-move-target-mark { color: var(--green-selected); font: 8px var(--mono); }
 .inventory-slot-select { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; width: 100%; padding: 8px 3px 4px; border: 0; border-radius: inherit; color: inherit; background: transparent; cursor: pointer; }
 .inventory-slot-select:hover { background: var(--surface-action-hover); }
 .inventory-slot-select[aria-pressed="true"] { outline: 2px solid var(--green-selected); outline-offset: -2px; background: var(--surface-selected); }
@@ -222,6 +232,30 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
 .inventory-detail-group ul { display: grid; gap: 3px; margin: 5px 0 0; padding: 0; list-style: none; }
 .inventory-detail-group li { overflow-wrap: anywhere; color: var(--ink-soft); font-size: 11px; }
 .inventory-select-hint { grid-column: 1 / -1; color: var(--muted); font-size: 11px; }
+.inventory-item-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; padding-top: 8px; border-top: 1px solid var(--line); }
+.inventory-action-button { min-height: 32px; padding: 0 10px; border: 1px solid var(--border-action); border-radius: 5px; color: var(--green-action); background: var(--surface-action); font: 11px var(--sans); cursor: pointer; }
+.inventory-action-button:hover:not(:disabled) { border-color: var(--command-border); background: var(--surface-action-hover); }
+.inventory-action-button:disabled { opacity: .5; cursor: not-allowed; }
+.inventory-drop-stack-button { border-color: var(--danger-border); color: var(--danger-text); background: var(--surface-error); }
+.inventory-drop-stack-button:hover:not(:disabled) { border-color: var(--danger-focus); background: var(--surface-error); }
+.inventory-move-notice { padding: 8px 10px; border: 1px dashed var(--green-selected); border-radius: 5px; color: var(--green-action); background: var(--surface-selected); font-size: 11px; }
+.inventory-confirm-backdrop { position: fixed; z-index: 20; inset: 0; display: grid; place-items: center; padding: 20px; background: rgba(0, 0, 0, .48); }
+.inventory-confirm-dialog { width: min(420px, 100%); padding: 20px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--surface); box-shadow: 0 18px 48px rgba(0, 0, 0, .22); }
+.inventory-confirm-dialog h3 { margin: 8px 0; font-size: 17px; }
+.inventory-confirm-dialog p { margin: 0; color: var(--ink-soft); font-size: 13px; overflow-wrap: anywhere; }
+.inventory-confirm-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+.inventory-item-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; padding-top: 8px; border-top: 1px solid var(--line); }
+.inventory-action-button { min-height: 32px; padding: 0 10px; border: 1px solid var(--border-action); border-radius: 5px; color: var(--green-action); background: var(--surface-action); font: 11px var(--sans); cursor: pointer; }
+.inventory-action-button:hover:not(:disabled) { border-color: var(--command-border); background: var(--surface-action-hover); }
+.inventory-action-button:disabled { opacity: .5; cursor: not-allowed; }
+.inventory-drop-stack-button { border-color: var(--danger-border); color: var(--danger-text); background: var(--surface-error); }
+.inventory-drop-stack-button:hover:not(:disabled) { border-color: var(--danger-focus); background: var(--surface-error); }
+.inventory-move-notice { padding: 8px 10px; border: 1px dashed var(--green-selected); border-radius: 5px; color: var(--green-action); background: var(--surface-selected); font-size: 11px; }
+.inventory-confirm-backdrop { position: fixed; z-index: 20; inset: 0; display: grid; place-items: center; padding: 20px; background: rgba(0, 0, 0, .48); }
+.inventory-confirm-dialog { width: min(420px, 100%); padding: 20px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--surface); box-shadow: 0 18px 48px rgba(0, 0, 0, .22); }
+.inventory-confirm-dialog h3 { margin: 8px 0; font-size: 17px; }
+.inventory-confirm-dialog p { margin: 0; color: var(--ink-soft); font-size: 13px; overflow-wrap: anywhere; }
+.inventory-confirm-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
 .inventory-slot-label { position: absolute; top: 3px; left: 4px; color: var(--text-subtle); font: 8px var(--mono); }
 .inventory-item-name { width: 100%; overflow: hidden; color: inherit; font-size: 8px; line-height: 1.15; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
 .inventory-item-count { position: absolute; right: 4px; bottom: 3px; color: var(--ink); font: 9px var(--mono); text-shadow: 0 1px 2px var(--surface); }
@@ -309,6 +343,8 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
   .inventory-grid { gap: 3px; }
   .inventory-slot { padding: 8px 2px 3px; }
   .inventory-item-name { font-size: 7px; }
+  .inventory-item-details { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .inventory-item-actions { grid-column: auto; }
   .app-footer { flex-wrap: wrap; gap: 10px; font-size: 8px; }
   .app-footer > span:first-child { flex-basis: 100%; }
 }

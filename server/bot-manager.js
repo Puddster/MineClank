@@ -135,6 +135,7 @@ export class BotManager extends EventEmitter {
             connectPromise: null,
             completionQueue: Promise.resolve(),
             completionSequence: 0,
+            inventoryActionQueue: Promise.resolve(),
             attempts: 0
         }]));
         this.publishSnapshot();
@@ -250,6 +251,67 @@ export class BotManager extends EventEmitter {
         this.requireOnlineBot(record).chat(text);
         this.appendLog(record, `You: ${text}`);
         return { id, sent: text };
+    }
+
+    moveInventoryItem(id, sourceSlot, destinationSlot) {
+        return this.queueInventoryAction(id, sourceSlot, async (bot, item, record) => {
+            this.validateInventorySlot(bot, destinationSlot);
+            if (sourceSlot === destinationSlot) throw new Error('Choose a different destination slot');
+            if (bot.inventory.slots[destinationSlot]) throw new Error('Destination slot must be empty');
+            if (typeof bot.moveSlotItem !== 'function') throw new Error('Inventory moves are unavailable');
+
+            await bot.moveSlotItem(sourceSlot, destinationSlot);
+            this.appendLog(record, `Inventory: moved ${item.count} x ${this.inventoryItemName(item)} from slot ${sourceSlot} to ${destinationSlot}`);
+            return { id, sourceSlot, destinationSlot, moved: item.count };
+        });
+    }
+
+    dropInventoryItem(id, slot) {
+        return this.queueInventoryAction(id, slot, async (bot, item, record) => {
+            if (typeof bot.clickWindow !== 'function') throw new Error('Inventory drops are unavailable');
+            await bot.clickWindow(slot, 0, 4);
+            this.appendLog(record, `Inventory: dropped 1 x ${this.inventoryItemName(item)} from slot ${slot}`);
+            return { id, slot, dropped: 1 };
+        });
+    }
+
+    dropInventoryStack(id, slot) {
+        return this.queueInventoryAction(id, slot, async (bot, item, record) => {
+            if (typeof bot.tossStack !== 'function') throw new Error('Stack drops are unavailable');
+            await bot.tossStack(item);
+            this.appendLog(record, `Inventory: dropped stack of ${this.inventoryItemName(item)} from slot ${slot}`);
+            return { id, slot, dropped: item.count };
+        });
+    }
+
+    queueInventoryAction(id, slot, operation) {
+        const record = this.requireRecord(id);
+        const run = async () => {
+            const bot = this.requireOnlineBot(record);
+            if (bot.currentWindow) throw new Error('Close the open container before managing inventory');
+            this.validateInventorySlot(bot, slot);
+            const item = bot.inventory.slots[slot];
+            if (!item) throw new Error(`Inventory slot ${slot} is empty`);
+
+            const result = await operation(bot, item, record);
+            this.emitState(record);
+            return result;
+        };
+
+        const action = record.inventoryActionQueue.then(run, run);
+        record.inventoryActionQueue = action.catch(() => {});
+        return action;
+    }
+
+    validateInventorySlot(bot, slot) {
+        if (!Number.isInteger(slot) || slot < 5 || slot >= (bot.inventory?.slots?.length || 0)) {
+            throw new Error('Inventory slot is out of range');
+        }
+    }
+
+    inventoryItemName(item) {
+        return itemComponentText(item.customName ?? item.componentMap?.get('item_name')?.data) ||
+            item.displayName || item.name || 'Unknown item';
     }
 
     async completeCommand(id, command) {

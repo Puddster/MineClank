@@ -51,6 +51,8 @@ function Dashboard() {
   const [chatColorsEnabled, setChatColorsEnabled] = useState(true)
   const [activeView, setActiveView] = useState('stream')
   const [selectedInventorySlot, setSelectedInventorySlot] = useState(null)
+  const [inventoryMoveSource, setInventoryMoveSource] = useState(null)
+  const [confirmDropSlot, setConfirmDropSlot] = useState(null)
   const [suggestions, setSuggestions] = useState([])
   const socketRef = useRef(null)
   const pendingRef = useRef({})
@@ -117,6 +119,8 @@ function Dashboard() {
           if (message.bot.status !== 'online') {
             completionRequestRef.current = null
             setSuggestions([])
+            setInventoryMoveSource(null)
+            setConfirmDropSlot(null)
           }
         } else if (message.type === 'bot:log') {
           setBots(current => current.map(bot => bot.id === message.id
@@ -134,10 +138,16 @@ function Dashboard() {
             delete next[message.requestId]
             return next
           })
+          const actionMessages = {
+            'bot:command': 'Message sent',
+            'bot:inventory-move': 'Inventory stack moved',
+            'bot:inventory-drop-one': 'Dropped one item',
+            'bot:inventory-drop-stack': 'Dropped the stack'
+          }
           const errorMessage = message.error === 'Unsupported action' && action === 'bot:complete'
             ? 'Restart the backend to enable command completion'
             : message.error
-          setNotice(message.ok ? (action === 'bot:command' ? 'Message sent' : 'Bot action complete') : errorMessage)
+          setNotice(message.ok ? actionMessages[action] || 'Bot action complete' : errorMessage)
           window.setTimeout(() => setNotice(''), 3500)
         }
       })
@@ -148,6 +158,8 @@ function Dashboard() {
         pendingRef.current = {}
         completionRequestRef.current = null
         setSuggestions([])
+        setInventoryMoveSource(null)
+        setConfirmDropSlot(null)
         setPending({})
         attempts += 1
         reconnectTimer = window.setTimeout(connect, Math.min(15000, 800 * 2 ** Math.min(attempts, 5)))
@@ -175,28 +187,53 @@ function Dashboard() {
   const selectedInventoryItem = selectedInventorySlot === null ? null : inventorySlots[selectedInventorySlot]
   const isPending = action => Object.values(pending).includes(action)
 
+  function handleInventorySlotClick(slot, item) {
+    if (inventoryMoveSource !== null) {
+      if (slot === inventoryMoveSource) {
+        setInventoryMoveSource(null)
+        return
+      }
+      if (item) {
+        setNotice('Choose an empty destination slot')
+        return
+      }
+      if (sendAction('bot:inventory-move', { sourceSlot: inventoryMoveSource, destinationSlot: slot })) {
+        setInventoryMoveSource(null)
+        setSelectedInventorySlot(null)
+      }
+      return
+    }
+    if (item) setSelectedInventorySlot(slot)
+  }
+
   function renderInventorySlot(slot, label) {
     const item = inventorySlots[slot]
     const description = item
       ? `${item.count} x ${item.customName || item.displayName || item.name}`
       : 'Empty'
+    const canChooseDestination = inventoryMoveSource !== null && !item && selectedBot?.status === 'online'
 
     return (
-      <div className={`inventory-slot ${item ? 'filled' : ''}`} key={slot} role="gridcell" aria-label={`${label}: ${description}`} title={`${label}: ${description}`}>
+      <button
+        type="button"
+        className={`inventory-slot ${item ? 'filled' : ''} ${canChooseDestination ? 'move-target' : ''} ${selectedInventorySlot === slot ? 'selected' : ''}`}
+        key={slot}
+        role="gridcell"
+        aria-label={`${label}: ${description}`}
+        aria-pressed={selectedInventorySlot === slot}
+        title={`${label}: ${description}`}
+        disabled={selectedBot?.status !== 'online' || (!item && inventoryMoveSource === null)}
+        onClick={() => handleInventorySlotClick(slot, item)}
+      >
         <span className="inventory-slot-label">{label}</span>
         {item && (
-          <button
-            type="button"
-            className="inventory-slot-select"
-            aria-label={`Inspect ${description}`}
-            aria-pressed={selectedInventorySlot === slot}
-            onClick={() => setSelectedInventorySlot(slot)}
-          >
+          <>
             <span className="inventory-item-name">{item.customName || item.displayName || item.name}</span>
             {item.count > 1 && <span className="inventory-item-count">{item.count}</span>}
-          </button>
+          </>
         )}
-      </div>
+        {canChooseDestination && <span className="inventory-move-target-mark">MOVE HERE</span>}
+      </button>
     )
   }
 
@@ -391,6 +428,8 @@ function Dashboard() {
                 onClick={() => {
                   setSelectedId(bot.id)
                   setSelectedInventorySlot(null)
+                  setInventoryMoveSource(null)
+                  setConfirmDropSlot(null)
                 }}
               >
                 <span className={`bot-avatar status-${bot.status}`}><Bot size={18} /></span>
@@ -579,13 +618,71 @@ function Dashboard() {
                           {!selectedInventoryItem.customName && !selectedInventoryItem.enchantments?.length && !selectedInventoryItem.lore?.length && (
                             <span className="inventory-select-hint">No custom name, enchantments, or lore</span>
                           )}
+                          <div className="inventory-item-actions">
+                            {inventoryMoveSource === selectedInventorySlot ? (
+                              <button type="button" className="inventory-action-button" onClick={() => setInventoryMoveSource(null)}>Cancel move</button>
+                            ) : (
+                              <button
+                                type="button"
+                                className="inventory-action-button"
+                                disabled={selectedBot.status !== 'online' || isPending('bot:inventory-move')}
+                                onClick={() => setInventoryMoveSource(selectedInventorySlot)}
+                              >Move
+                              </button>
+                            )}
+                            <button
+                              type="button"
+                              className="inventory-action-button"
+                              disabled={selectedBot.status !== 'online' || isPending('bot:inventory-drop-one')}
+                              onClick={() => sendAction('bot:inventory-drop-one', { slot: selectedInventorySlot })}
+                            >Drop 1</button>
+                            <button
+                              type="button"
+                              className="inventory-action-button inventory-drop-stack-button"
+                              disabled={selectedBot.status !== 'online' || isPending('bot:inventory-drop-stack')}
+                              onClick={() => setConfirmDropSlot(selectedInventorySlot)}
+                            >Drop stack</button>
+                          </div>
                         </section>
                       ) : (
                         <div className="inventory-select-hint">Select an occupied slot to inspect custom item data.</div>
                       )}
+                      {inventoryMoveSource !== null && (
+                        <div className="inventory-move-notice" role="status">
+                          Select an empty slot to move this stack, or cancel the move.
+                        </div>
+                      )}
                     </>
                   )}
                 </section>
+              )}
+
+              {confirmDropSlot !== null && (
+                <div className="inventory-confirm-backdrop">
+                  <section className="inventory-confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="drop-stack-title">
+                    <span className="panel-kicker">CONFIRM DROP</span>
+                    <h3 id="drop-stack-title">Drop entire stack?</h3>
+                    <p>
+                      {inventorySlots[confirmDropSlot]
+                        ? `Drop all ${inventorySlots[confirmDropSlot].count} x ${inventorySlots[confirmDropSlot].customName || inventorySlots[confirmDropSlot].displayName || inventorySlots[confirmDropSlot].name}?`
+                        : 'That item is no longer in the selected slot.'}
+                    </p>
+                    <div className="inventory-confirm-actions">
+                      <button type="button" className="inventory-action-button" onClick={() => setConfirmDropSlot(null)}>Cancel</button>
+                      <button
+                        type="button"
+                        className="inventory-action-button inventory-drop-stack-button"
+                        disabled={!inventorySlots[confirmDropSlot] || isPending('bot:inventory-drop-stack')}
+                        onClick={() => {
+                          if (sendAction('bot:inventory-drop-stack', { slot: confirmDropSlot })) {
+                            setConfirmDropSlot(null)
+                            setSelectedInventorySlot(null)
+                          }
+                        }}
+                      >Drop stack</button>
+                    </div>
+                  </section>
+                </div>
               )}
 
               <div className="command-area">

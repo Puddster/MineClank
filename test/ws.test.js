@@ -31,6 +31,18 @@ class FakeManager extends EventEmitter {
     async completeCommand(id, command) {
         return command === '/lem' ? ['lemons'] : [];
     }
+
+    async moveInventoryItem(id, sourceSlot, destinationSlot) {
+        return { id, sourceSlot, destinationSlot, moved: 2 };
+    }
+
+    async dropInventoryItem(id, slot) {
+        return { id, slot, dropped: 1 };
+    }
+
+    async dropInventoryStack(id, slot) {
+        return { id, slot, dropped: 4 };
+    }
 }
 
 async function openServer(t, options = {}) {
@@ -98,6 +110,30 @@ test('streams a snapshot and dispatches validated bot commands', async t => {
     assert.deepEqual(await completionResult, {
         type: 'bot:completion', requestId: 'complete-1', suggestions: ['lemons']
     });
+
+    const inventoryResult = new Promise((resolve, reject) => {
+        socket.once('message', data => resolve(JSON.parse(data.toString())));
+        socket.once('error', reject);
+    });
+    socket.send(JSON.stringify({ type: 'bot:inventory-move', id: 'alpha', sourceSlot: 36, destinationSlot: 37, requestId: 'move-1' }));
+    assert.deepEqual(await inventoryResult, {
+        type: 'action:result', requestId: 'move-1', ok: true,
+        result: { id: 'alpha', sourceSlot: 36, destinationSlot: 37, moved: 2 }
+    });
+
+    const dropOneResult = new Promise((resolve, reject) => {
+        socket.once('message', data => resolve(JSON.parse(data.toString())));
+        socket.once('error', reject);
+    });
+    socket.send(JSON.stringify({ type: 'bot:inventory-drop-one', id: 'alpha', slot: 37, requestId: 'drop-1' }));
+    assert.equal((await dropOneResult).result.dropped, 1);
+
+    const dropStackResult = new Promise((resolve, reject) => {
+        socket.once('message', data => resolve(JSON.parse(data.toString())));
+        socket.once('error', reject);
+    });
+    socket.send(JSON.stringify({ type: 'bot:inventory-drop-stack', id: 'alpha', slot: 37, requestId: 'drop-stack' }));
+    assert.equal((await dropStackResult).result.dropped, 4);
     socket.close();
 });
 
