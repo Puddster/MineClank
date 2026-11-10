@@ -8,6 +8,7 @@ import {
   LoaderCircle,
   MapPin,
   Moon,
+  Package,
   Palette,
   Play,
   Radio,
@@ -23,6 +24,15 @@ import { getWebSocketUrl } from './client.js'
 import './Dashboard.css'
 
 const THEME_STORAGE_KEY = 'mineclank-theme'
+const EQUIPMENT_SLOTS = [
+  { slot: 5, label: 'Head' },
+  { slot: 6, label: 'Chest' },
+  { slot: 7, label: 'Legs' },
+  { slot: 8, label: 'Feet' },
+  { slot: 45, label: 'Offhand' },
+]
+const MAIN_INVENTORY_SLOTS = Array.from({ length: 27 }, (_, index) => 9 + index)
+const HOTBAR_SLOTS = Array.from({ length: 9 }, (_, index) => 36 + index)
 
 function Dashboard() {
   const [theme, setTheme] = useState(() => {
@@ -39,6 +49,8 @@ function Dashboard() {
   const [pending, setPending] = useState({})
   const [notice, setNotice] = useState('')
   const [chatColorsEnabled, setChatColorsEnabled] = useState(true)
+  const [activeView, setActiveView] = useState('stream')
+  const [selectedInventorySlot, setSelectedInventorySlot] = useState(null)
   const [suggestions, setSuggestions] = useState([])
   const socketRef = useRef(null)
   const pendingRef = useRef({})
@@ -158,7 +170,35 @@ function Dashboard() {
   const selectedBotId = selectedBot?.id
   const selectedBotStatus = selectedBot?.status
   const onlineCount = bots.filter(bot => bot.status === 'online').length
+  const inventorySlots = selectedBot?.inventory || []
+  const inventoryItemCount = inventorySlots.filter(Boolean).length
+  const selectedInventoryItem = selectedInventorySlot === null ? null : inventorySlots[selectedInventorySlot]
   const isPending = action => Object.values(pending).includes(action)
+
+  function renderInventorySlot(slot, label) {
+    const item = inventorySlots[slot]
+    const description = item
+      ? `${item.count} x ${item.customName || item.displayName || item.name}`
+      : 'Empty'
+
+    return (
+      <div className={`inventory-slot ${item ? 'filled' : ''}`} key={slot} role="gridcell" aria-label={`${label}: ${description}`} title={`${label}: ${description}`}>
+        <span className="inventory-slot-label">{label}</span>
+        {item && (
+          <button
+            type="button"
+            className="inventory-slot-select"
+            aria-label={`Inspect ${description}`}
+            aria-pressed={selectedInventorySlot === slot}
+            onClick={() => setSelectedInventorySlot(slot)}
+          >
+            <span className="inventory-item-name">{item.customName || item.displayName || item.name}</span>
+            {item.count > 1 && <span className="inventory-item-count">{item.count}</span>}
+          </button>
+        )}
+      </div>
+    )
+  }
 
   const requestCompletions = useCallback(value => {
     const socket = socketRef.current
@@ -348,7 +388,10 @@ function Dashboard() {
                 type="button"
                 className={`bot-row ${selectedBot?.id === bot.id ? 'selected' : ''}`}
                 key={bot.id}
-                onClick={() => setSelectedId(bot.id)}
+                onClick={() => {
+                  setSelectedId(bot.id)
+                  setSelectedInventorySlot(null)
+                }}
               >
                 <span className={`bot-avatar status-${bot.status}`}><Bot size={18} /></span>
                 <span className="bot-summary">
@@ -423,36 +466,127 @@ function Dashboard() {
 
               {selectedBot.lastError && <div className="error-banner">{selectedBot.lastError}</div>}
 
-              <div className="log-heading">
-                <div className="log-title"><Radio size={16} /><h3>Live stream</h3></div>
-                <div className="stream-controls">
+              <div className="detail-view-header">
+                <div className="detail-tabs" role="tablist" aria-label="Bot views">
                   <button
+                    id="stream-tab"
                     type="button"
-                    className="color-toggle"
-                    title={chatColorsEnabled ? 'Disable chat colors' : 'Enable chat colors'}
-                    aria-label={chatColorsEnabled ? 'Disable chat colors' : 'Enable chat colors'}
-                    aria-pressed={chatColorsEnabled}
-                    onClick={() => setChatColorsEnabled(enabled => !enabled)}
+                    role="tab"
+                    aria-selected={activeView === 'stream'}
+                    aria-controls="stream-panel"
+                    className={`detail-tab ${activeView === 'stream' ? 'selected' : ''}`}
+                    onClick={() => setActiveView('stream')}
                   >
-                    <Palette size={14} />
+                    <Radio size={15} /> Live stream
                   </button>
-                  <span className="stream-indicator"><span className="status-dot status-online" /> LIVE</span>
+                  <button
+                    id="inventory-tab"
+                    type="button"
+                    role="tab"
+                    aria-selected={activeView === 'inventory'}
+                    aria-controls="inventory-panel"
+                    className={`detail-tab ${activeView === 'inventory' ? 'selected' : ''}`}
+                    onClick={() => setActiveView('inventory')}
+                  >
+                    <Package size={15} /> Inventory
+                    <span className="tab-count">{inventoryItemCount}</span>
+                  </button>
                 </div>
-              </div>
-              <div className="log-stream" role="log" aria-live="polite" aria-label="Bot chat and server messages">
-                {selectedBot.logs?.length ? selectedBot.logs.map((entry, index) => (
-                  <div className="log-line" key={`${entry.at}-${index}`}>
-                    <time>{new Date(entry.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</time>
-                    <span>{renderLogText(entry)}</span>
-                  </div>
-                )) : (
-                  <div className="empty-log">
-                    <Terminal size={20} />
-                    <span>Waiting for server messages</span>
+                {activeView === 'stream' && (
+                  <div className="stream-controls">
+                    <button
+                      type="button"
+                      className="color-toggle"
+                      title={chatColorsEnabled ? 'Disable chat colors' : 'Enable chat colors'}
+                      aria-label={chatColorsEnabled ? 'Disable chat colors' : 'Enable chat colors'}
+                      aria-pressed={chatColorsEnabled}
+                      onClick={() => setChatColorsEnabled(enabled => !enabled)}
+                    >
+                      <Palette size={14} />
+                    </button>
+                    <span className="stream-indicator"><span className="status-dot status-online" /> LIVE</span>
                   </div>
                 )}
-                <div ref={logEndRef} />
               </div>
+
+              {activeView === 'stream' ? (
+                <div className="log-stream detail-view" id="stream-panel" role="tabpanel" aria-labelledby="stream-tab" aria-live="polite" aria-label="Bot chat and server messages">
+                  {selectedBot.logs?.length ? selectedBot.logs.map((entry, index) => (
+                    <div className="log-line" key={`${entry.at}-${index}`}>
+                      <time>{new Date(entry.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</time>
+                      <span>{renderLogText(entry)}</span>
+                    </div>
+                  )) : (
+                    <div className="empty-log">
+                      <Terminal size={20} />
+                      <span>Waiting for server messages</span>
+                    </div>
+                  )}
+                  <div ref={logEndRef} />
+                </div>
+              ) : (
+                <section className="inventory-view detail-view" id="inventory-panel" role="tabpanel" aria-labelledby="inventory-tab">
+                  <div className="inventory-summary">
+                    <div>
+                      <span className="panel-kicker">PLAYER INVENTORY</span>
+                      <h3>Items</h3>
+                    </div>
+                    <span className="inventory-total">{inventoryItemCount} occupied slots</span>
+                  </div>
+                  {selectedBot.status !== 'online' || inventorySlots.length === 0 ? (
+                    <div className="inventory-empty">Inventory data is available while the bot is online.</div>
+                  ) : (
+                    <>
+                      <section className="inventory-section" aria-label="Equipment">
+                        <div className="inventory-section-heading"><h4>Equipment</h4><span>Armor and offhand</span></div>
+                        <div className="equipment-grid" role="grid">
+                          {EQUIPMENT_SLOTS.map(({ slot, label }) => renderInventorySlot(slot, label))}
+                        </div>
+                      </section>
+                      <section className="inventory-section" aria-label="Main inventory">
+                        <div className="inventory-section-heading"><h4>Storage</h4><span>27 slots</span></div>
+                        <div className="inventory-grid" role="grid">
+                          {MAIN_INVENTORY_SLOTS.map(slot => renderInventorySlot(slot, String(slot - 8)))}
+                        </div>
+                      </section>
+                      <section className="inventory-section" aria-label="Hotbar">
+                        <div className="inventory-section-heading"><h4>Hotbar</h4><span>Selected items</span></div>
+                        <div className="inventory-grid hotbar-grid" role="grid">
+                          {HOTBAR_SLOTS.map(slot => renderInventorySlot(slot, String(slot - 35)))}
+                        </div>
+                      </section>
+                      {selectedInventoryItem ? (
+                        <section className="inventory-item-details" aria-label="Selected item details">
+                          <div className="inventory-detail-heading">
+                            <span className="panel-kicker">SLOT {selectedInventorySlot}</span>
+                            <strong>{selectedInventoryItem.customName || selectedInventoryItem.displayName || selectedInventoryItem.name}</strong>
+                            <span className="inventory-total">{selectedInventoryItem.count} item(s)</span>
+                          </div>
+                          {selectedInventoryItem.enchantments?.length > 0 && (
+                            <div className="inventory-detail-group">
+                              <span className="inventory-detail-label">ENCHANTMENTS</span>
+                              <ul>{selectedInventoryItem.enchantments.map((enchantment, index) => (
+                                <li key={`${enchantment.name}-${index}`}>{enchantment.name} {enchantment.level}</li>
+                              ))}</ul>
+                            </div>
+                          )}
+                          {selectedInventoryItem.lore?.length > 0 && (
+                            <div className="inventory-detail-group">
+                              <span className="inventory-detail-label">LORE</span>
+                              <ul>{selectedInventoryItem.lore.map((line, index) => <li key={index}>{line}</li>)}</ul>
+                            </div>
+                          )}
+                          {!selectedInventoryItem.customName && !selectedInventoryItem.enchantments?.length && !selectedInventoryItem.lore?.length && (
+                            <span className="inventory-select-hint">No custom name, enchantments, or lore</span>
+                          )}
+                        </section>
+                      ) : (
+                        <div className="inventory-select-hint">Select an occupied slot to inspect custom item data.</div>
+                      )}
+                    </>
+                  )}
+                </section>
+              )}
 
               <div className="command-area">
                 <div className="command-topline">

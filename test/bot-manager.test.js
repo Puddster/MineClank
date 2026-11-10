@@ -16,6 +16,28 @@ class FakeBot extends EventEmitter {
         this.activeCompletions = 0;
         this.maxConcurrentCompletions = 0;
         this.entity = { position: { x: 1.24, y: 64, z: -8.86 } };
+        this.inventory = { slots: Array(46).fill(null) };
+        this.inventory.slots[9] = {
+            name: 'diamond',
+            displayName: 'Diamond',
+            count: 3,
+            customName: '{"text":"Prismatic Diamond"}',
+            enchants: [{ name: 'sharpness', lvl: 3 }],
+            customLore: ['{"text":"Forged in light"}', 'Second line'],
+            nbt: { privateValue: 'must not be exposed' }
+        };
+        this.inventory.slots[36] = {
+            name: 'tripwire_hook',
+            displayName: 'Tripwire Hook',
+            count: 1,
+            customName: null,
+            componentMap: new Map([['item_name', {
+                data: {
+                    type: 'compound',
+                    value: { text: { type: 'string', value: 'Common Crate Key' } }
+                }
+            }]])
+        };
         this.game = { dimension: 'overworld' };
         this._client = {
             state: 'play',
@@ -110,6 +132,17 @@ test('starts configured bots sequentially and sends chat and commands', async t 
     assert.equal(bots[1].options.physicsEnabled, true);
     assert.deepEqual(manager.getSnapshot()[0].position, { x: 1.2, y: 64, z: -8.9 });
     assert.equal(manager.getSnapshot()[0].dimension, 'overworld');
+    assert.deepEqual(manager.getSnapshot()[0].inventory[9], {
+        slot: 9,
+        name: 'diamond',
+        displayName: 'Diamond',
+        count: 3,
+        customName: 'Prismatic Diamond',
+        enchantments: [{ name: 'sharpness', level: 3 }],
+        lore: ['Forged in light', 'Second line']
+    });
+    assert.equal(JSON.stringify(manager.getSnapshot()[0].inventory).includes('privateValue'), false);
+    assert.equal(manager.getSnapshot()[0].inventory[36].customName, 'Common Crate Key');
     assert.ok(manager.getSnapshot()[0].logs.some(entry => (
         entry.text === 'Chat security: required; profile key available; chat session available'
     )));

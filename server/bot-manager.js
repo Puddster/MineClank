@@ -7,6 +7,75 @@ import { ansiToColorRuns } from './chat-colors.js';
 const tokenPattern = /eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g;
 const redact = value => String(value).replace(tokenPattern, '[REDACTED TOKEN]');
 const maxChatLength = 256;
+const maxItemTextLength = 160;
+
+function itemComponentText(value) {
+    const flatten = (node, depth = 0) => {
+        if (depth > 8) return '';
+        if (typeof node === 'string') {
+            try {
+                return flatten(JSON.parse(node), depth + 1);
+            } catch {
+                return node;
+            }
+        }
+        if (Array.isArray(node)) return node.map(child => flatten(child, depth + 1)).join('');
+        if (!node || typeof node !== 'object') return '';
+        if (node.type === 'string' && typeof node.value === 'string') return node.value;
+
+        const content = node.type === 'compound' ? node.value : node;
+        if (node.type === 'list') return flatten(node.value?.value ?? node.value, depth + 1);
+        if (!content || typeof content !== 'object') return '';
+        const ownText = flatten(content.text, depth + 1);
+        const extraText = flatten(content.extra, depth + 1);
+        return ownText + extraText;
+    };
+
+    return flatten(value).slice(0, maxItemTextLength);
+}
+
+function inventorySnapshot(bot) {
+    const slots = bot?.inventory?.slots;
+    if (!Array.isArray(slots)) return [];
+
+    return slots.map((item, slot) => {
+        if (!item) return null;
+        const displayName = typeof item.displayName === 'string'
+            ? item.displayName
+            : item.displayName?.toString?.();
+        let enchantments = [];
+        let lore = [];
+        try {
+            enchantments = (Array.isArray(item.enchants) ? item.enchants : [])
+                .filter(enchantment => typeof enchantment?.name === 'string')
+                .slice(0, 12)
+                .map(enchantment => ({
+                    name: enchantment.name.slice(0, 80),
+                    level: Number.isInteger(enchantment.lvl) ? enchantment.lvl : 0
+                }));
+        } catch {}
+        try {
+            const rawLore = item.customLore;
+            const loreLines = Array.isArray(rawLore) ? rawLore : typeof rawLore === 'string' ? [rawLore] : [];
+            lore = loreLines.slice(0, 8).map(itemComponentText).filter(Boolean);
+        } catch {}
+        let customName = null;
+        try {
+            const nameComponent = item.componentMap?.get('item_name')?.data;
+            customName = itemComponentText(item.customName ?? nameComponent) || null;
+        } catch {}
+
+        return {
+            slot,
+            name: item.name || 'Unknown item',
+            displayName: displayName || item.name || 'Unknown item',
+            count: Number.isInteger(item.count) ? item.count : 1,
+            customName,
+            enchantments,
+            lore
+        };
+    });
+}
 
 function validateSingleLineText(value, label) {
     if (typeof value !== 'string' || !value.trim()) throw new Error(`${label} cannot be empty`);
@@ -99,7 +168,8 @@ export class BotManager extends EventEmitter {
                 z: Number(entityPosition.z.toFixed(1))
             } : null,
             dimension,
-            lastError: record.lastError
+            lastError: record.lastError,
+            inventory: record.status === 'online' ? inventorySnapshot(record.bot) : []
         };
     }
 
