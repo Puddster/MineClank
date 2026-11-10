@@ -14,11 +14,13 @@ services:
     volumes:
       - ./configs/bots:/app/configs/bots:ro
       - mineclank-auth:/app/.auth
+      - mineclank-data:/app/.data
     networks:
       - proxy
 
 volumes:
   mineclank-auth:
+  mineclank-data:
 
 networks:
   proxy:

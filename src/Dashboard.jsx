@@ -3,6 +3,7 @@ import {
   Activity,
   ArrowUpRight,
   Bot,
+  BookOpen,
   Circle,
   CircleCheck,
   Drumstick,
@@ -15,12 +16,17 @@ import {
   PanelsTopLeft,
   Palette,
   Play,
+  Plus,
+  Pencil,
   Radio,
+  Save,
+  Search,
   Send,
   Server,
   Square,
   Sparkles,
   Timer,
+  Trash2,
   Sun,
   Terminal,
   Wifi,
@@ -41,6 +47,11 @@ const EQUIPMENT_SLOTS = [
 ]
 const MAIN_INVENTORY_SLOTS = Array.from({ length: 27 }, (_, index) => 9 + index)
 const HOTBAR_SLOTS = Array.from({ length: 9 }, (_, index) => 36 + index)
+const savedPlaceholderPattern = /\{\{([A-Za-z][A-Za-z0-9_]*)\}\}/g
+
+function savedMessageVariables(message) {
+  return [...new Set([...message.matchAll(savedPlaceholderPattern)].map(match => match[1]))]
+}
 
 function formatDuration(seconds) {
   if (!Number.isFinite(seconds)) return '—'
@@ -74,6 +85,14 @@ function Dashboard() {
   const [inventoryMoveSource, setInventoryMoveSource] = useState(null)
   const [confirmDropSlot, setConfirmDropSlot] = useState(null)
   const [suggestions, setSuggestions] = useState([])
+  const [savedMessages, setSavedMessages] = useState([])
+  const [savedMessageSearch, setSavedMessageSearch] = useState('')
+  const [savedMessageCategory, setSavedMessageCategory] = useState('all')
+  const [savedMessageDraft, setSavedMessageDraft] = useState(null)
+  const [savedMessageToDelete, setSavedMessageToDelete] = useState(null)
+  const [savedMessageToFill, setSavedMessageToFill] = useState(null)
+  const [savedMessageValues, setSavedMessageValues] = useState({})
+  const [savedMessageFillError, setSavedMessageFillError] = useState('')
   const socketRef = useRef(null)
   const pendingRef = useRef({})
   const completionRequestRef = useRef(null)
@@ -136,6 +155,8 @@ function Dashboard() {
           setBots(message.bots)
           setSelectedId(current => current || message.bots[0]?.id || null)
           openWindowsRef.current = Object.fromEntries(message.bots.map(bot => [bot.id, Boolean(bot.openWindow)]))
+        } else if (message.type === 'saved-messages:snapshot' || message.type === 'saved-messages:update') {
+          setSavedMessages(message.messages)
         } else if (message.type === 'bot:state') {
           const hadWindow = Boolean(openWindowsRef.current[message.bot.id])
           const hasWindow = Boolean(message.bot.openWindow)
@@ -177,12 +198,19 @@ function Dashboard() {
             'bot:inventory-drop-one': 'Dropped one item',
             'bot:inventory-drop-stack': 'Dropped the stack',
             'bot:window-click': 'Server menu clicked',
-            'bot:window-close': 'Server menu closed'
+            'bot:window-close': 'Server menu closed',
+            'saved-message:create': 'Saved message added',
+            'saved-message:update': 'Saved message updated',
+            'saved-message:delete': 'Saved message deleted'
           }
           const errorMessage = message.error === 'Unsupported action' && action === 'bot:complete'
             ? 'Restart the backend to enable command completion'
             : message.error
           setNotice(message.ok ? actionMessages[action] || 'Bot action complete' : errorMessage)
+          if (message.ok && ['saved-message:create', 'saved-message:update', 'saved-message:delete'].includes(action)) {
+            setSavedMessageDraft(null)
+            setSavedMessageToDelete(null)
+          }
           window.setTimeout(() => setNotice(''), 3500)
         }
       })
@@ -225,6 +253,14 @@ function Dashboard() {
     .filter(Boolean).length || 0
   const selectedInventoryItem = selectedInventorySlot === null ? null : inventorySlots[selectedInventorySlot]
   const isPending = action => Object.values(pending).includes(action)
+  const savedMessageCategories = [...new Set(savedMessages.map(entry => entry.category).filter(Boolean))]
+  const filteredSavedMessages = savedMessages.filter(entry => {
+    const matchesCategory = savedMessageCategory === 'all' || entry.category === savedMessageCategory
+    const search = savedMessageSearch.trim().toLocaleLowerCase()
+    const matchesSearch = !search ||
+      `${entry.title} ${entry.category} ${entry.message}`.toLocaleLowerCase().includes(search)
+    return matchesCategory && matchesSearch
+  })
 
   function handleInventorySlotClick(slot, item) {
     if (inventoryMoveSource !== null) {
@@ -321,6 +357,51 @@ function Dashboard() {
       historyNavigationRef.current = null
     }
     return true
+  }
+
+  function fillSavedMessage(entry, values = {}) {
+    const message = entry.message.replace(savedPlaceholderPattern, (_match, name) => values[name] ?? '')
+    if (message.length > 256) {
+      setSavedMessageFillError('The completed message exceeds Minecraft’s 256-character chat limit.')
+      return false
+    }
+    setCommand(message)
+    historyNavigationRef.current = null
+    setSavedMessageToFill(null)
+    setSavedMessageValues({})
+    setSavedMessageFillError('')
+    commandInputRef.current?.focus()
+    return true
+  }
+
+  function chooseSavedMessage(entry) {
+    const variables = savedMessageVariables(entry.message)
+    if (!variables.length) {
+      fillSavedMessage(entry)
+      return
+    }
+    setSavedMessageToFill(entry)
+    setSavedMessageValues(Object.fromEntries(variables.map(name => [name, ''])))
+    setSavedMessageFillError('')
+  }
+
+  function saveSavedMessage(event) {
+    event.preventDefault()
+    if (!savedMessageDraft) return
+    const type = savedMessageDraft.id ? 'saved-message:update' : 'saved-message:create'
+    sendAction(type, {
+      ...(savedMessageDraft.id ? { messageId: savedMessageDraft.id } : {}),
+      entry: {
+        title: savedMessageDraft.title,
+        category: savedMessageDraft.category,
+        message: savedMessageDraft.message
+      }
+    })
+  }
+
+  function confirmDeleteSavedMessage() {
+    if (!savedMessageToDelete) return
+    sendAction('saved-message:delete', { messageId: savedMessageToDelete.id })
   }
 
   function submitMessage(event) {
@@ -681,6 +762,18 @@ function Dashboard() {
                     <Package size={15} /> Inventory
                     <span className="tab-count">{inventoryItemCount}</span>
                   </button>
+                  <button
+                    id="saved-messages-tab"
+                    type="button"
+                    role="tab"
+                    aria-selected={activeView === 'saved'}
+                    aria-controls="saved-messages-panel"
+                    className={`detail-tab ${activeView === 'saved' ? 'selected' : ''}`}
+                    onClick={() => setActiveView('saved')}
+                  >
+                    <BookOpen size={15} /> Saved Messages
+                    <span className="tab-count">{savedMessages.length}</span>
+                  </button>
                   {openWindow && (
                     <button
                       id="menu-tab"
@@ -818,6 +911,81 @@ function Dashboard() {
                       )}
                     </>
                   )}
+                </section>
+              ) : activeView === 'saved' ? (
+                <section className="saved-messages-view detail-view" id="saved-messages-panel" role="tabpanel" aria-labelledby="saved-messages-tab">
+                  <div className="saved-messages-heading">
+                    <div>
+                      <span className="panel-kicker">REUSABLE CHAT / COMMANDS</span>
+                      <h3>Saved Messages</h3>
+                    </div>
+                    <button
+                      type="button"
+                      className="inventory-action-button saved-add-button"
+                      onClick={() => setSavedMessageDraft({ id: null, title: '', category: '', message: '' })}
+                    ><Plus size={14} /> Add message</button>
+                  </div>
+                  <div className="saved-message-filters">
+                    <label className="saved-message-search">
+                      <Search size={14} />
+                      <input
+                        type="search"
+                        aria-label="Search saved messages"
+                        placeholder="Search title, category, or text"
+                        value={savedMessageSearch}
+                        onChange={event => setSavedMessageSearch(event.target.value)}
+                      />
+                    </label>
+                    <select
+                      aria-label="Filter by category"
+                      value={savedMessageCategory}
+                      onChange={event => setSavedMessageCategory(event.target.value)}
+                    >
+                      <option value="all">All categories</option>
+                      {savedMessageCategories.map(category => <option key={category} value={category}>{category}</option>)}
+                      {savedMessages.some(entry => !entry.category) && <option value="">Uncategorized</option>}
+                    </select>
+                  </div>
+                  {filteredSavedMessages.length ? (
+                    <div className="saved-message-list">
+                      {filteredSavedMessages.map(entry => (
+                        <article className="saved-message-card" key={entry.id}>
+                          <button
+                            type="button"
+                            className="saved-message-insert"
+                            title="Fill the chat box without sending"
+                            onClick={() => chooseSavedMessage(entry)}
+                          >
+                            <span className="saved-message-card-heading">
+                              <strong>{entry.title}</strong>
+                              <span>{entry.category || 'Uncategorized'}</span>
+                            </span>
+                            <span className="saved-message-preview">{entry.message}</span>
+                          </button>
+                          <div className="saved-message-card-actions">
+                            <button
+                              type="button"
+                              aria-label={`Edit ${entry.title}`}
+                              title="Edit"
+                              onClick={() => setSavedMessageDraft({ ...entry })}
+                            ><Pencil size={14} /></button>
+                            <button
+                              type="button"
+                              aria-label={`Delete ${entry.title}`}
+                              title="Delete"
+                              onClick={() => setSavedMessageToDelete(entry)}
+                            ><Trash2 size={14} /></button>
+                          </div>
+                        </article>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="saved-messages-empty">
+                      <BookOpen size={20} />
+                      <span>{savedMessages.length ? 'No saved messages match this filter.' : 'No saved messages yet. Add one to get started.'}</span>
+                    </div>
+                  )}
+                  <p className="saved-message-hint">Select a message to fill the chat box. It will not be sent until you press Send.</p>
                 </section>
               ) : openWindow ? (
                 <section className="menu-view detail-view" id="menu-panel" role="tabpanel" aria-labelledby="menu-tab">
@@ -965,6 +1133,97 @@ function Dashboard() {
                           }
                         }}
                       >Drop stack</button>
+                    </div>
+                  </section>
+                </div>
+              )}
+
+              {savedMessageDraft && (
+                <div className="saved-message-backdrop">
+                  <form className="saved-message-dialog" onSubmit={saveSavedMessage}>
+                    <span className="panel-kicker">{savedMessageDraft.id ? 'EDIT ENTRY' : 'NEW ENTRY'}</span>
+                    <h3>{savedMessageDraft.id ? 'Edit saved message' : 'Add saved message'}</h3>
+                    <label>
+                      <span>Title</span>
+                      <input
+                        autoFocus
+                        required
+                        maxLength={80}
+                        value={savedMessageDraft.title}
+                        onChange={event => setSavedMessageDraft(current => ({ ...current, title: event.target.value }))}
+                      />
+                    </label>
+                    <label>
+                      <span>Category</span>
+                      <input
+                        maxLength={40}
+                        placeholder="Optional"
+                        value={savedMessageDraft.category}
+                        onChange={event => setSavedMessageDraft(current => ({ ...current, category: event.target.value }))}
+                      />
+                    </label>
+                    <label>
+                      <span>Message or command <small>{savedMessageDraft.message.length}/256</small></span>
+                      <input
+                        type="text"
+                        required
+                        maxLength={256}
+                        value={savedMessageDraft.message}
+                        onChange={event => setSavedMessageDraft(current => ({ ...current, message: event.target.value }))}
+                      />
+                    </label>
+                    <p className="saved-message-hint">Use placeholders like {'{{player}}'}; values are requested when you select this entry.</p>
+                    <div className="saved-message-form-actions">
+                      <button type="button" className="inventory-action-button" onClick={() => setSavedMessageDraft(null)}>Cancel</button>
+                      <button type="submit" className="inventory-action-button saved-message-save" disabled={isPending(savedMessageDraft.id ? 'saved-message:update' : 'saved-message:create')}>
+                        <Save size={14} /> Save
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              )}
+
+              {savedMessageToFill && (
+                <div className="saved-message-backdrop">
+                  <form
+                    className="saved-message-dialog"
+                    onSubmit={event => {
+                      event.preventDefault()
+                      fillSavedMessage(savedMessageToFill, savedMessageValues)
+                    }}
+                  >
+                    <span className="panel-kicker">FILL MESSAGE</span>
+                    <h3>{savedMessageToFill.title}</h3>
+                    {Object.keys(savedMessageValues).map(name => (
+                      <label key={name}>
+                        <span>{name}</span>
+                        <input
+                          autoFocus={name === Object.keys(savedMessageValues)[0]}
+                          value={savedMessageValues[name]}
+                          onChange={event => setSavedMessageValues(current => ({ ...current, [name]: event.target.value }))}
+                        />
+                      </label>
+                    ))}
+                    {savedMessageFillError && <p className="saved-message-error" role="alert">{savedMessageFillError}</p>}
+                    <div className="saved-message-form-actions">
+                      <button type="button" className="inventory-action-button" onClick={() => setSavedMessageToFill(null)}>Cancel</button>
+                      <button type="submit" className="inventory-action-button saved-message-save">Fill chat box</button>
+                    </div>
+                  </form>
+                </div>
+              )}
+
+              {savedMessageToDelete && (
+                <div className="saved-message-backdrop">
+                  <section className="saved-message-dialog" role="alertdialog" aria-modal="true" aria-labelledby="saved-message-delete-title">
+                    <span className="panel-kicker">DELETE ENTRY</span>
+                    <h3 id="saved-message-delete-title">Delete {savedMessageToDelete.title}?</h3>
+                    <p>This cannot be undone.</p>
+                    <div className="saved-message-form-actions">
+                      <button type="button" className="inventory-action-button" onClick={() => setSavedMessageToDelete(null)}>Cancel</button>
+                      <button type="button" className="inventory-action-button inventory-drop-stack-button" disabled={isPending('saved-message:delete')} onClick={confirmDeleteSavedMessage}>
+                        <Trash2 size={14} /> Delete
+                      </button>
                     </div>
                   </section>
                 </div>

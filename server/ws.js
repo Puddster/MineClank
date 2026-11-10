@@ -29,6 +29,7 @@ function defaultRequireProxyAuth() {
 
 export function createControlServer({
     manager,
+    savedMessages,
     requireProxyAuth = defaultRequireProxyAuth(),
     proxyUserHeader = (process.env.PROXY_USER_HEADER || 'x-auth-request-user').toLowerCase(),
     allowedOrigins = process.env.ALLOWED_ORIGINS
@@ -42,6 +43,12 @@ export function createControlServer({
     const server = createServer(app);
     const webSockets = new WebSocketServer({ noServer: true, maxPayload: requestLimit });
     const originSet = new Set(allowedOrigins);
+    const broadcastSavedMessages = () => {
+        const payload = JSON.stringify({ type: 'saved-messages:update', messages: savedMessages.list() });
+        for (const client of webSockets.clients) {
+            if (client.readyState === WebSocket.OPEN) client.send(payload);
+        }
+    };
 
     const isAuthenticated = request => !requireProxyAuth || Boolean(request.headers[proxyUserHeader]);
     const validOrigin = (origin, request) => {
@@ -85,6 +92,9 @@ export function createControlServer({
 
     webSockets.on('connection', socket => {
         sendJson(socket, { type: 'snapshot', bots: manager.getSnapshot() });
+        if (savedMessages) {
+            sendJson(socket, { type: 'saved-messages:snapshot', messages: savedMessages.list() });
+        }
 
         socket.on('message', async (data, isBinary) => {
             let requestId;
@@ -123,6 +133,18 @@ export function createControlServer({
                     );
                 } else if (request.type === 'bot:window-close') {
                     result = await manager.closeOpenWindow(request.id, request.windowId);
+                } else if (request.type === 'saved-message:create') {
+                    if (!savedMessages) throw new Error('Saved messages are unavailable');
+                    result = savedMessages.create(request.entry);
+                    broadcastSavedMessages();
+                } else if (request.type === 'saved-message:update') {
+                    if (!savedMessages) throw new Error('Saved messages are unavailable');
+                    result = savedMessages.update(request.messageId, request.entry);
+                    broadcastSavedMessages();
+                } else if (request.type === 'saved-message:delete') {
+                    if (!savedMessages) throw new Error('Saved messages are unavailable');
+                    result = savedMessages.delete(request.messageId);
+                    broadcastSavedMessages();
                 } else {
                     throw new Error('Unsupported action');
                 }

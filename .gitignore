@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 .auth/
+.data/
 .env
 !.env.example
 configs/bots/*.json

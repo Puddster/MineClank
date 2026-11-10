@@ -2,6 +2,7 @@ import { resolve } from 'node:path';
 import 'dotenv/config';
 import { fileURLToPath } from 'node:url';
 import { BotManager } from './bot-manager.js';
+import { SavedMessages } from './saved-messages.js';
 import { createControlServer } from './ws.js';
 
 const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
@@ -9,9 +10,11 @@ const manager = new BotManager({
     configDir: resolve(projectRoot, 'configs', 'bots'),
     authDir: resolve(projectRoot, '.auth')
 });
-
 await manager.initialize();
-const controlServer = createControlServer({ manager });
+const savedMessages = new SavedMessages(
+    resolve(projectRoot, process.env.MINECLANK_DATA_DIR || '.data', 'saved-messages.sqlite')
+);
+const controlServer = createControlServer({ manager, savedMessages });
 const address = await controlServer.listen();
 console.info(`[server] Listening on ${address.address}:${address.port}`);
 console.info(`[server] Loaded ${manager.getSnapshot().length} bot config(s)`);
@@ -24,6 +27,7 @@ async function shutdown(signal) {
     console.info(`[server] ${signal}: stopping bots and HTTP service`);
     await manager.close();
     await controlServer.close();
+    savedMessages.close();
 }
 
 process.once('SIGINT', () => void shutdown('SIGINT'));

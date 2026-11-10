@@ -53,6 +53,34 @@ class FakeManager extends EventEmitter {
     }
 }
 
+class FakeSavedMessages {
+    constructor() {
+        this.messages = [];
+    }
+
+    list() {
+        return this.messages;
+    }
+
+    create(entry) {
+        const saved = { id: 'saved-1', ...entry };
+        this.messages.push(saved);
+        return saved;
+    }
+
+    update(messageId, entry) {
+        const index = this.messages.findIndex(message => message.id === messageId);
+        if (index < 0) throw new Error('Saved message was not found');
+        this.messages[index] = { id: messageId, ...entry };
+        return this.messages[index];
+    }
+
+    delete(messageId) {
+        this.messages = this.messages.filter(message => message.id !== messageId);
+        return { id: messageId };
+    }
+}
+
 async function openServer(t, options = {}) {
     const manager = new FakeManager();
     const app = createControlServer({
@@ -69,6 +97,24 @@ async function openServer(t, options = {}) {
         origin: `http://127.0.0.1:${address.port}`,
         url: `ws://127.0.0.1:${address.port}/ws`
     };
+}
+
+function nextSocketMessage(socket, expectedType) {
+    return new Promise((resolve, reject) => {
+        const handleMessage = data => {
+            const message = JSON.parse(data.toString());
+            if (expectedType && message.type !== expectedType) return;
+            socket.off('message', handleMessage);
+            socket.off('error', handleError);
+            resolve(message);
+        };
+        const handleError = error => {
+            socket.off('message', handleMessage);
+            reject(error);
+        };
+        socket.on('message', handleMessage);
+        socket.on('error', handleError);
+    });
 }
 
 test('streams a snapshot and dispatches validated bot commands', async t => {
@@ -169,6 +215,54 @@ test('streams a snapshot and dispatches validated bot commands', async t => {
     assert.deepEqual(await menuCloseResult, {
         type: 'action:result', requestId: 'menu-close', ok: true,
         result: { id: 'alpha', windowId: 7, closed: true }
+    });
+    socket.close();
+});
+
+test('streams and updates the shared saved-message library', async t => {
+    const savedMessages = new FakeSavedMessages();
+    const { url } = await openServer(t, { savedMessages });
+    const socket = new WebSocket(url, { headers: { origin: 'http://localhost:5173' } });
+    const snapshotPromise = nextSocketMessage(socket, 'snapshot');
+    const savedSnapshotPromise = nextSocketMessage(socket, 'saved-messages:snapshot');
+    await once(socket, 'open');
+    assert.equal((await snapshotPromise).type, 'snapshot');
+    assert.deepEqual(await savedSnapshotPromise, {
+        type: 'saved-messages:snapshot',
+        messages: []
+    });
+
+    const createUpdate = nextSocketMessage(socket, 'saved-messages:update');
+    const createResult = nextSocketMessage(socket, 'action:result');
+    socket.send(JSON.stringify({
+        type: 'saved-message:create',
+        entry: { title: 'Welcome', category: 'Chat', message: 'Hello {{player}}' },
+        requestId: 'saved-create'
+    }));
+    assert.deepEqual(await createUpdate, {
+        type: 'saved-messages:update',
+        messages: [{ id: 'saved-1', title: 'Welcome', category: 'Chat', message: 'Hello {{player}}' }]
+    });
+    assert.deepEqual(await createResult, {
+        type: 'action:result',
+        requestId: 'saved-create',
+        ok: true,
+        result: { id: 'saved-1', title: 'Welcome', category: 'Chat', message: 'Hello {{player}}' }
+    });
+
+    const deleteUpdate = nextSocketMessage(socket, 'saved-messages:update');
+    const deleteResult = nextSocketMessage(socket, 'action:result');
+    socket.send(JSON.stringify({
+        type: 'saved-message:delete',
+        messageId: 'saved-1',
+        requestId: 'saved-delete'
+    }));
+    assert.deepEqual(await deleteUpdate, { type: 'saved-messages:update', messages: [] });
+    assert.deepEqual(await deleteResult, {
+        type: 'action:result',
+        requestId: 'saved-delete',
+        ok: true,
+        result: { id: 'saved-1' }
     });
     socket.close();
 });
