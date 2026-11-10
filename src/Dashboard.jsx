@@ -99,7 +99,9 @@ function Dashboard() {
           setBots(message.bots)
           setSelectedId(current => current || message.bots[0]?.id || null)
         } else if (message.type === 'bot:state') {
-          setBots(current => current.map(bot => bot.id === message.bot.id ? message.bot : bot))
+          setBots(current => current.map(bot => bot.id === message.bot.id
+            ? { ...bot, ...message.bot, logs: bot.logs || [] }
+            : bot))
           if (message.bot.status !== 'online') {
             completionRequestRef.current = null
             setSuggestions([])

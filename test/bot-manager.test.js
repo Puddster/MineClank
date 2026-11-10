@@ -12,7 +12,9 @@ class FakeBot extends EventEmitter {
     constructor() {
         super();
         this.sent = [];
-            this.completionRequests = [];
+        this.completionRequests = [];
+        this.activeCompletions = 0;
+        this.maxConcurrentCompletions = 0;
         this.entity = { position: { x: 1.24, y: 64, z: -8.86 } };
         this.game = { dimension: 'overworld' };
         this._client = {
@@ -30,7 +32,14 @@ class FakeBot extends EventEmitter {
 
     async tabComplete(command, assumeCommand, sendBlockInSight, timeout) {
         this.completionRequests.push({ command, assumeCommand, sendBlockInSight, timeout });
-        return [{ match: 'lemons', tooltip: null }, 'lemonade'];
+        this.activeCompletions += 1;
+        this.maxConcurrentCompletions = Math.max(this.maxConcurrentCompletions, this.activeCompletions);
+        try {
+            if (command === '/slow') await new Promise(resolve => setTimeout(resolve, 20));
+            return [{ match: command === '/new' ? 'new-result' : 'lemons', tooltip: null }, 'lemonade'];
+        } finally {
+            this.activeCompletions -= 1;
+        }
     }
 
     quit(reason) {
@@ -56,7 +65,7 @@ async function setupManager(t, { connectTimeoutMs = 100 } = {}) {
         configDir,
         authDir,
         connectTimeoutMs,
-            joinCommandDelayMs: 0,
+        joinCommandDelayMs: 0,
         reconnectBaseMs: 10_000,
         createBot: options => {
             const bot = new FakeBot();
@@ -76,6 +85,8 @@ async function setupManager(t, { connectTimeoutMs = 100 } = {}) {
 test('starts configured bots sequentially and sends chat and commands', async t => {
     const { manager, bots } = await setupManager(t);
     const starting = manager.startAllSequential();
+    const stateUpdates = [];
+    manager.on('bot-state', state => stateUpdates.push(state));
 
     await tick();
     assert.equal(bots.length, 1);
@@ -92,6 +103,9 @@ test('starts configured bots sequentially and sends chat and commands', async t 
     await new Promise(resolve => setTimeout(resolve, 10));
     assert.deepEqual(outcomes.map(outcome => outcome.status), ['online', 'online']);
     assert.deepEqual(manager.getSnapshot().map(bot => bot.id), ['alpha', 'beta']);
+    assert.ok(stateUpdates.length > 0);
+    assert.ok(stateUpdates.every(state => !Object.hasOwn(state, 'logs')));
+    assert.ok(Array.isArray(manager.getSnapshot()[0].logs));
     assert.equal(bots[0].options.physicsEnabled, false);
     assert.equal(bots[1].options.physicsEnabled, true);
     assert.deepEqual(manager.getSnapshot()[0].position, { x: 1.2, y: 64, z: -8.9 });
@@ -132,4 +146,22 @@ test('continues the startup queue after a bot fails before spawn', async t => {
     const outcomes = await starting;
     assert.equal(outcomes[0].status, 'reconnecting');
     assert.equal(manager.getSnapshot()[1].status, 'online');
+});
+
+test('serializes completion requests and drops stale queued prefixes', async t => {
+    const { manager, bots } = await setupManager(t);
+    const starting = manager.start('alpha');
+    await tick();
+    bots[0].emit('spawn');
+    await starting;
+
+    const stale = manager.completeCommand('alpha', '/slow');
+    await tick();
+    const latest = manager.completeCommand('alpha', '/new');
+    const [staleMatches, latestMatches] = await Promise.all([stale, latest]);
+
+    assert.deepEqual(staleMatches, []);
+    assert.deepEqual(latestMatches, ['new-result', 'lemonade']);
+    assert.deepEqual(bots[0].completionRequests.map(request => request.command), ['/slow', '/new']);
+    assert.equal(bots[0].maxConcurrentCompletions, 1);
 });

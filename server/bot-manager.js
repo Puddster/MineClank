@@ -30,7 +30,7 @@ export class BotManager extends EventEmitter {
         this.reconnectBaseMs = reconnectBaseMs;
         this.reconnectMaxMs = reconnectMaxMs;
         this.maxLogs = maxLogs;
-            this.joinCommandDelayMs = joinCommandDelayMs;
+        this.joinCommandDelayMs = joinCommandDelayMs;
         this.records = new Map();
         this.connectionQueue = Promise.resolve();
         this.shuttingDown = false;
@@ -56,6 +56,8 @@ export class BotManager extends EventEmitter {
             connectedAt: null,
             reconnectTimer: null,
             connectPromise: null,
+            completionQueue: Promise.resolve(),
+            completionSequence: 0,
             attempts: 0
         }]));
         this.publishSnapshot();
@@ -63,7 +65,10 @@ export class BotManager extends EventEmitter {
     }
 
     getSnapshot() {
-        return [...this.records.values()].map(record => this.publicState(record));
+        return [...this.records.values()].map(record => ({
+            ...this.publicState(record),
+            logs: [...record.logs]
+        }));
     }
 
     publishSnapshot() {
@@ -86,8 +91,7 @@ export class BotManager extends EventEmitter {
                 z: Number(entityPosition.z.toFixed(1))
             } : null,
             dimension,
-            lastError: record.lastError,
-            logs: [...record.logs]
+            lastError: record.lastError
         };
     }
 
@@ -189,11 +193,25 @@ export class BotManager extends EventEmitter {
             throw new Error(`${record.config.username} is not online`);
         }
 
-        const matches = await record.bot.tabComplete(command.trimStart(), true, false, 3000);
-        return (Array.isArray(matches) ? matches : [])
-            .map(entry => typeof entry === 'string' ? entry : entry?.match)
-            .filter(match => typeof match === 'string' && match.length > 0)
-            .slice(0, 25);
+        const bot = record.bot;
+        const sequence = ++record.completionSequence;
+        const complete = async () => {
+            if (sequence !== record.completionSequence) return [];
+            if (record.bot !== bot || record.status !== 'online' || bot._client?.state !== 'play') {
+                throw new Error(`${record.config.username} is not online`);
+            }
+
+            const matches = await bot.tabComplete(command.trimStart(), true, false, 3000);
+            if (sequence !== record.completionSequence) return [];
+            return (Array.isArray(matches) ? matches : [])
+                .map(entry => typeof entry === 'string' ? entry : entry?.match)
+                .filter(match => typeof match === 'string' && match.length > 0)
+                .slice(0, 25);
+        };
+
+        const request = record.completionQueue.then(complete, complete);
+        record.completionQueue = request.catch(() => {});
+        return request;
     }
 
     requireRecord(id) {
