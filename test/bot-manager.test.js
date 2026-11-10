@@ -46,6 +46,8 @@ class FakeBot extends EventEmitter {
         this.experience = { level: 12, points: 100, progress: 0.42 };
         this.isAlive = true;
         this.isSleeping = false;
+        this.currentWindow = null;
+        this.windowClicks = [];
         this._client = {
             state: 'play',
             profileKeys: {},
@@ -67,6 +69,10 @@ class FakeBot extends EventEmitter {
     }
 
     async clickWindow(slot, mouseButton, mode) {
+        if (this.currentWindow && [0, 1].includes(mode) && [0, 1].includes(mouseButton)) {
+            this.windowClicks.push({ slot, mouseButton, mode });
+            return;
+        }
         if (mode !== 4 || mouseButton !== 0) throw new Error('Unexpected click');
         const item = this.inventory.slots[slot];
         if (!item) throw new Error('Empty slot');
@@ -76,6 +82,12 @@ class FakeBot extends EventEmitter {
 
     async tossStack(item) {
         this.inventory.slots[item.slot] = null;
+    }
+
+    async closeWindow(window) {
+        if (this.currentWindow !== window) throw new Error('Window is not open');
+        this.currentWindow = null;
+        this.emit('windowClose', window);
     }
 
     async tabComplete(command, assumeCommand, sendBlockInSight, timeout) {
@@ -252,6 +264,83 @@ test('preserves clickable player usernames in chat log entries', async t => {
     assert.deepEqual(chatLog.playerLinks, [
         { start: 6, end: 10, username: 'Jessica_42' }
     ]);
+});
+
+test('exposes and safely dispatches clicks to open server menus', async t => {
+    const { manager, bots } = await setupManager(t);
+    const starting = manager.start('alpha');
+    await tick();
+    bots[0].emit('spawn');
+    await starting;
+
+    const window = {
+        id: 7,
+        type: 'minecraft:generic_9x3',
+        title: { toString: () => 'Auction House' },
+        inventoryStart: 27,
+        slots: Array(63).fill(null)
+    };
+    window.slots[13] = {
+        name: 'diamond',
+        displayName: 'Diamond',
+        count: 2,
+        customLore: ['Top listing']
+    };
+    bots[0].currentWindow = window;
+    bots[0].emit('windowOpen', window);
+
+    assert.deepEqual(manager.getSnapshot()[0].openWindow, {
+        id: 7,
+        type: 'minecraft:generic_9x3',
+        title: 'Auction House',
+        inventoryStart: 27,
+        slots: [
+            ...Array(13).fill(null),
+            {
+                slot: 13,
+                name: 'diamond',
+                displayName: 'Diamond',
+                count: 2,
+                customName: null,
+                enchantments: [],
+                lore: ['Top listing']
+            },
+            ...Array(49).fill(null)
+        ],
+        selectedItem: null
+    });
+
+    await assert.rejects(manager.clickOpenWindowSlot('alpha', 7, 63), /out of range/);
+    await assert.rejects(manager.clickOpenWindowSlot('alpha', 6, 13), /changed or closed/);
+    assert.deepEqual(await manager.clickOpenWindowSlot('alpha', 7, 13), {
+        id: 'alpha',
+        slot: 13,
+        mouseButton: 0,
+        mode: 0,
+        clicked: 'Diamond'
+    });
+    assert.deepEqual(await manager.clickOpenWindowSlot('alpha', 7, 27, 1, 0), {
+        id: 'alpha',
+        slot: 27,
+        mouseButton: 1,
+        mode: 0,
+        clicked: null
+    });
+    assert.deepEqual(await manager.clickOpenWindowSlot('alpha', 7, 36, 0, 1), {
+        id: 'alpha',
+        slot: 36,
+        mouseButton: 0,
+        mode: 1,
+        clicked: null
+    });
+    await assert.rejects(manager.clickOpenWindowSlot('alpha', 7, 13, 3, 0), /Unsupported window click/);
+    assert.deepEqual(bots[0].windowClicks, [
+        { slot: 13, mouseButton: 0, mode: 0 },
+        { slot: 27, mouseButton: 1, mode: 0 },
+        { slot: 36, mouseButton: 0, mode: 1 }
+    ]);
+    assert.deepEqual(await manager.closeOpenWindow('alpha', 7), { id: 'alpha', closed: true });
+    assert.equal(manager.getSnapshot()[0].openWindow, null);
 });
 
 test('serializes completion requests and drops stale queued prefixes', async t => {

@@ -12,6 +12,7 @@ import {
   MapPin,
   Moon,
   Package,
+  PanelsTopLeft,
   Palette,
   Play,
   Radio,
@@ -25,6 +26,7 @@ import {
   Wifi,
   WifiOff,
   Wind,
+  X,
 } from 'lucide-react'
 import { createRequestId, getWebSocketUrl } from './client.js'
 import './Dashboard.css'
@@ -75,6 +77,9 @@ function Dashboard() {
   const socketRef = useRef(null)
   const pendingRef = useRef({})
   const completionRequestRef = useRef(null)
+  const openWindowsRef = useRef({})
+  const commandHistoryRef = useRef({})
+  const historyNavigationRef = useRef(null)
   const completionTimerRef = useRef(null)
   const commandInputRef = useRef(null)
   const logStreamRef = useRef(null)
@@ -130,7 +135,17 @@ function Dashboard() {
         if (message.type === 'snapshot') {
           setBots(message.bots)
           setSelectedId(current => current || message.bots[0]?.id || null)
+          openWindowsRef.current = Object.fromEntries(message.bots.map(bot => [bot.id, Boolean(bot.openWindow)]))
         } else if (message.type === 'bot:state') {
+          const hadWindow = Boolean(openWindowsRef.current[message.bot.id])
+          const hasWindow = Boolean(message.bot.openWindow)
+          openWindowsRef.current[message.bot.id] = hasWindow
+          if (hasWindow && !hadWindow) {
+            setSelectedId(message.bot.id)
+            setActiveView('menu')
+          } else if (!hasWindow && hadWindow) {
+            setActiveView(current => current === 'menu' ? 'stream' : current)
+          }
           setBots(current => current.map(bot => bot.id === message.bot.id
             ? { ...bot, ...message.bot, logs: bot.logs || [] }
             : bot))
@@ -160,7 +175,9 @@ function Dashboard() {
             'bot:command': 'Message sent',
             'bot:inventory-move': 'Inventory stack moved',
             'bot:inventory-drop-one': 'Dropped one item',
-            'bot:inventory-drop-stack': 'Dropped the stack'
+            'bot:inventory-drop-stack': 'Dropped the stack',
+            'bot:window-click': 'Server menu clicked',
+            'bot:window-close': 'Server menu closed'
           }
           const errorMessage = message.error === 'Unsupported action' && action === 'bot:complete'
             ? 'Restart the backend to enable command completion'
@@ -202,6 +219,10 @@ function Dashboard() {
   const onlineCount = bots.filter(bot => bot.status === 'online').length
   const inventorySlots = selectedBot?.inventory || []
   const inventoryItemCount = inventorySlots.filter(Boolean).length
+  const openWindow = selectedBot?.openWindow || null
+  const menuItemCount = openWindow?.slots
+    ?.slice(0, openWindow.inventoryStart)
+    .filter(Boolean).length || 0
   const selectedInventoryItem = selectedInventorySlot === null ? null : inventorySlots[selectedInventorySlot]
   const isPending = action => Object.values(pending).includes(action)
 
@@ -294,6 +315,11 @@ function Dashboard() {
     pendingRef.current[requestId] = type
     setPending({ ...pendingRef.current })
     socketRef.current.send(JSON.stringify({ type, id: selectedBot?.id, requestId, ...values }))
+    if (type === 'bot:command' && selectedBot?.id && typeof values.command === 'string') {
+      const history = commandHistoryRef.current[selectedBot.id] || []
+      commandHistoryRef.current[selectedBot.id] = [...history, values.command].slice(-100)
+      historyNavigationRef.current = null
+    }
     return true
   }
 
@@ -315,12 +341,38 @@ function Dashboard() {
       ? suggestion
       : `${wordStart === 0 && value.startsWith('/') ? '/' : prefix}${suggestion}`
     setCommand(candidate)
+    historyNavigationRef.current = null
     setSuggestions([])
     commandInputRef.current?.focus()
   }
 
   function handleCommandKeyDown(event) {
-    if (event.key === 'Escape') {
+    if (event.key === 'ArrowUp' && !suggestions.length && selectedBot?.id) {
+      const history = commandHistoryRef.current[selectedBot.id] || []
+      if (!history.length) return
+      event.preventDefault()
+
+      const navigation = historyNavigationRef.current
+      const current = navigation?.botId === selectedBot.id
+        ? navigation
+        : { botId: selectedBot.id, index: history.length, draft: command }
+      const index = Math.max(0, current.index - 1)
+      historyNavigationRef.current = { ...current, index }
+      setCommand(history[index])
+    } else if (event.key === 'ArrowDown' && !suggestions.length) {
+      const navigation = historyNavigationRef.current
+      if (navigation?.botId !== selectedBot?.id) return
+      event.preventDefault()
+      const history = commandHistoryRef.current[selectedBot.id] || []
+      if (navigation.index < history.length - 1) {
+        const index = navigation.index + 1
+        historyNavigationRef.current = { ...navigation, index }
+        setCommand(history[index])
+      } else {
+        historyNavigationRef.current = null
+        setCommand(navigation.draft)
+      }
+    } else if (event.key === 'Escape') {
       setSuggestions([])
     } else if (event.key === 'Tab' && command.trimStart().startsWith('/')) {
       event.preventDefault()
@@ -406,6 +458,7 @@ function Dashboard() {
             ? `Message ${interaction.username}`
             : `Fill command box with ${interaction.command}`}
           onClick={() => {
+            historyNavigationRef.current = null
             setCommand(interaction.type === 'player'
               ? `/msg ${interaction.username} `
               : interaction.command)
@@ -628,6 +681,20 @@ function Dashboard() {
                     <Package size={15} /> Inventory
                     <span className="tab-count">{inventoryItemCount}</span>
                   </button>
+                  {openWindow && (
+                    <button
+                      id="menu-tab"
+                      type="button"
+                      role="tab"
+                      aria-selected={activeView === 'menu'}
+                      aria-controls="menu-panel"
+                      className={`detail-tab ${activeView === 'menu' ? 'selected' : ''}`}
+                      onClick={() => setActiveView('menu')}
+                    >
+                      <PanelsTopLeft size={15} /> Server Menu
+                      <span className="tab-count">{menuItemCount}</span>
+                    </button>
+                  )}
                 </div>
                 {activeView === 'stream' && (
                   <div className="stream-controls">
@@ -660,7 +727,7 @@ function Dashboard() {
                     </div>
                   )}
                 </div>
-              ) : (
+              ) : activeView === 'inventory' ? (
                 <section className="inventory-view detail-view" id="inventory-panel" role="tabpanel" aria-labelledby="inventory-tab">
                   <div className="inventory-summary">
                     <div>
@@ -752,6 +819,127 @@ function Dashboard() {
                     </>
                   )}
                 </section>
+              ) : openWindow ? (
+                <section className="menu-view detail-view" id="menu-panel" role="tabpanel" aria-labelledby="menu-tab">
+                  <div className="inventory-summary">
+                    <div className="menu-title">
+                      <span className="panel-kicker">SERVER MENU / {openWindow.type}</span>
+                      <h3>{openWindow.title}</h3>
+                    </div>
+                    <button
+                      type="button"
+                      className="inventory-action-button menu-close-button"
+                      disabled={isPending('bot:window-close')}
+                      onClick={() => sendAction('bot:window-close', { windowId: openWindow.id })}
+                    ><X size={14} /> Close menu</button>
+                  </div>
+                  <section className="inventory-section" aria-label="Server menu items">
+                    <div className="inventory-section-heading">
+                      <h4>Menu items</h4>
+                      <span>{menuItemCount} items · click to interact</span>
+                    </div>
+                    <div className="inventory-grid menu-slot-grid" role="grid" aria-label="Server menu slots">
+                      {openWindow.slots.slice(0, openWindow.inventoryStart).map((item, slot) => {
+                        const name = item
+                          ? item.customName || item.displayName || item.name
+                          : 'Empty'
+                        const description = item
+                          ? `${item.count} x ${name}${item.lore?.length ? `\n${item.lore.join('\n')}` : ''}`
+                          : 'Empty menu slot'
+                        return (
+                          <button
+                            key={slot}
+                            type="button"
+                            className={`inventory-slot menu-slot ${item ? 'filled' : ''}`}
+                            role="gridcell"
+                            aria-label={`Menu slot ${slot}: ${item ? `${item.count} x ${name}` : 'empty'}`}
+                            title={description}
+                            disabled={selectedBot.status !== 'online' || isPending('bot:window-click')}
+                            onClick={event => sendAction('bot:window-click', {
+                              windowId: openWindow.id,
+                              slot,
+                              mouseButton: 0,
+                              mode: event.shiftKey ? 1 : 0
+                            })}
+                            onContextMenu={event => {
+                              event.preventDefault()
+                              sendAction('bot:window-click', {
+                                windowId: openWindow.id,
+                                slot,
+                                mouseButton: 1,
+                                mode: event.shiftKey ? 1 : 0
+                              })
+                            }}
+                          >
+                            <span className="inventory-slot-label">{slot + 1}</span>
+                            {item && (
+                              <>
+                                <span className="inventory-item-name">{name}</span>
+                                {item.count > 1 && <span className="inventory-item-count">{item.count}</span>}
+                              </>
+                            )}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </section>
+                  {openWindow.slots.length > openWindow.inventoryStart && (
+                    <section className="inventory-section" aria-label="Player inventory in server menu">
+                      <div className="inventory-section-heading">
+                        <h4>Your inventory</h4>
+                        <span>Click · right-click · shift-click</span>
+                      </div>
+                      <div className="inventory-grid menu-slot-grid" role="grid" aria-label="Player inventory slots">
+                        {openWindow.slots.slice(openWindow.inventoryStart).map((item, index) => {
+                          const slot = openWindow.inventoryStart + index
+                          const name = item ? item.customName || item.displayName || item.name : 'Empty'
+                          return (
+                            <button
+                              key={slot}
+                              type="button"
+                              className={`inventory-slot menu-slot ${item ? 'filled' : ''}`}
+                              role="gridcell"
+                              aria-label={`Inventory slot ${slot}: ${item ? `${item.count} x ${name}` : 'empty'}`}
+                              title={item ? `${item.count} x ${name}` : 'Empty'}
+                              disabled={selectedBot.status !== 'online' || isPending('bot:window-click')}
+                              onClick={event => sendAction('bot:window-click', {
+                                windowId: openWindow.id,
+                                slot,
+                                mouseButton: 0,
+                                mode: event.shiftKey ? 1 : 0
+                              })}
+                              onContextMenu={event => {
+                                event.preventDefault()
+                                sendAction('bot:window-click', {
+                                  windowId: openWindow.id,
+                                  slot,
+                                  mouseButton: 1,
+                                  mode: event.shiftKey ? 1 : 0
+                                })
+                              }}
+                            >
+                              <span className="inventory-slot-label">{slot + 1}</span>
+                              {item && (
+                                <>
+                                  <span className="inventory-item-name">{name}</span>
+                                  {item.count > 1 && <span className="inventory-item-count">{item.count}</span>}
+                                </>
+                              )}
+                            </button>
+                          )
+                        })}
+                      </div>
+                    </section>
+                  )}
+                  <p className="menu-help">
+                    Left-click to pick up or place items. Right-click for half-stack actions; hold Shift while clicking to transfer between inventories.
+                    {openWindow.selectedItem
+                      ? ` On cursor: ${openWindow.selectedItem.count} x ${openWindow.selectedItem.customName || openWindow.selectedItem.displayName || openWindow.selectedItem.name}.`
+                      : ' Cursor: empty.'}
+                  </p>
+                </section>
+              ) : (
+                <div className="inventory-empty">No server menu is open.</div>
               )}
 
               {confirmDropSlot !== null && (
@@ -804,6 +992,7 @@ function Dashboard() {
                       aria-label="Chat message or slash command"
                       aria-autocomplete="list"
                       aria-controls="command-suggestions"
+                      aria-describedby="command-history-hint"
                       aria-expanded={suggestions.length > 0}
                       autoComplete="off"
                       autoCapitalize="off"
@@ -811,7 +1000,10 @@ function Dashboard() {
                       spellCheck={false}
                       onKeyDown={handleCommandKeyDown}
                       value={command}
-                      onChange={event => setCommand(event.target.value)}
+                      onChange={event => {
+                        historyNavigationRef.current = null
+                        setCommand(event.target.value)
+                      }}
                       placeholder="Message or /command"
                       maxLength={256}
                       disabled={selectedBot.status !== 'online'}
@@ -820,6 +1012,7 @@ function Dashboard() {
                       <Send size={16} />
                     </button>
                   </form>
+                  <span id="command-history-hint" className="command-history-hint">Use ↑ / ↓ for the last 100 sent messages and commands</span>
                   {suggestions.length > 0 && (
                     <ul id="command-suggestions" className="command-suggestions" role="listbox" aria-label="Command suggestions">
                       {suggestions.map((suggestion, index) => (

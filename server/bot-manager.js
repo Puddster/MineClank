@@ -35,8 +35,7 @@ function itemComponentText(value) {
     return flatten(value).slice(0, maxItemTextLength);
 }
 
-function inventorySnapshot(bot) {
-    const slots = bot?.inventory?.slots;
+function itemSlotsSnapshot(slots) {
     if (!Array.isArray(slots)) return [];
 
     return slots.map((item, slot) => {
@@ -76,6 +75,22 @@ function inventorySnapshot(bot) {
             lore
         };
     });
+}
+
+function inventorySnapshot(bot) {
+    return itemSlotsSnapshot(bot?.inventory?.slots);
+}
+
+function openWindowSnapshot(window) {
+    if (!window) return null;
+    return {
+        id: window.id,
+        title: window.title?.toString?.() || String(window.title || 'Server Menu'),
+        type: String(window.type || 'container'),
+        inventoryStart: Number.isInteger(window.inventoryStart) ? window.inventoryStart : window.slots?.length || 0,
+        slots: itemSlotsSnapshot(window.slots),
+        selectedItem: window.selectedItem ? itemSlotsSnapshot([window.selectedItem])[0] : null
+    };
 }
 
 function validateSingleLineText(value, label) {
@@ -137,6 +152,7 @@ export class BotManager extends EventEmitter {
             completionQueue: Promise.resolve(),
             completionSequence: 0,
             inventoryActionQueue: Promise.resolve(),
+            windowActionQueue: Promise.resolve(),
             attempts: 0
         }]));
         this.publishSnapshot();
@@ -185,6 +201,7 @@ export class BotManager extends EventEmitter {
             } : null,
             dimension,
             playerStats,
+            openWindow: bot ? openWindowSnapshot(bot.currentWindow) : null,
             lastError: record.lastError,
             inventory: bot ? inventorySnapshot(bot) : []
         };
@@ -298,6 +315,48 @@ export class BotManager extends EventEmitter {
             this.appendLog(record, `Inventory: dropped stack of ${this.inventoryItemName(item)} from slot ${slot}`);
             return { id, slot, dropped: item.count };
         });
+    }
+
+    clickOpenWindowSlot(id, windowId, slot, mouseButton = 0, mode = 0) {
+        const record = this.requireRecord(id);
+        const run = async () => {
+            const bot = this.requireOnlineBot(record);
+            const window = bot.currentWindow;
+            if (!window || window.id !== windowId) throw new Error('The server menu has changed or closed');
+            if (!Number.isInteger(slot) || slot < 0 || slot >= window.slots.length) {
+                throw new Error('Window slot is out of range');
+            }
+            if (![0, 1].includes(mouseButton) || ![0, 1].includes(mode)) {
+                throw new Error('Unsupported window click');
+            }
+            if (typeof bot.clickWindow !== 'function') throw new Error('Server menu clicks are unavailable');
+
+            const item = window.slots[slot];
+            await bot.clickWindow(slot, mouseButton, mode);
+            this.appendLog(
+                record,
+                `Menu: ${mode === 1 ? 'shift-clicked' : mouseButton === 1 ? 'right-clicked' : 'clicked'} ` +
+                `${item ? this.inventoryItemName(item) : 'empty slot'} in slot ${slot}`
+            );
+            this.emitState(record);
+            return { id, slot, mouseButton, mode, clicked: item ? this.inventoryItemName(item) : null };
+        };
+
+        const action = record.windowActionQueue.then(run, run);
+        record.windowActionQueue = action.catch(() => {});
+        return action;
+    }
+
+    async closeOpenWindow(id, windowId) {
+        const record = this.requireRecord(id);
+        const bot = this.requireOnlineBot(record);
+        const window = bot.currentWindow;
+        if (!window || window.id !== windowId) throw new Error('The server menu has changed or closed');
+        if (typeof bot.closeWindow !== 'function') throw new Error('Closing the server menu is unavailable');
+        await bot.closeWindow(window);
+        this.appendLog(record, `Menu: closed ${window.title?.toString?.() || 'server menu'}`);
+        this.emitState(record);
+        return { id, closed: true };
     }
 
     queueInventoryAction(id, slot, operation) {
@@ -457,6 +516,8 @@ export class BotManager extends EventEmitter {
                     extractPlayerLinks(safeText, bot.players)
                 );
             });
+            bot.on('windowOpen', () => this.emitState(record));
+            bot.on('windowClose', () => this.emitState(record));
             bot.on('kicked', reason => {
                 const text = typeof reason === 'string' ? reason : JSON.stringify(reason);
                 this.appendLog(record, `Kicked: ${text}`);

@@ -113,6 +113,16 @@ export function createControlServer({
                     result = await manager.dropInventoryItem(request.id, request.slot);
                 } else if (request.type === 'bot:inventory-drop-stack') {
                     result = await manager.dropInventoryStack(request.id, request.slot);
+                } else if (request.type === 'bot:window-click') {
+                    result = await manager.clickOpenWindowSlot(
+                        request.id,
+                        request.windowId,
+                        request.slot,
+                        request.mouseButton,
+                        request.mode
+                    );
+                } else if (request.type === 'bot:window-close') {
+                    result = await manager.closeOpenWindow(request.id, request.windowId);
                 } else {
                     throw new Error('Unsupported action');
                 }

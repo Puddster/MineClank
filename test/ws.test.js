@@ -43,6 +43,14 @@ class FakeManager extends EventEmitter {
     async dropInventoryStack(id, slot) {
         return { id, slot, dropped: 4 };
     }
+
+    async clickOpenWindowSlot(id, windowId, slot, mouseButton, mode) {
+        return { id, windowId, slot, mouseButton, mode, clicked: 'Diamond' };
+    }
+
+    async closeOpenWindow(id, windowId) {
+        return { id, windowId, closed: true };
+    }
 }
 
 async function openServer(t, options = {}) {
@@ -134,6 +142,34 @@ test('streams a snapshot and dispatches validated bot commands', async t => {
     });
     socket.send(JSON.stringify({ type: 'bot:inventory-drop-stack', id: 'alpha', slot: 37, requestId: 'drop-stack' }));
     assert.equal((await dropStackResult).result.dropped, 4);
+
+    const menuClickResult = new Promise((resolve, reject) => {
+        socket.once('message', data => resolve(JSON.parse(data.toString())));
+        socket.once('error', reject);
+    });
+    socket.send(JSON.stringify({
+        type: 'bot:window-click',
+        id: 'alpha',
+        windowId: 7,
+        slot: 13,
+        mouseButton: 1,
+        mode: 1,
+        requestId: 'menu-click'
+    }));
+    assert.deepEqual(await menuClickResult, {
+        type: 'action:result', requestId: 'menu-click', ok: true,
+        result: { id: 'alpha', windowId: 7, slot: 13, mouseButton: 1, mode: 1, clicked: 'Diamond' }
+    });
+
+    const menuCloseResult = new Promise((resolve, reject) => {
+        socket.once('message', data => resolve(JSON.parse(data.toString())));
+        socket.once('error', reject);
+    });
+    socket.send(JSON.stringify({ type: 'bot:window-close', id: 'alpha', windowId: 7, requestId: 'menu-close' }));
+    assert.deepEqual(await menuCloseResult, {
+        type: 'action:result', requestId: 'menu-close', ok: true,
+        result: { id: 'alpha', windowId: 7, closed: true }
+    });
     socket.close();
 });
 

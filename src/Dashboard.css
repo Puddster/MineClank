@@ -208,6 +208,15 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
 .detail-view[hidden] { display: none; }
 .log-stream.detail-view { margin-top: 10px; }
 .inventory-view { display: flex; flex-direction: column; gap: 16px; padding: 16px 0 4px; overflow: auto; }
+.menu-view { display: flex; flex-direction: column; gap: 16px; padding: 16px 0 4px; overflow: auto; }
+.menu-title { min-width: 0; }
+.menu-title h3 { max-width: 100%; margin: 4px 0 0; overflow-wrap: anywhere; color: var(--ink); font-size: 15px; font-weight: 700; }
+.menu-close-button { display: inline-flex; align-items: center; gap: 6px; flex: 0 0 auto; }
+.menu-slot-grid { grid-template-columns: repeat(9, minmax(0, 1fr)); }
+.menu-slot:disabled { opacity: .58; }
+.menu-help { margin: 0; color: var(--muted); font-size: 10px; }
+.menu-slot:not(:disabled) { cursor: pointer; }
+.menu-slot:not(:disabled):hover { border-color: var(--green-selected); background: var(--surface-selected); }
 .inventory-summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .inventory-summary h3 { margin: 4px 0 0; color: var(--ink); font-size: 15px; font-weight: 700; }
 .inventory-total { color: var(--muted); font: 10px var(--mono); }
@@ -293,6 +302,7 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
 .quick-commands button:hover:not(:disabled) { border-color: var(--command-border); background: var(--surface-action-hover); }
 .command-form { display: flex; min-height: 42px; border: 1px solid var(--soft-green-border); border-radius: 6px; background: var(--surface-input); overflow: hidden; }
 .command-entry { position: relative; }
+.command-history-hint { display: block; margin-top: 6px; color: var(--text-subtle); font: 9px var(--mono); }
 .command-suggestions { position: absolute; z-index: 4; right: 0; bottom: calc(100% + 6px); left: 0; max-height: 180px; margin: 0; padding: 4px; overflow: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); box-shadow: 0 8px 24px rgba(27, 45, 37, .12); list-style: none; }
 .command-suggestions button { width: 100%; padding: 7px 9px; border: 0; border-radius: 4px; color: var(--ink-soft); background: transparent; text-align: left; font: 11px var(--mono); cursor: pointer; }
 .command-suggestions button:hover, .command-suggestions button:focus-visible { color: var(--forest); background: var(--surface-selected); outline: 0; }
