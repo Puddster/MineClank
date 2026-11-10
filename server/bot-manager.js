@@ -6,6 +6,14 @@ import { ansiToColorRuns } from './chat-colors.js';
 
 const tokenPattern = /eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g;
 const redact = value => String(value).replace(tokenPattern, '[REDACTED TOKEN]');
+const maxChatLength = 256;
+
+function validateSingleLineText(value, label) {
+    if (typeof value !== 'string' || !value.trim()) throw new Error(`${label} cannot be empty`);
+    if (value.length > maxChatLength) throw new Error(`${label} cannot exceed ${maxChatLength} characters`);
+    if (/[\r\n]/.test(value)) throw new Error(`${label} must be a single line`);
+    return value;
+}
 
 export class BotManager extends EventEmitter {
     constructor({
@@ -167,16 +175,9 @@ export class BotManager extends EventEmitter {
 
     sendCommand(id, command) {
         const record = this.requireRecord(id);
-        if (typeof command !== 'string' || !command.trim()) throw new Error('Message cannot be empty');
-        if (command.length > 256) throw new Error('Message cannot exceed 256 characters');
-        if (/[\r\n]/.test(command)) throw new Error('Messages must be a single line');
-        if (command.trim() === '/') throw new Error('Command cannot be empty');
-        if (record.status !== 'online' || !record.bot || record.bot._client?.state !== 'play') {
-            throw new Error(`${record.config.username} is not online`);
-        }
-
-        const text = command.trim();
-        record.bot.chat(text);
+        const text = validateSingleLineText(command, 'Message').trim();
+        if (text === '/') throw new Error('Command cannot be empty');
+        this.requireOnlineBot(record).chat(text);
         this.appendLog(record, `You: ${text}`);
         return { id, sent: text };
     }
@@ -186,22 +187,15 @@ export class BotManager extends EventEmitter {
         if (typeof command !== 'string' || !command.trim().startsWith('/')) {
             throw new Error('Completion requires a slash command');
         }
-        if (command.length > 256 || /[\r\n]/.test(command)) {
-            throw new Error('Command must be a single line of at most 256 characters');
-        }
-        if (record.status !== 'online' || !record.bot || record.bot._client?.state !== 'play') {
-            throw new Error(`${record.config.username} is not online`);
-        }
+        const text = validateSingleLineText(command, 'Command');
+        const bot = this.requireOnlineBot(record);
 
-        const bot = record.bot;
         const sequence = ++record.completionSequence;
         const complete = async () => {
             if (sequence !== record.completionSequence) return [];
-            if (record.bot !== bot || record.status !== 'online' || bot._client?.state !== 'play') {
-                throw new Error(`${record.config.username} is not online`);
-            }
+            if (this.requireOnlineBot(record) !== bot) throw new Error(`${record.config.username} is not online`);
 
-            const matches = await bot.tabComplete(command.trimStart(), true, false, 3000);
+            const matches = await bot.tabComplete(text.trimStart(), true, false, 3000);
             if (sequence !== record.completionSequence) return [];
             return (Array.isArray(matches) ? matches : [])
                 .map(entry => typeof entry === 'string' ? entry : entry?.match)
@@ -212,6 +206,14 @@ export class BotManager extends EventEmitter {
         const request = record.completionQueue.then(complete, complete);
         record.completionQueue = request.catch(() => {});
         return request;
+    }
+
+    requireOnlineBot(record) {
+        const bot = record.bot;
+        if (record.status !== 'online' || !bot || bot._client?.state !== 'play') {
+            throw new Error(`${record.config.username} is not online`);
+        }
+        return bot;
     }
 
     requireRecord(id) {
