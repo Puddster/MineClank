@@ -59,7 +59,7 @@ function Dashboard() {
   const completionRequestRef = useRef(null)
   const completionTimerRef = useRef(null)
   const commandInputRef = useRef(null)
-  const logEndRef = useRef(null)
+  const logStreamRef = useRef(null)
 
   useEffect(() => {
     const colorScheme = window.matchMedia('(prefers-color-scheme: dark)')
@@ -261,9 +261,11 @@ function Dashboard() {
     return () => window.clearTimeout(completionTimerRef.current)
   }, [command, connection, requestCompletions, selectedBot?.status])
 
-  useEffect(() => {
-    logEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
-  }, [selectedBot?.logs?.length])
+  useLayoutEffect(() => {
+    if (activeView === 'stream' && logStreamRef.current) {
+      logStreamRef.current.scrollTop = logStreamRef.current.scrollHeight
+    }
+  }, [activeView, selectedBot?.id, selectedBot?.logs?.length])
 
   function sendAction(type, values = {}) {
     if (socketRef.current?.readyState !== WebSocket.OPEN) {
@@ -549,7 +551,7 @@ function Dashboard() {
               </div>
 
               {activeView === 'stream' ? (
-                <div className="log-stream detail-view" id="stream-panel" role="tabpanel" aria-labelledby="stream-tab" aria-live="polite" aria-label="Bot chat and server messages">
+                <div ref={logStreamRef} className="log-stream detail-view" id="stream-panel" role="tabpanel" aria-labelledby="stream-tab" aria-live="polite" aria-label="Bot chat and server messages">
                   {selectedBot.logs?.length ? selectedBot.logs.map((entry, index) => (
                     <div className="log-line" key={`${entry.at}-${index}`}>
                       <time>{new Date(entry.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</time>
@@ -561,7 +563,6 @@ function Dashboard() {
                       <span>Waiting for server messages</span>
                     </div>
                   )}
-                  <div ref={logEndRef} />
                 </div>
               ) : (
                 <section className="inventory-view detail-view" id="inventory-panel" role="tabpanel" aria-labelledby="inventory-tab">
