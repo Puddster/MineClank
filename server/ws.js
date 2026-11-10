@@ -19,9 +19,17 @@ function rejectUpgrade(socket, status, message) {
     socket.destroy();
 }
 
+function defaultRequireProxyAuth() {
+    const setting = process.env.REQUIRE_PROXY_AUTH;
+    if (setting === 'true') return true;
+    if (setting === 'false') return false;
+    if (setting === undefined) return process.env.NODE_ENV === 'production';
+    throw new Error('REQUIRE_PROXY_AUTH must be "true" or "false".');
+}
+
 export function createControlServer({
     manager,
-    requireProxyAuth = process.env.NODE_ENV === 'production',
+    requireProxyAuth = defaultRequireProxyAuth(),
     proxyUserHeader = (process.env.PROXY_USER_HEADER || 'x-auth-request-user').toLowerCase(),
     allowedOrigins = process.env.ALLOWED_ORIGINS
         ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim()).filter(Boolean)

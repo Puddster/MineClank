@@ -150,6 +150,32 @@ test('rejects websocket connections without proxy identity or an allowed origin'
     assert.equal(responseStatus, 401);
 });
 
+test('allows same-origin websocket access in production when proxy auth is disabled', async t => {
+    const previousNodeEnv = process.env.NODE_ENV;
+    const previousProxyAuth = process.env.REQUIRE_PROXY_AUTH;
+    process.env.NODE_ENV = 'production';
+    process.env.REQUIRE_PROXY_AUTH = 'false';
+
+    let server;
+    try {
+        server = await openServer(t);
+    } finally {
+        if (previousNodeEnv === undefined) delete process.env.NODE_ENV;
+        else process.env.NODE_ENV = previousNodeEnv;
+        if (previousProxyAuth === undefined) delete process.env.REQUIRE_PROXY_AUTH;
+        else process.env.REQUIRE_PROXY_AUTH = previousProxyAuth;
+    }
+
+    const socket = new WebSocket(server.url, { headers: { origin: server.origin } });
+    const snapshot = new Promise((resolve, reject) => {
+        socket.once('message', data => resolve(JSON.parse(data.toString())));
+        socket.once('error', reject);
+    });
+    await once(socket, 'open');
+    assert.deepEqual(await snapshot, { type: 'snapshot', bots: server.manager.getSnapshot() });
+    socket.close();
+});
+
 test('rejects invalid browser origins', async t => {
     const { url } = await openServer(t);
     const responseStatus = await new Promise(resolveStatus => {

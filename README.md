@@ -55,7 +55,7 @@ Open the Vite URL printed in the terminal. The development server proxies API an
 
 ## Production and reverse proxy
 
-Build the client and start the server with `NODE_ENV=production`. Set `HOST`, `PORT`, `ALLOWED_ORIGINS`, and `PROXY_USER_HEADER` in the process environment or a local `.env` file. In production, the server requires the configured proxy identity header on the bot API and WebSocket upgrade. The reverse proxy must authenticate users, strip any client-supplied identity header, and inject its own trusted value.
+Build the client and start the server with `NODE_ENV=production`. Set `HOST`, `PORT`, `ALLOWED_ORIGINS`, and `PROXY_USER_HEADER` in the process environment or a local `.env` file. In production, the server requires the configured proxy identity header on the bot API and WebSocket upgrade by default. Set `REQUIRE_PROXY_AUTH=false` only when access is restricted to a trusted private network; the server will still validate browser origins. Otherwise, the reverse proxy must authenticate users, strip any client-supplied identity header, and inject its own trusted value.
 
 Keep the backend unreachable directly from the LAN or internet. Bind to `127.0.0.1` when the proxy is on the same host; for a container network, bind to the container interface and expose the service only on a private network shared with the proxy. Set `ALLOWED_ORIGINS` to the exact browser origin, including scheme and port where applicable.
 
@@ -69,7 +69,7 @@ npm start
 
 GitHub Actions runs tests, lint, and the frontend build on pull requests to `main`. It builds the Docker image for those checks and publishes it to `ghcr.io/puddster/mineclank` on pushes to `main` and version tags matching `v*`.
 
-The example Compose file expects a reverse proxy that authenticates users, strips any client-supplied identity header, and injects the trusted `x-auth-request-user` header. Create the shared Docker network and bot config directory, then set the exact public dashboard origin in `.env`:
+By default, the example Compose file expects a reverse proxy that authenticates users, strips any client-supplied identity header, and injects the trusted `x-auth-request-user` header. For a trusted LAN-only deployment without proxy authentication, set `REQUIRE_PROXY_AUTH=false` in `.env` and keep the service restricted to that private network. Set the exact dashboard origin in `ALLOWED_ORIGINS`:
 
 ```sh
 docker network create proxy

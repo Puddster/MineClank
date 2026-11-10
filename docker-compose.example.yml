@@ -6,6 +6,7 @@ services:
       NODE_ENV: production
       HOST: 0.0.0.0
       PORT: 3001
+      REQUIRE_PROXY_AUTH: ${REQUIRE_PROXY_AUTH:-true}
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:?Set ALLOWED_ORIGINS in .env}
       PROXY_USER_HEADER: ${PROXY_USER_HEADER:-x-auth-request-user}
     expose:
