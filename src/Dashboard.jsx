@@ -20,7 +20,7 @@ import {
   Wifi,
   WifiOff,
 } from 'lucide-react'
-import { getWebSocketUrl } from './client.js'
+import { createRequestId, getWebSocketUrl } from './client.js'
 import './Dashboard.css'
 
 const THEME_STORAGE_KEY = 'mineclank-theme'
@@ -240,7 +240,7 @@ function Dashboard() {
   const requestCompletions = useCallback(value => {
     const socket = socketRef.current
     if (!selectedBotId || selectedBotStatus !== 'online' || socket?.readyState !== WebSocket.OPEN) return
-    const requestId = crypto.randomUUID()
+    const requestId = createRequestId()
     completionRequestRef.current = requestId
     socket.send(JSON.stringify({
       type: 'bot:complete',
@@ -272,7 +272,7 @@ function Dashboard() {
       setNotice('Control service is offline')
       return false
     }
-    const requestId = crypto.randomUUID()
+    const requestId = createRequestId()
     pendingRef.current[requestId] = type
     setPending({ ...pendingRef.current })
     socketRef.current.send(JSON.stringify({ type, id: selectedBot?.id, requestId, ...values }))
