@@ -38,7 +38,14 @@ class FakeBot extends EventEmitter {
                 }
             }]])
         };
-        this.game = { dimension: 'overworld' };
+        this.game = { dimension: 'overworld', gameMode: 'survival' };
+        this.health = 18;
+        this.food = 17;
+        this.foodSaturation = 4.5;
+        this.oxygenLevel = 14;
+        this.experience = { level: 12, points: 100, progress: 0.42 };
+        this.isAlive = true;
+        this.isSleeping = false;
         this._client = {
             state: 'play',
             profileKeys: {},
@@ -151,6 +158,19 @@ test('starts configured bots sequentially and sends chat and commands', async t 
     assert.equal(bots[1].options.physicsEnabled, true);
     assert.deepEqual(manager.getSnapshot()[0].position, { x: 1.2, y: 64, z: -8.9 });
     assert.equal(manager.getSnapshot()[0].dimension, 'overworld');
+    assert.deepEqual(manager.getSnapshot()[0].playerStats, {
+        health: 18,
+        food: 17,
+        foodSaturation: 4.5,
+        oxygenLevel: 14,
+        experienceLevel: 12,
+        experienceProgress: 0.42,
+        gameMode: 'survival',
+        isAlive: true,
+        isSleeping: false
+    });
+    bots[0].oxygenLevel = undefined;
+    assert.equal(manager.getSnapshot()[0].playerStats.oxygenLevel, 20);
     assert.deepEqual(manager.getSnapshot()[0].inventory[9], {
         slot: 9,
         name: 'diamond',
@@ -208,6 +228,30 @@ test('continues the startup queue after a bot fails before spawn', async t => {
     const outcomes = await starting;
     assert.equal(outcomes[0].status, 'reconnecting');
     assert.equal(manager.getSnapshot()[1].status, 'online');
+});
+
+test('preserves clickable player usernames in chat log entries', async t => {
+    const { manager, bots } = await setupManager(t);
+    const starting = manager.start('alpha');
+    await tick();
+    bots[0].emit('spawn');
+    await starting;
+
+    bots[0].players = {
+        Jessica_42: {
+            username: 'Jessica_42',
+            displayName: { toString: () => 'Jess' }
+        }
+    };
+    bots[0].emit('message', {
+        toString: () => '[VIP] Jess: hello',
+        toAnsi: () => '[VIP] Jess: hello'
+    });
+
+    const chatLog = manager.getSnapshot()[0].logs.find(entry => entry.text === '[VIP] Jess: hello');
+    assert.deepEqual(chatLog.playerLinks, [
+        { start: 6, end: 10, username: 'Jessica_42' }
+    ]);
 });
 
 test('serializes completion requests and drops stale queued prefixes', async t => {

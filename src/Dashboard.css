@@ -188,6 +188,14 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
 .metric-status { text-transform: capitalize; }
 .metric-status.status-text-online, .metric-status.status-text-online svg { color: var(--green); }
 .metric-status.status-text-connecting, .metric-status.status-text-reconnecting { color: var(--danger-focus); }
+.player-stats { margin-top: 12px; padding: 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface-subtle); }
+.player-stats-heading { margin: 0 0 10px; color: var(--text-subtle); font: 9px var(--mono); letter-spacing: .08em; }
+.player-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; }
+.player-stat { min-width: 0; display: grid; align-content: start; gap: 5px; padding: 9px; border-radius: 4px; background: var(--surface); }
+.player-stat-label { display: flex; align-items: center; gap: 5px; color: var(--text-subtle); font: 8px var(--mono); letter-spacing: .06em; white-space: nowrap; }
+.player-stat-label svg { color: var(--muted-icon); }
+.player-stat strong { overflow: hidden; color: var(--ink-soft); font-size: 12px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+.player-stat small { min-height: 11px; overflow: hidden; color: var(--muted); font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
 .error-banner { margin-top: 12px; padding: 9px 11px; border: 1px solid var(--danger-border); border-radius: 5px; color: var(--danger-text); background: var(--surface-error); font-size: 12px; }
 .detail-view-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; border-bottom: 1px solid var(--line); }
 .detail-tabs { display: flex; align-items: center; gap: 4px; min-width: 0; }
@@ -270,11 +278,11 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
 .color-toggle[aria-pressed="true"] { color: var(--green); }
 .color-toggle[aria-pressed="false"] { color: var(--text-disabled); }
 .log-stream { min-height: 210px; max-height: 300px; flex: 1; overflow: auto; padding: 10px 12px; border-radius: 6px; color: #d2e0d7; background: #17241f; font: 11px/1.65 var(--mono); scrollbar-color: #52645a #17241f; }
-.log-line { display: grid; grid-template-columns: 63px minmax(0, 1fr); gap: 10px; padding: 2px 0; overflow-wrap: anywhere; }
-.log-line time { min-width: 80px; color: #81958a; }
+.log-line { display: grid; grid-template-columns: 80px minmax(0, 1fr); gap: 10px; padding: 2px 0; overflow-wrap: anywhere; }
+.log-line time { color: #81958a; white-space: nowrap; }
 .log-line span { color: #d2e0d7; white-space: pre-wrap; }
-.chat-command { display: inline; padding: 0; border: 0; color: inherit; background: transparent; font: inherit; text-decoration: underline dotted; text-underline-offset: 2px; cursor: pointer; }
-.chat-command:hover, .chat-command:focus-visible { color: #b7edca; outline: 0; text-decoration-style: solid; }
+.chat-command, .chat-player { display: inline; padding: 0; border: 0; color: inherit; background: transparent; font: inherit; text-decoration: underline dotted; text-underline-offset: 2px; cursor: pointer; }
+.chat-command:hover, .chat-command:focus-visible, .chat-player:hover, .chat-player:focus-visible { color: #b7edca; outline: 0; text-decoration-style: solid; }
 .empty-log { height: 100%; min-height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: #84958b; font-family: var(--sans); font-size: 12px; }
 .command-area { margin-top: 16px; padding-top: 15px; border-top: 1px solid var(--line); }
 .command-topline { display: flex; justify-content: space-between; align-items: center; }

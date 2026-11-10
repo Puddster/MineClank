@@ -3,6 +3,7 @@ import { mkdir } from 'node:fs/promises';
 import mineflayer from 'mineflayer';
 import { loadBotConfigs } from './config-loader.js';
 import { ansiToColorRuns } from './chat-colors.js';
+import { extractPlayerLinks } from './chat-player-links.js';
 
 const tokenPattern = /eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g;
 const redact = value => String(value).replace(tokenPattern, '[REDACTED TOKEN]');
@@ -154,8 +155,22 @@ export class BotManager extends EventEmitter {
     }
 
     publicState(record) {
-        const entityPosition = record.status === 'online' ? record.bot?.entity?.position : null;
-        const dimension = record.status === 'online' ? record.bot?.game?.dimension ?? null : null;
+        const bot = record.status === 'online' ? record.bot : null;
+        const entityPosition = bot?.entity?.position;
+        const dimension = bot?.game?.dimension ?? null;
+        const playerStats = bot ? {
+            health: Number.isFinite(bot.health) ? bot.health : null,
+            food: Number.isFinite(bot.food) ? bot.food : null,
+            foodSaturation: Number.isFinite(bot.foodSaturation) ? bot.foodSaturation : null,
+            oxygenLevel: Number.isFinite(bot.oxygenLevel) ? bot.oxygenLevel : 20,
+            experienceLevel: Number.isFinite(bot.experience?.level) ? bot.experience.level : null,
+            experienceProgress: Number.isFinite(bot.experience?.progress)
+                ? Math.max(0, Math.min(1, bot.experience.progress))
+                : null,
+            gameMode: typeof bot.game?.gameMode === 'string' ? bot.game.gameMode : null,
+            isAlive: typeof bot.isAlive === 'boolean' ? bot.isAlive : null,
+            isSleeping: typeof bot.isSleeping === 'boolean' ? bot.isSleeping : null
+        } : null;
         return {
             id: record.id,
             username: record.config.username,
@@ -169,8 +184,9 @@ export class BotManager extends EventEmitter {
                 z: Number(entityPosition.z.toFixed(1))
             } : null,
             dimension,
+            playerStats,
             lastError: record.lastError,
-            inventory: record.status === 'online' ? inventorySnapshot(record.bot) : []
+            inventory: bot ? inventorySnapshot(bot) : []
         };
     }
 
@@ -433,7 +449,13 @@ export class BotManager extends EventEmitter {
             bot.on('message', component => {
                 const text = component?.toString?.() ?? String(component);
                 const formatted = component?.toAnsi?.() ?? text;
-                this.appendLog(record, text, ansiToColorRuns(redact(formatted)));
+                const safeText = redact(text);
+                this.appendLog(
+                    record,
+                    safeText,
+                    ansiToColorRuns(redact(formatted)),
+                    extractPlayerLinks(safeText, bot.players)
+                );
             });
             bot.on('kicked', reason => {
                 const text = typeof reason === 'string' ? reason : JSON.stringify(reason);
@@ -507,9 +529,10 @@ export class BotManager extends EventEmitter {
         }, delay);
     }
 
-    appendLog(record, text, colorRuns) {
+    appendLog(record, text, colorRuns, playerLinks) {
         const entry = { at: new Date().toISOString(), text: redact(text) };
         if (colorRuns) entry.colorRuns = colorRuns;
+        if (playerLinks?.length) entry.playerLinks = playerLinks;
         record.logs.push(entry);
         if (record.logs.length > this.maxLogs) record.logs.splice(0, record.logs.length - this.maxLogs);
         this.emit('bot-log', { id: record.id, entry });

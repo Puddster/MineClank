@@ -5,6 +5,9 @@ import {
   Bot,
   Circle,
   CircleCheck,
+  Drumstick,
+  Gamepad2,
+  Heart,
   LoaderCircle,
   MapPin,
   Moon,
@@ -15,10 +18,13 @@ import {
   Send,
   Server,
   Square,
+  Sparkles,
+  Timer,
   Sun,
   Terminal,
   Wifi,
   WifiOff,
+  Wind,
 } from 'lucide-react'
 import { createRequestId, getWebSocketUrl } from './client.js'
 import './Dashboard.css'
@@ -33,6 +39,18 @@ const EQUIPMENT_SLOTS = [
 ]
 const MAIN_INVENTORY_SLOTS = Array.from({ length: 27 }, (_, index) => 9 + index)
 const HOTBAR_SLOTS = Array.from({ length: 9 }, (_, index) => 36 + index)
+
+function formatDuration(seconds) {
+  if (!Number.isFinite(seconds)) return '—'
+  if (seconds < 60) return `${seconds}s`
+  const minutes = Math.floor(seconds / 60)
+  const days = Math.floor(minutes / 1440)
+  const hours = Math.floor((minutes % 1440) / 60)
+  const remainingMinutes = minutes % 60
+  if (days) return `${days}d ${hours}h`
+  if (hours) return `${hours}h ${remainingMinutes}m`
+  return `${remainingMinutes}m`
+}
 
 function Dashboard() {
   const [theme, setTheme] = useState(() => {
@@ -348,27 +366,49 @@ function Dashboard() {
       })
     }
 
-    const matches = [...text.matchAll(/\/[a-zA-Z ]+/g)]
-    if (!matches.length) return renderRange(0, text.length, 'text')
+    const interactions = [
+      ...[...text.matchAll(/\/[a-zA-Z ]+/g)].map(match => ({
+        start: match.index,
+        end: match.index + match[0].length,
+        type: 'command',
+        command: match[0].trim()
+      })),
+      ...(entry.playerLinks || [])
+        .filter(link => (
+          Number.isInteger(link.start) &&
+          Number.isInteger(link.end) &&
+          link.start >= 0 &&
+          link.end > link.start &&
+          link.end <= text.length &&
+          /^[A-Za-z0-9_]{1,16}$/.test(link.username)
+        ))
+        .map(link => ({ ...link, type: 'player' }))
+    ].sort((a, b) => a.start - b.start || a.end - b.end)
+    if (!interactions.length) return renderRange(0, text.length, 'text')
 
     const nodes = []
     let cursor = 0
-    for (const [index, match] of matches.entries()) {
-      const start = match.index
-      const end = start + match[0].length
-      const command = match[0].trim()
+    for (const [index, interaction] of interactions.entries()) {
+      const { start, end } = interaction
+      if (start < cursor) continue
       if (start > cursor) {
         nodes.push(<span key={`text-${cursor}`}>{renderRange(cursor, start, `text-${cursor}`)}</span>)
       }
       nodes.push(
         <button
-          key={`command-${index}-${start}`}
+          key={`${interaction.type}-${index}-${start}`}
           type="button"
-          className="chat-command"
-          title={`Fill command box with ${command}`}
-          aria-label={`Fill command box with ${command}`}
+          className={interaction.type === 'player' ? 'chat-player' : 'chat-command'}
+          title={interaction.type === 'player'
+            ? `Minecraft username: ${interaction.username}`
+            : `Fill command box with ${interaction.command}`}
+          aria-label={interaction.type === 'player'
+            ? `Message ${interaction.username}`
+            : `Fill command box with ${interaction.command}`}
           onClick={() => {
-            setCommand(command)
+            setCommand(interaction.type === 'player'
+              ? `/msg ${interaction.username} `
+              : interaction.command)
             setSuggestions([])
             commandInputRef.current?.focus()
           }}
@@ -505,6 +545,62 @@ function Dashboard() {
                 </div>
               </div>
 
+              <section className="player-stats" aria-label="Player status">
+                <h3 className="player-stats-heading">PLAYER STATUS</h3>
+                <div className="player-stats-grid">
+                  <div className="player-stat">
+                    <span className="player-stat-label"><Heart size={13} /> HEALTH</span>
+                    <strong>{Number.isFinite(selectedBot.playerStats?.health)
+                      ? `${selectedBot.playerStats.health} HP`
+                      : '—'}</strong>
+                  </div>
+                  <div className="player-stat">
+                    <span className="player-stat-label"><Drumstick size={13} /> HUNGER</span>
+                    <strong>{Number.isFinite(selectedBot.playerStats?.food)
+                      ? `${selectedBot.playerStats.food} / 20`
+                      : '—'}</strong>
+                    <small>{Number.isFinite(selectedBot.playerStats?.foodSaturation)
+                      ? `Saturation ${selectedBot.playerStats.foodSaturation}`
+                      : ' '}</small>
+                  </div>
+                  <div className="player-stat">
+                    <span className="player-stat-label"><Wind size={13} /> AIR</span>
+                    <strong>{Number.isFinite(selectedBot.playerStats?.oxygenLevel)
+                      ? `${selectedBot.playerStats.oxygenLevel} / 20`
+                      : '—'}</strong>
+                  </div>
+                  <div className="player-stat">
+                    <span className="player-stat-label"><Sparkles size={13} /> EXPERIENCE</span>
+                    <strong>{Number.isFinite(selectedBot.playerStats?.experienceLevel)
+                      ? `Level ${selectedBot.playerStats.experienceLevel}`
+                      : '—'}</strong>
+                    <small>{Number.isFinite(selectedBot.playerStats?.experienceProgress)
+                      ? `${Math.round(selectedBot.playerStats.experienceProgress * 100)}% to next level`
+                      : ' '}</small>
+                  </div>
+                  <div className="player-stat">
+                    <span className="player-stat-label"><Gamepad2 size={13} /> GAME MODE</span>
+                    <strong>{selectedBot.playerStats?.gameMode
+                      ? selectedBot.playerStats.gameMode[0].toUpperCase() + selectedBot.playerStats.gameMode.slice(1)
+                      : '—'}</strong>
+                  </div>
+                  <div className="player-stat">
+                    <span className="player-stat-label"><Activity size={13} /> PLAYER</span>
+                    <strong>{selectedBot.playerStats?.isAlive === null || selectedBot.playerStats?.isAlive === undefined
+                      ? '—'
+                      : selectedBot.playerStats.isAlive
+                        ? selectedBot.playerStats.isSleeping ? 'Sleeping' : 'Alive'
+                        : 'Dead'}</strong>
+                  </div>
+                  <div className="player-stat">
+                    <span className="player-stat-label"><Timer size={13} /> SESSION TIME</span>
+                    <strong>{selectedBot.status === 'online'
+                      ? formatDuration(selectedBot.uptimeSeconds)
+                      : '—'}</strong>
+                  </div>
+                </div>
+              </section>
+
               {selectedBot.lastError && <div className="error-banner">{selectedBot.lastError}</div>}
 
               <div className="detail-view-header">
@@ -554,7 +650,7 @@ function Dashboard() {
                 <div ref={logStreamRef} className="log-stream detail-view" id="stream-panel" role="tabpanel" aria-labelledby="stream-tab" aria-live="polite" aria-label="Bot chat and server messages">
                   {selectedBot.logs?.length ? selectedBot.logs.map((entry, index) => (
                     <div className="log-line" key={`${entry.at}-${index}`}>
-                      <time>{new Date(entry.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</time>
+                      <time>{new Date(entry.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}</time>
                       <span>{renderLogText(entry)}</span>
                     </div>
                   )) : (

@@ -83,7 +83,7 @@ Change the origin to match the proxy URL. The Compose service is not published o
 
 ## Dashboard controls
 
-The dashboard shows bot connection state, current position, and recent chat/server messages. Use the per-bot stop control to disconnect a bot, Start bot to reconnect it, the `/survival` and `/hub1` shortcuts for common hops, or the command field for another single-line slash command. Command allowlists are not enforced in this initial version; only grant dashboard access to trusted users.
+The dashboard shows bot connection state, current position, health, hunger and saturation, air, experience, game mode, alive/sleeping status, and current connection session time. Session time is how long this bot has been connected; total server playtime is not generally available unless the server exposes it. When a chat name matches a unique player-list display name, click it to fill the command field with `/msg <username>`; hover over it to see the Minecraft username. Unmatched or ambiguous names remain plain text. Use the per-bot stop control to disconnect a bot, Start bot to reconnect it, the `/survival` and `/hub1` shortcuts for common hops, or the command field for chat and slash commands. Command allowlists are not enforced in this initial version; only grant dashboard access to trusted users.
 
 ## Checks
 
