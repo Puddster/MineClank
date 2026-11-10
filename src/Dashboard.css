@@ -202,6 +202,8 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
 .log-line { display: grid; grid-template-columns: 63px minmax(0, 1fr); gap: 10px; padding: 2px 0; overflow-wrap: anywhere; }
 .log-line time { min-width: 80px; color: #81958a; }
 .log-line span { color: #d2e0d7; white-space: pre-wrap; }
+.chat-command { display: inline; padding: 0; border: 0; color: inherit; background: transparent; font: inherit; text-decoration: underline dotted; text-underline-offset: 2px; cursor: pointer; }
+.chat-command:hover, .chat-command:focus-visible { color: #b7edca; outline: 0; text-decoration-style: solid; }
 .empty-log { height: 100%; min-height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: #84958b; font-family: var(--sans); font-size: 12px; }
 .command-area { margin-top: 16px; padding-top: 15px; border-top: 1px solid var(--line); }
 .command-topline { display: flex; justify-content: space-between; align-items: center; }

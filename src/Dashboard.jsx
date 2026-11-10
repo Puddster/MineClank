@@ -237,6 +237,70 @@ function Dashboard() {
     }
   }
 
+  function renderLogText(entry) {
+    const text = entry.text || ''
+    const runsLength = entry.colorRuns?.reduce((length, run) => length + run.text.length, 0)
+    const runs = chatColorsEnabled && runsLength === text.length
+      ? entry.colorRuns
+      : [{ text, color: null, bold: false, italic: false, underline: false }]
+
+    const renderRange = (start, end, keyPrefix) => {
+      let offset = 0
+      return runs.flatMap((run, runIndex) => {
+        const runStart = offset
+        offset += run.text.length
+        const rangeStart = Math.max(start, runStart)
+        const rangeEnd = Math.min(end, offset)
+        if (rangeStart >= rangeEnd) return []
+
+        return [(
+          <span
+            key={`${keyPrefix}-${runIndex}`}
+            style={{
+              color: run.color || undefined,
+              fontWeight: run.bold ? 700 : undefined,
+              fontStyle: run.italic ? 'italic' : undefined,
+              textDecoration: run.underline ? 'underline' : undefined
+            }}
+          >{run.text.slice(rangeStart - runStart, rangeEnd - runStart)}</span>
+        )]
+      })
+    }
+
+    const matches = [...text.matchAll(/\/[a-zA-Z ]+/g)]
+    if (!matches.length) return renderRange(0, text.length, 'text')
+
+    const nodes = []
+    let cursor = 0
+    for (const [index, match] of matches.entries()) {
+      const start = match.index
+      const end = start + match[0].length
+      const command = match[0].trim()
+      if (start > cursor) {
+        nodes.push(<span key={`text-${cursor}`}>{renderRange(cursor, start, `text-${cursor}`)}</span>)
+      }
+      nodes.push(
+        <button
+          key={`command-${index}-${start}`}
+          type="button"
+          className="chat-command"
+          title={`Fill command box with ${command}`}
+          aria-label={`Fill command box with ${command}`}
+          onClick={() => {
+            setCommand(command)
+            setSuggestions([])
+            commandInputRef.current?.focus()
+          }}
+        >{renderRange(start, end, `command-${index}-${start}`)}</button>
+      )
+      cursor = end
+    }
+    if (cursor < text.length) {
+      nodes.push(<span key={`text-${cursor}`}>{renderRange(cursor, text.length, `text-${cursor}`)}</span>)
+    }
+    return nodes
+  }
+
   return (
     <main className="app-shell">
       <header className="topbar">
@@ -377,19 +441,7 @@ function Dashboard() {
                 {selectedBot.logs?.length ? selectedBot.logs.map((entry, index) => (
                   <div className="log-line" key={`${entry.at}-${index}`}>
                     <time>{new Date(entry.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</time>
-                    <span>{chatColorsEnabled && entry.colorRuns?.length
-                      ? entry.colorRuns.map((run, runIndex) => (
-                        <span
-                          key={runIndex}
-                          style={{
-                            color: run.color || undefined,
-                            fontWeight: run.bold ? 700 : undefined,
-                            fontStyle: run.italic ? 'italic' : undefined,
-                            textDecoration: run.underline ? 'underline' : undefined
-                          }}
-                        >{run.text}</span>
-                      ))
-                      : entry.text}</span>
+                    <span>{renderLogText(entry)}</span>
                   </div>
                 )) : (
                   <div className="empty-log">
