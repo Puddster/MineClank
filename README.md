@@ -65,6 +65,22 @@ $env:NODE_ENV = 'production'
 npm start
 ```
 
+## Container deployment
+
+GitHub Actions runs tests, lint, and the frontend build on pull requests to `main`. It builds the Docker image for those checks and publishes it to `ghcr.io/puddster/mineclank` on pushes to `main` and version tags matching `v*`.
+
+The example Compose file expects a reverse proxy that authenticates users, strips any client-supplied identity header, and injects the trusted `x-auth-request-user` header. Create the shared Docker network and bot config directory, then set the exact public dashboard origin in `.env`:
+
+```sh
+docker network create proxy
+mkdir -p configs/bots
+printf 'ALLOWED_ORIGINS=https://bots.example.net\n' > .env
+docker compose -f docker-compose.example.yml pull
+docker compose -f docker-compose.example.yml up -d
+```
+
+Change the origin to match the proxy URL. The Compose service is not published on a host port; attach the proxy to the same external Docker network and proxy traffic to `mineclank:3001`. Bot JSON profiles are mounted read-only from `configs/bots/`, and the named `mineclank-auth` volume persists Microsoft login tokens. Keep that volume private. If the GHCR package is private, authenticate Docker to `ghcr.io` on the deployment host before pulling.
+
 ## Dashboard controls
 
 The dashboard shows bot connection state, current position, and recent chat/server messages. Use the per-bot stop control to disconnect a bot, Start bot to reconnect it, the `/survival` and `/hub1` shortcuts for common hops, or the command field for another single-line slash command. Command allowlists are not enforced in this initial version; only grant dashboard access to trusted users.

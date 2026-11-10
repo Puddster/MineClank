@@ -1,0 +1,25 @@
+services:
+  mineclank:
+    image: ghcr.io/puddster/mineclank:latest
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3001
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:?Set ALLOWED_ORIGINS in .env}
+      PROXY_USER_HEADER: ${PROXY_USER_HEADER:-x-auth-request-user}
+    expose:
+      - "3001"
+    volumes:
+      - ./configs/bots:/app/configs/bots:ro
+      - mineclank-auth:/app/.auth
+    networks:
+      - proxy
+
+volumes:
+  mineclank-auth:
+
+networks:
+  proxy:
+    external: true
+    name: ${PROXY_NETWORK:-proxy}

@@ -1,0 +1,11 @@
+.git
+.github
+.auth
+.env
+.env.*
+!.env.example
+node_modules
+dist
+configs/bots/*.json
+*.backup
+npm-debug.log*
