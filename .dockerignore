@@ -2,7 +2,6 @@
 .github
 .auth
 .data
-assets/item-icons
 .env
 .env.*
 !.env.example
