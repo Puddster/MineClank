@@ -35,7 +35,8 @@ export function createControlServer({
     allowedOrigins = process.env.ALLOWED_ORIGINS
         ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim()).filter(Boolean)
         : (process.env.NODE_ENV === 'production' ? [] : ['http://localhost:5173', 'http://127.0.0.1:5173']),
-    staticDir = distDir
+    staticDir = distDir,
+    localItemIconsDir = resolve(projectRoot, 'public', 'item-icons')
 } = {}) {
     if (!manager) throw new Error('A bot manager is required');
 
@@ -73,6 +74,7 @@ export function createControlServer({
         response.json({ bots: manager.getSnapshot() });
     });
 
+    app.use('/item-icons', express.static(localItemIconsDir));
     app.use(express.static(staticDir));
     app.get(/.*/, (_request, response) => {
         if (existsSync(indexFile)) return response.sendFile(indexFile);
