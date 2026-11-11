@@ -81,16 +81,6 @@ docker compose -f docker-compose.example.yml up -d
 
 Change the origin to match the proxy URL. The Compose service is not published on a host port; attach the proxy to the same external Docker network and proxy traffic to `mineclank:3001`. Bot JSON profiles are mounted read-only from `configs/bots/`, the named `mineclank-auth` volume persists Microsoft login tokens, and `mineclank-data` persists the saved-message SQLite database. For local runs, the database defaults to `.data/saved-messages.sqlite`; set `MINECLANK_DATA_DIR` to use another directory. Keep both data volumes private. If the GHCR package is private, authenticate Docker to `ghcr.io` on the deployment host before pulling.
 
-### Local item sprite maps
-
-Generate category sprite maps from a locally installed Java Edition client and the matching `minecraft-data` registry:
-
-```powershell
-\.\scripts\generate-item-sprite-maps.ps1 -JarPath "$env:APPDATA\.minecraft\versions\26.3\26.3.jar" -Force
-```
-
-The script writes nine SVG maps to `assets/item-icons/`, which is git-ignored and excluded from the Docker build. For Compose, provide that directory beside the Compose file; it is mounted read-only at `/app/local-item-icons`. The generated maps are local copies of game assets; verify applicable terms before redistributing them.
-
 ## Dashboard controls
 
 The dashboard shows bot connection state, current position, health, hunger and saturation, air, experience, game mode, alive/sleeping status, and current connection session time. Session time is how long this bot has been connected; total server playtime is not generally available unless the server exposes it. Inventory-style server menus opened by commands such as `/vault`, `/pv`, `/ah`, `/shop`, or `/kits` appear in the Server Menu tab. Left-click, right-click, and shift-click on menu or player inventory slots are forwarded to Minecraft, allowing items to be moved between the player inventory and server containers. Menu buttons can trigger server actions such as purchases. The Saved Messages tab stores reusable one-line chat messages and commands in SQLite, shared across bots. Search/filter by category, edit or delete entries, and use `{{placeholder}}` variables; selecting an entry only fills the command box and never sends it. The command field keeps the last 100 sent messages and commands per bot for the current browser session; use Up/Down to browse and return to your draft. When a chat name matches a unique player-list display name, click it to fill the command field with `/msg <username>`; hover over it to see the Minecraft username. Unmatched or ambiguous names remain plain text. Use the per-bot stop control to disconnect a bot, Start bot to reconnect it, the `/survival` and `/hub1` shortcuts for common hops, or the command field for chat and slash commands. Command allowlists are not enforced in this initial version; only grant dashboard access to trusted users.
