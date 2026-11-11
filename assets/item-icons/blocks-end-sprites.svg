@@ -1,0 +1,336 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges">
+  <defs>
+      <image id="texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAGFBMVEWPcY98W3xjRWFbNFtWLlZHIUdAGkA6FDpr8EzZAAAAgUlEQVR42g3LwRGCMBAF0J8J3tHQgNDAxqx4Znbx7hDWAjSkAR3a13d/CLPGc4JDHIsOLQvo9pGQ7Q16lvZg9YVu3SLv2wNqY9T7EsEqdHRtQP+viVyPiCBeOCHomn2+CpJtS2d2AdcvcS0TZjM377kBr3riEj0SeRmyENBNTeBEP+foG6o+C6zZAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-chorus_flower" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAJ1BMVEVbNFtWLlaZfJlHIUfu1u778/7Wu9ariquheKE6FDpAGkBjRWF8W3wUoW6cAAAAh0lEQVR42gXBgQEDMQgDsTOxIf2w/7yVWHQk9i1U1cJKtRKAJKD4viObLfQJit/vOvHU+T5YTTxJMo7OIiXuJGknLMiZduKeWPAk91z7ThseiHHPnWkPD1aTpO/tJAOgTuK5TtI80Ca+3dfJAtIZtxO3BwkkndNJCwQAVYjHkaCoWmlLCwLqD0PDBAgQWuI1AAAAAElFTkSuQmCC"/>
+      <image id="texture-block-dragon_egg" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAgMAAABinRfyAAAACVBMVEUICAwtATMQEBADYfNLAAAAS0lEQVR42gXBwQnAIBBFwadIEKv4SA5bxpIKLGmRHFKGBA8pMzNAhbkQkROkK0TyMKQhrLuoPQpIA1iOlYDzfho7LLMnFbUD3q/xA9ojDPjdT7o2AAAAAElFTkSuQmCC"/>
+      <image id="texture-block-end_portal_frame_side" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAKlBMVEUAAABCc2cTLje4qHbFvovNxov2+r3e5qTV2pTu9rQvWE4YNT6ZxpOrhl+/AAgIAAAAAXRSTlMAQObYZgAAAHFJREFUeNqVjTsSwjAQxaRd8wnc/6xOQfwoYJiBDnVSI/5Hf8OtMj+2uYrMu2/uM3jbFQQCuabk6jiV1TrW1A5bAJiw7TqSr+kY8CAvY4CXgoVAojAqB+2SpFmk65AQSI4q6XMtW2pZWdHC0YFYaYs8AaE2LnqcPJiwAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-end_portal_frame_top" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAHlBMVEVCc2cvWE6ZxpPAwoft8rnk5qwGGRQDEg61r3kkQzs/AYlCAAAAZUlEQVR42mWPUQoDQQxCNSZdvf+Fy8wuU+j6JY8IL3inkpRD7QIgkEENYIELuMcA6WnfYECGCecG6lw7aC1Qal6fFbYKAA9A60w2eE3wTP4v4iFWAcc/MT5iR3101ItkifQu7+e/ypoDHgOoGxQAAAAASUVORK5CYII="/>
+      <image id="texture-block-end_rod" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAZUlEQVR42mP49ujsf2TMQCr49gqo8RUlBnx6BjagODX1f1dzLQiD2MQb9P/bs/9ADNa4ad1KEAaxSTMACCgwAAIG3gBQwMEwqYH4DaQfQwOpsTDQBny6SoEB78BJeQANgGeigQIADonAHdMz0+8AAAAASUVORK5CYII="/>
+      <image id="texture-block-end_stone" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAElBMVEXV2pT2+r3u9rTe5qTNxovFvouon65CAAAAc0lEQVR42gXBQQ6DMAwEwCVL7hX0AcaBu2X6ACsK90h1//+VzsCovKIE4KGDbHBJipojSw0f24lYxM65/LD6xnP1ACUOpRKao+ySglcN+z5w6IdXSBC1m+CGY0J3z1uAJv0Ku9H8/ZDlQD/qpLeK1WGWnn8dRxJ526YuMQAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-end_stone_bricks" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAGFBMVEXo9LLd5KXW1pXCu4iponTOzpbu9sns+68yyaYcAAAAaklEQVR42gXBgW3DQAwAMd47tvYfNwVilez6eSCr75UMZgLdRszAyJ1aNg++fZQZJaOualey4HQtsEJ9cl7COm96svxd7W8WMOgKAM24BjPIjLrVjDQ6p3OXozqrXadXKyWoXdBnHa+w4h/hGB4BJihlcgAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-purpur_block" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAFVBMVEXHqMe6lbqyhrKse6ykcqOdb5yQZZD/TDgUAAAATklEQVR42gXBgQ3AMAwEIc6qsv/GXyDSU+F9FVkRTghCbkQW4SAFypeCRJyCSaE3WqwRpDxFva/EKcFNGBCnUpOUKwpIDpEpOIhC6AEAfhtwDIqRwLDuAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-purpur_pillar_side" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAFVBMVEXHqMe6lbqyhrKse6ykcqOdb5yQZZD/TDgUAAAAXElEQVR42lXNwRGAIAxE0WVjBRE7gHTglkAH0H8pThw5eM38vIVFqaUeAoPNuwUYLr8Z8JhrLg9QpZaLAoc37xRsZGPCqWzOQDq4mO9vsx3bTs1LOkeC/m3p7+gBSXcQZaZARDkAAAAASUVORK5CYII="/>
+      <image id="texture-block-purpur_pillar_top" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAFVBMVEW6lbqse6ydb5ykcqOQZZDHqMeyhrI0Yxc7AAAAbElEQVQY002PwQkDAQzDJDvJ/iP3ce1RPwUSmAUWXLgFIAEtbXYCRK7taYjA3eXZALBnAI7LakCDqs4LTtUONtgMau2YhP0p7VdpB/sHdK62/TYw89vT2L1dbhfeL9cO2vcLNteWFACapEkAPhF+AhAdzbb/AAAAAElFTkSuQmCC"/>
+  </defs>
+  <symbol id="chorus_flower" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="2 0 12 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 0 0.0469 8.25 2)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 0 12 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.2344 0.2344 0 0.0469 13.5 4.25)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 2 12 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 -0.2344 0.2344 8.25 2)">
+      <use href="#texture-block-chorus_flower" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="14 2 2 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 0 0.2813 7.375 2.375)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 2 2 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 -0.2344 0.2344 7.375 2.375)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 2 12 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 0 0.2813 8.875 2.125)">
+      <use href="#texture-block-chorus_flower" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="14 2 2 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0391 0.0391 0 0.2813 14.125 4.375)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 0 12 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 -0.0391 0.0391 8.875 2.125)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 2 2 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0391 0.0391 0 0.2813 9.75 8.75)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 14 12 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 -0.0391 0.0391 4.5 6.5)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 2 2 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 0 0.2813 13.5 5)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 2 12 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.2344 0.2344 0 0.2813 14.375 5.375)">
+      <use href="#texture-block-chorus_flower" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="14 2 2 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 -0.2344 0.2344 13.5 5)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 2 12 14" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 0 0.3281 8.25 2.75)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 2 12 14" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.2344 0.2344 0 0.3281 13.5 5)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 2 12 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 -0.2344 0.2344 8.25 2.75)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="chorus_plant" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="2 0 12 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 0 0.0469 8.25 2)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 0 12 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.2344 0.2344 0 0.0469 13.5 4.25)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 2 12 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 -0.2344 0.2344 8.25 2)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="14 2 2 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 0 0.2813 7.375 2.375)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 2 2 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 -0.2344 0.2344 7.375 2.375)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 2 12 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 0 0.2813 8.875 2.125)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="14 2 2 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0391 0.0391 0 0.2813 14.125 4.375)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 0 12 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 -0.0391 0.0391 8.875 2.125)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 2 2 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0391 0.0391 0 0.2813 9.75 8.75)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 14 12 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 -0.0391 0.0391 4.5 6.5)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 2 2 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 0 0.2813 13.5 5)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 2 12 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.2344 0.2344 0 0.2813 14.375 5.375)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="14 2 2 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 -0.2344 0.2344 13.5 5)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 14 12 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 0 0.0469 8.25 7.25)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 14 12 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.2344 0.2344 0 0.0469 13.5 9.5)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 2 12 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 0 0.2813 8.25 2.75)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 2 12 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.2344 0.2344 0 0.2813 13.5 5)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 2 12 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 -0.2344 0.2344 8.25 2.75)">
+      <use href="#texture-block-chorus_plant" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="dragon_egg" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="6 0 4 1" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1094 0.0469 0 0.0234 8.75 4)">
+      <use href="#texture-block-dragon_egg" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="6 0 4 1" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0781 0.0781 0 0.0234 10.5 4.75)">
+      <use href="#texture-block-dragon_egg" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="6 6 4 4" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1094 0.0469 -0.0781 0.0781 8.75 4)">
+      <use href="#texture-block-dragon_egg" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="5 1 6 1" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1641 0.0703 0 0.0234 8.625 3.875)">
+      <use href="#texture-block-dragon_egg" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="5 1 6 1" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.1172 0.1172 0 0.0234 11.25 5)">
+      <use href="#texture-block-dragon_egg" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="5 5 6 6" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1641 0.0703 -0.1172 0.1172 8.625 3.875)">
+      <use href="#texture-block-dragon_egg" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="4 2 8 1" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.2188 0.0938 0 0.0234 8.5 3.75)">
+      <use href="#texture-block-dragon_egg" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="4 2 8 1" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.1563 0.1563 0 0.0234 12 5.25)">
+      <use href="#texture-block-dragon_egg" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="4 4 8 8" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.2188 0.0938 -0.1563 0.1563 8.5 3.75)">
+      <use href="#texture-block-dragon_egg" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="3 3 10 13" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.2734 0.1172 0 0.3047 8.375 3.625)">
+      <use href="#texture-block-dragon_egg" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="3 3 10 13" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.1953 0.1953 0 0.3047 12.75 5.5)">
+      <use href="#texture-block-dragon_egg" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="3 3 10 10" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.2734 0.1172 -0.1953 0.1953 8.375 3.625)">
+      <use href="#texture-block-dragon_egg" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 5 12 10" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 0 0.2344 8.25 3.875)">
+      <use href="#texture-block-dragon_egg" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 5 12 10" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.2344 0.2344 0 0.2344 13.5 6.125)">
+      <use href="#texture-block-dragon_egg" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 2 12 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 -0.2344 0.2344 8.25 3.875)">
+      <use href="#texture-block-dragon_egg" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="1 8 14 5" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3828 0.1641 0 0.1172 8.125 4.5)">
+      <use href="#texture-block-dragon_egg" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="1 8 14 5" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.2734 0.2734 0 0.1172 14.25 7.125)">
+      <use href="#texture-block-dragon_egg" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="1 1 14 14" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3828 0.1641 -0.2734 0.2734 8.125 4.5)">
+      <use href="#texture-block-dragon_egg" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="end_portal_frame" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 3 16 13" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.3047 8 2.125)">
+      <use href="#texture-block-end_portal_frame_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 3 16 13" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.3047 15 5.125)">
+      <use href="#texture-block-end_portal_frame_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 2.125)">
+      <use href="#texture-block-end_portal_frame_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="end_rod" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="2 6 4 1" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1094 0.0469 0 0.0234 8.75 9.625)">
+      <use href="#texture-block-end_rod" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 6 4 1" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0781 0.0781 0 0.0234 10.5 10.375)">
+      <use href="#texture-block-end_rod" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 2 4 4" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1094 0.0469 -0.0781 0.0781 8.75 9.625)">
+      <use href="#texture-block-end_rod" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 2 15" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 0 0.3516 8.875 4.5)">
+      <use href="#texture-block-end_rod" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 2 15" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0391 0.0391 0 0.3516 9.75 4.875)">
+      <use href="#texture-block-end_rod" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 0 2 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 -0.0391 0.0391 8.875 4.5)">
+      <use href="#texture-block-end_rod" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="end_stone" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-end_stone" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-end_stone" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-end_stone" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="end_stone_brick_slab" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 8 16 8" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.1875 8 4)">
+      <use href="#texture-block-end_stone_bricks" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 8 16 8" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.1875 15 7)">
+      <use href="#texture-block-end_stone_bricks" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 4)">
+      <use href="#texture-block-end_stone_bricks" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="end_stone_brick_stairs" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 8 16 8" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.1875 8 4)">
+      <use href="#texture-block-end_stone_bricks" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 8 16 8" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.1875 15 7)">
+      <use href="#texture-block-end_stone_bricks" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 4)">
+      <use href="#texture-block-end_stone_bricks" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 8 8" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.2188 0.0938 0 0.1875 11.5 2.5)">
+      <use href="#texture-block-end_stone_bricks" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 8" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.1875 15 4)">
+      <use href="#texture-block-end_stone_bricks" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="8 0 8 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.2188 0.0938 -0.3125 0.3125 11.5 2.5)">
+      <use href="#texture-block-end_stone_bricks" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="end_stone_brick_wall" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="4 0 8 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.2188 0.0938 0 0.375 8.5 3)">
+      <use href="#texture-block-end_stone_bricks" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="4 0 8 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.1563 0.1563 0 0.375 12 4.5)">
+      <use href="#texture-block-end_stone_bricks" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="4 4 8 8" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.2188 0.0938 -0.1563 0.1563 8.5 3)">
+      <use href="#texture-block-end_stone_bricks" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="5 3 6 13" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1641 0.0703 0 0.3047 10.1875 3.0625)">
+      <use href="#texture-block-end_stone_bricks" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 3 16 13" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.3047 12.8125 4.1875)">
+      <use href="#texture-block-end_stone_bricks" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="5 0 6 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1641 0.0703 -0.3125 0.3125 10.1875 3.0625)">
+      <use href="#texture-block-end_stone_bricks" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="end_stone_bricks" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-end_stone_bricks" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-end_stone_bricks" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-end_stone_bricks" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="ender_chest" viewBox="0 0 16 16">
+  </symbol>
+  <symbol id="purpur_block" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-purpur_block" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-purpur_block" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-purpur_block" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="purpur_pillar" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-purpur_pillar_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-purpur_pillar_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-purpur_pillar_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="purpur_slab" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 8 16 8" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.1875 8 4)">
+      <use href="#texture-block-purpur_block" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 8 16 8" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.1875 15 7)">
+      <use href="#texture-block-purpur_block" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 4)">
+      <use href="#texture-block-purpur_block" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="purpur_stairs" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 8 16 8" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.1875 8 4)">
+      <use href="#texture-block-purpur_block" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 8 16 8" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.1875 15 7)">
+      <use href="#texture-block-purpur_block" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 4)">
+      <use href="#texture-block-purpur_block" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 8 8" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.2188 0.0938 0 0.1875 11.5 2.5)">
+      <use href="#texture-block-purpur_block" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 8" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.1875 15 4)">
+      <use href="#texture-block-purpur_block" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="8 0 8 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.2188 0.0938 -0.3125 0.3125 11.5 2.5)">
+      <use href="#texture-block-purpur_block" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+</svg>

@@ -1,0 +1,265 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges">
+  <defs>
+  </defs>
+  <symbol id="allay_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAJFBMVEUAAADw//+Y/P9V7P9M6f894PdfzeQxyO8os+g6kMwzgbUwaZxEpAXVAAAAAXRSTlMAQObYZgAAAGZJREFUeNqNykEOxCAMQ9E0Jk1i3/++U0BILOctQP5gE3nOjc77IvuEJml0NLigMZ+ETA73wUzIPiqOx92DtTfJZwaI1Awvx4MIIPXuL3KPD0KyhbFUye6QV6i9+wRTV+19aLH//AB/WwQtOeIhOAAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="armadillo_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAM1BMVEUAAADTjHrOdW2tc3C+ZFy4WFGUY2OZX12DVlmCUU+WRkF2TVFzS09pPz5jPT9VNDZFKyxJiF89AAAAAXRSTlMAQObYZgAAAGdJREFUeNqNykkWgzAMA1AZgUPjBHH/05YSMyyrja3/BEASADyP1lXjtgF1SmhTHTA3nWlzRYrCPXR1QEG6b8IN/lvE/h7EQdt+g7u/J914UBT2hI+ZRZAP0GxZjOUC9EIye8oZ/Jcv32EEfH9mXKkAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="axolotl_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAG1BMVEUAAAD/3vD7wePmjMHycJPgYpbIYp6xQoOcLG9fyxXUAAAAAXRSTlMAQObYZgAAAFtJREFUeNqNjDEOAzEMwxwpDvX/Fxd12g6djpMJUK4nwN+VTQEUOzWksWQ63wwvSYexbGAtSQ4zSt9APrmjIPvtzjhgfYp5uBtbt+hNJWHcPskdVY7H60eGesYLcBICxR+5J6YAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="bat_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAKlBMVEUAAACCX39aP1hQQzpCLkExKCIuIC0nIh8mIR8eGxkbFxUSDw4KCQgAAAAjKyv1AAAAAXRSTlMAQObYZgAAAGRJREFUeNqNjEEOgDAIBGkVpcvy/+8qLTEePDgJJDOHlW/IvJc31iv2dpJn259w9KE6+lFK4dj0LhTWILcMiDVuRqQrPMwoNFInQDDDzdIMnDsZWncgpGah6g54SBEOlBcxkX9cWLsElEGioQMAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="bee_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAALVBMVEUAAAD3/f3x8uD+1mjtw0PZnULQjkjFgjyrZyCWUyRfMiVVLiJDJBs0GREWEA4vbY1fAAAAAXRSTlMAQObYZgAAAF5JREFUeNpjwA86OiA0R4pbA5BiEmgzcalgVGAQYGo2cYlUYGQQ0Eh2cQmfxMjAxOPi4hJ6QYGBQWNViOvuSUDVvCGrVodeADF2hYTueQAy583u3efABvK9e/cAm4UAgIYYOJD0FEgAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="blaze_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAKlBMVEUAAAD//Gr/5kT/1Sjymh/ReACwZAC0WA2ZQgCLNAFsMQBfAgFNAgI7AgIBsvuuAAAAAXRSTlMAQObYZgAAAGZJREFUeNpjQAZpaRCazdkkAcxIUVJ2gwgIKZkmgBiGQkYmDSAZQSFlkwgwQ8nEpALIaHE0MXEHMTpLTNynzwEyTk53n7lyL5Bxauf0nbtBDJ5dO3ftvgAy8fZuoAAI8N69ewHJCQBJTx14o7XsOgAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="bogged_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAARVBMVEUAAADLzLuazNC0uJ6Wra/MmXijpYmVlniHh2efeF50dWFsfkX+KipebTFaW0riEhJHVhpKSzQ/ThKpEho2RQk1NR56DRXIxdTzAAAAAXRSTlMAQObYZgAAAHlJREFUeNptykEOwyAMRFFS2sF1wHEN9P5HLQgLdZHx6j85/K3WsCdj9ZG3vBVMcuX89X6VxCB5XgtECzMVsPiD4ARBT/14UzwOkKryEkE8Is6iSg5sERiywQxTQGlBN0uIEQZ2aJ2Nkxm3Hpb0Gc1WL2njvF3mwu1+xqIHdSt5VSAAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="breeze_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAM1BMVEUAAADz9f/a3OrCtMy1pcqrnMuVjdN6gsRsdqtocqNXbJ1bZI8+XodLU3U3VHgtRGEoPFRm3YFHAAAAAXRSTlMAQObYZgAAAG5JREFUeNp1jzsSwyAMBRFC6INic//TRoBSeCbeAmaX11BeGMHDmYjHw1vLko6NetfxC4RIAX/SFRFbTFh3AaDjXRVglQpQe7Dusri9AoiE+n2CuLtZHDJzIcxiJnLNksVsL8IP8/LgvGfZ/P/3F/LkBFRzg888AAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="camel_husk_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAHlBMVEUAAAAaFxQ4MSdUSTcuKCFHPC1iVkRaTz11Z1IkIBy91YQVAAAAAXRSTlMAQObYZgAAAHFJREFUeNo9igEOxDAMwgqEdPz/w6ds7VmKFCyvjyRZh/lCmTm/lHDLYuZfoYrdWxJLxFpg1C3JxOwxfQusIeopbBL/vW2ZLFxhknOf2C0OVzxSzaiiXuFHQRVCncI2kypO8Zq2q4qaPQSeqIB1AYAzf99/Az9E1xntAAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="camel_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAJ1BMVEUAAAD/05H5xXX1ul3mrE7Umjuoilu4gieQdEiZZyJ3XTN9Ux1fSCMcPixIAAAAAXRSTlMAQObYZgAAAHJJREFUeNo9jAEOwCAIA8FSEdn/3zvJhpeQtAdBPuIgN58hjPFnIIIDBkblWjpVBwA6mCLJgCoAY1Yvo32RUtSBAmZk3j7MYKRnC85JI/mJoZgHXgGsEstbGPaz1rNb0MC59/L/aRmje/cyycIzpcnDX19ASgR/cgxxRAAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="cat_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAJFBMVEUAAADq6uq9ubmhnZ2/eqV0dHRpZGRiYmFLSko3NjopKzMSGSjpnAE7AAAAAXRSTlMAQObYZgAAAFNJREFUeNpjwAfYGlat4kgAMaTaKxaCGcLh5YYgBodpeHlzA5DB1Vpe3rkAxCgvUu/YAGK0F4p3ghnlIo4QkSZBJU0Qg2GzkpI1AwhwpKU1YLMSAOHwFV/kOyTiAAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="cave_spider_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAIVBMVEUAAACSiX91al9HVEc5RDkVOjQALjISJiALGxgAExMABQXpRemBAAAAAXRSTlMAQObYZgAAAGhJREFUeNqNjEEOw0AMAp2sAcP/H1xlm6rNrXObEaL+xbYfLlB+eBPy13s1wPEn9FpoULmdaw8g5Q5oNMg72BSwP5RUGT4EgtCcQcqydIjUMROlKrDOkeZUsD3JXGGSq7xXm9qS1A/JC65QBD3eKP0wAAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="chicken_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAALVBMVEUAAAD////m5ua9ubnXsVOhnZ3Bk0OFf3/2SEiWcjRpZGRjVkH2AADJAACHAADg7wRWAAAAAXRSTlMAQObYZgAAAEhJREFUeNpjwA/KyyE0u5FyAZhRLKQUDmYUCilZgWUMlZRMF4AYSi5pxhDGtuxgCGPmTAjDyOYqWA3DUovLUWDtXOteLcBmIQDsjRGFRxlICQAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="cod_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAJ1BMVEUAAADTwadjyf+2lmusiVlLmMSScVo+dqN3XUp1Wkk1WotZRTgvRXr3KUTSAAAAAXRSTlMAQObYZgAAAF9JREFUeNqdzkESxCAIRFEQbZHm/uedClqTZJve/VcskM8jyVc73Pns/hb2DscNRPX/ZC1VwGFY3AC9RM3AaqNeMzOCG2w3DqwkrDr3dzkHaxEpBTFaG23MeUAiz0JEfmviA9zze7haAAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="copper_golem_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAFVBMVEUAAADjgmzIdFasXkSQSTF4MhlZIQ3iWfiFAAAAAXRSTlMAQObYZgAAAE5JREFUeNqNjTkOADEIA/HF/5+8UoqFdJnOA7LrkEMNAYBLUGLqNncOmOy7gTirk7LV8wCQkntGBVgaQYNb2Aad/EK0k+moNqWVq/pQb3zVOAGKIg3W9AAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="cow_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAKlBMVEUAAADg4OCzs7OBgYFWVlZZRzJERERENiYzMzMwJx0hISEkHRYaFRAUEAsx/rHUAAAAAXRSTlMAQObYZgAAAHhJREFUeNo1yUEChDAIQ9E0wCAI97/uVLRZ8R/AdQHQPeC9r98FFVJqnzmQJdyLOlCxFkm/ayCz/AH36HwAFSaL6i7aGHCzRd8gA0ozo24I0R5YZv4sQl7gmqZEfMBpigyUUN8+EPMfuBtHpjWBkY4I3Zk46+788g+R7wTciojlSQAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="creaking_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAJFBMVEUAAADvozePlo3schSFeXdtcmtuZGJRVVFaUE5HPTs9NjUrJyXcnCWFAAAAAXRSTlMAQObYZgAAAH1JREFUeNo1jkESAyEMw7IuMQr8/79tYOubpJlMIqSIWL/Fu8MY2pyqXNiPr4nTwcOulYe1/DCGzY7LTY+haitCsTy6fyh2KHI6JYOB2hmxhob4YFPMIzyEQcpzdtmq7kKvUDklQDVboOpqRIs2WeLPx8wiydrNd3vPPe/jX3dtBN4uKe/NAAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="creeper_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAMFBMVEUAAADk5OSl2ptgyVN6onw6tD0TniYnjjA9fTszbi4rYSRCTkAeThgWOREPJwwAAABufZ9wAAAAAXRSTlMAQObYZgAAAGpJREFUeNpjQAarVkFormSzBWDGMtPgLIiAqpnGAhDDUDhU7QBIRn2SzfVuIGOx5lGbZz5AxiKjqKvmOUDG0uYz78K9gYzlwff/p4AYy1Ifx5f1gLS3lZRngLQznOjw6GEAAZ7Tuw8gOQEAZkIhXnCZkycAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="dolphin_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAKlBMVEUAAADb7fnJ3O25zuSlu9Njyf+RorqAhqBLmMRka4M+dqNOVWs1WosvRXrLn0LEAAAAAXRSTlMAQObYZgAAAHVJREFUeNoFwQFOAzEMBMDxugKiE/9/aJEQPZx0poDFLxDA315AwJp6WSCwZjALgjWzxeyFwGz6doKwZmMO/xfBJtVVDmIRzt3YlyAVCMg1pFpB7isqpPoRSumPFKqz1SOl7y9wjurIT3t9ljnZ6ainwjeAJ28OhSiNvs1nHQAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="donkey_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAMFBMVEUAAADa186uqJ6UgG+JdmaAdmuAbl5lV0laTUJNQjlCOTI1Mi8uLCkrJSEnJSQWFhZKbjYfAAAAAXRSTlMAQObYZgAAAH1JREFUeNpFzVsOwzAIRFFi3BmgId7/bkv8UO8XHCEhEhEizzOGrFECiBjfZ0QAuYEcw3mAQQUrD07wgGrvZekTgloAgJ4FJShAifG/9/eG9DygrSlotqDkvq5byQ29t6tqJBcA+qmUtoDvSUWapxwBuJ5MSZJmnimnrPb6A26TBfQ2s6zYAAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="drowned_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAOVBMVEUAAACP8ddl4N1UuXIxrbcupK5MnYJWhH4ylABQbmp4WTwpggA4WVgicAAgagBYPSslTUdCLSArHRV6QJapAAAAAXRSTlMAQObYZgAAAGxJREFUeNp1z9sSwjAIRdFc9BAgEZP//1gZi62dac/bXjyRbvbynbppG/2/W1OU59GjKZWc+w806wAxv7fuWjHocUinWqkQwLw2ACq8yQImyBMCswAhTxHewYS8zWyuFBJbKbamxX2X767//gCgZQWwzIrxcgAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="elder_guardian_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAMFBMVEUAAADPzL62sqFjyf+UjXuIh5xLmMR9dmQ+dqNqW0lRVH01WotZUT4vRXo0OGsZHj3CW59SAAAAAXRSTlMAQObYZgAAAH9JREFUeNpVjAEOwzAIA6nj1oUs5P+/XWi1dTsJLJ8QduML+8EJ0f86BPrTtw0OyT8CJQS+noOIJKgyEYkNsa8gM8Jyj4AycpIRe9qcUyJXkFrbzEUAIqHryfDq9HJLjBIE5C75LbpI1lCuUeI8dONn78Mu01o72nH1RR9futkbjLkF+btS7c0AAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="ender_dragon_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAALVBMVEUAAACKiopvb2/MAPpSUVKRDq88Oz1THl8xMTImJSYeHR4UFBQPDw8ICAgAAACOHlZiAAAAAXRSTlMAQObYZgAAAHtJREFUeNo1jUESgDAIA6tWLITk/8/VlronshOgtdZ7b/xYw6QfRriDdliJk/AIB88tiGH+QZYwulnMikoQZiPcA1QJN1srgCqPeSIiAGoXYpgNJHKJ8AEBAreYDwMI6m8Envu67kdZAg4ulKw3CKSkyhMKQCal9qOPHV/Pjwe3r4KXSwAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="enderman_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAALVBMVEUAAAAICAgUFBQmJSYeHR5THl/NC/rgefo8Oz0xMTJaAHp4AKENDQ2ZAMwAAABFMnjuAAAAAXRSTlMAQObYZgAAAHpJREFUeNpVjlsOwyAMBIN3/UjA3P+4hbhI7fzNaBG+ira4inIBpP05+VO63IHFOKVZBI3IeR5EuALUfCogVnFAZJbf93IjJMcuHR6hrqDUpDsCL9/Q3EGAdLVamBtIwEzzXaRi42o26hthglxed6wyRURzPPM6zE3pB7X4A/fsUJUxAAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="endermite_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAALVBMVEUAAADgefrNC/pXP3CBH6CZAMxCL1Z4AKFyAJpXFzJaAHowIT4jFTAaECQRCheXikZeAAAAAXRSTlMAQObYZgAAAE5JREFUeNpjwA/u3oXQvNuyL4AZt83SzoIZl7P37IPIWE478wDESE5L2w1icCTuPqO9AMRQSdMOBTMUxTZtBzEYWpWiq8DauVatWoDNQgCmzBj5raABowAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="evoker_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAQlBMVEUAAAADAgI3Ozo8QD8UExJ9VR2wjzq8o0GhdzAeHBoPDg0pKS/OyYepn2yWjV0uMC85OTmts7JaXl6Vm5txeHhITUwhMwDoAAAAAXRSTlMAQObYZgAAAG1JREFUeNp1z0kOxCAMRFFoAoSewNP9r9qltiwlUlK7/yQvnG5m2KlVRO3cR7G1iETWtIAJQc9HHBCpKouyiwkRKzMwQMgwDthFBF0A9Q/P/nH4tuww3r0AetsALq+CbdEp5THa7h2Sa835+u8fXdAHZZMrh+sAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="fox_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAMFBMVEUAAAD59PTo1svVtp/3mki6n4vifCGZg3N/bWG2ViJjVk2WQyd9OCBcKRhFIBgGBA7vO9CoAAAAAXRSTlMAQObYZgAAAFhJREFUeNpjwAf+Pzhzhu8/kPFRZlrmQXkg46GqW1qQHJBxMsQtbepcIINnSlra7AsgRlpa2kwoIxPM4EjT/zxzAYhhJKgaDmIwLDYNjQIbzbVq1QJsVgIANLgca8pub+0AAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="frog_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAHlBMVEUAAADjs3PqoHnGi1XXeUmkcEerYj2UUS5xPyVULxzjl5I4AAAAAXRSTlMAQObYZgAAAFhJREFUeNqdjzEOgDAMAwk2jvP/D6NGraASE16iO3mIj9+x7Y1Fym8+SaYfcQ6h2gtULmN2tCq2pMFZ1UxHQALg7lhGRAC4psj0hebMFibdIee7VTXP16obHXgCwJXlDwQAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="ghast_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAFVBMVEUAAAD////w8PDYzMyzqqpzbW1eWlofQIPKAAAAAXRSTlMAQObYZgAAAFpJREFUeNpVjVEOgDAIxWYL3P/IJgx1vp+lTcPWXmbmOpaC+ecxw9cFEPkImrHeAEEck6CgI9I5gWHtCwoQYbQIpmCEESH0swvp6VcIO5lvzqBNaWOtZ1VVgzcKlQI4upYYaQAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="glow_squid_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAPFBMVEUAAACl/8xU3ZlDvZlYoek6tbIusXsvl5lCeLImjGMjhoghdVU2W5MUcHEbWUQMWFgsQXMISkojK1wGOzsc9oZBAAAAAXRSTlMAQObYZgAAAG9JREFUeNqNy0EOwyAQQ1EYYEzduAF6/7s2ESVqdvXuP8nh3/VjtxagfutSfqRTIsS9L1CKiUa9VyuaEdA+pYPJEgBpQSEh8gKhQOb6XsZTAugnvMYJzSMlifExJmzVo3n0rbURpuRcc119yLUQwgetWgavjiguDgAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="goat_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAJ1BMVEUAAAD////w7+zj3dHMvaO9qo6rlHaAbV1uXlBXV1dAPj4uLS0hICDCtJxxAAAAAXRSTlMAQObYZgAAAG9JREFUeNoFwYENgzAQBDBfSBUk9t8VBPmvDdcFXBcm1PVh1sCE2GXMBAP2U9SzYVrs6lCjl+dYL7tFSNVv+tlNGnUQ1tuSjpi3AUEywEQ6i3wdDIQ3+YCJjO43ShCsaqRz3ATOKpFxI+AENwAA+AOCjy9MnsVuCQAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="guardian_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAM1BMVEUAAACQtqr/kjNYoelwl4rsZCpWhW5CeLJKe2TKPBw6Z1M2W5OWLRUxV0QsQXMiQzMjK1zucxXSAAAAAXRSTlMAQObYZgAAAHpJREFUeNp1zEEShCAMRFGQDiQtQe9/2kms0SoX9gLqv0XKxzz26g52fzWIlKcrSNBvQDUzQI8sM+u12iYGZUSxTSRAbEJFNitzTgU1PijjzRNkkkLzSIICoLv+4fQQAurux5mQ4hqLvmDtw6/tayWktDbauDvkWSnlB6GCBodWiUQBAAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="happy_ghast_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAGFBMVEUAAABzbW2zqqrYzMzw8PD///+Xj49eWlqFjn3KAAAAAXRSTlMAQObYZgAAAF1JREFUeNpVjkEOxDAMAmOGlv//eKWEdlVuM8LI62RmZu2UsZkv15Svy7Y1j/Bmk7cANkBa8NmoGDphRM4ClLWF3IYrkA6rJ8LIFrwNzH2DpPwfdwvbBDZmPUmS4g8dgQJpbuXvKgAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="hoglin_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAM1BMVEUAAAD//67l2pXyuobooHTVlXrJgmWhjEe7clulY1CKaj6VW0pgZGWAPyVFS05hMBwhLDWXrVfEAAAAAXRSTlMAQObYZgAAAIhJREFUeNpFjVsOxCAMA8MjxoG6cP/TbhFddf5mZCV2WGvZsg+t615fkOj3tSi9XlkLb4FVxxGluDsCu8ghL6W6k4LLROpRgKTIPXkHDp6z8koCYAQ5dwD9gNihNQQkdwmDvVtLrVHDfYitpSfklLi/eGVKuZu1nvPY5Jx7t41mkIyY0/7Mh1d/XEQGdzXl+r0AAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="horse_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAOVBMVEUAAAD/9e7p18bNspa7l4SceWaUZzSNYC2DViN0ShpmQi9iOw5ZNQxPLglBIBk9IwcrGQUlEQYAAAB31nKZAAAAAXRSTlMAQObYZgAAAIJJREFUeNo1jEESwzAIA5ukIXKEDfj/jy1m3D2xOxo+xUzsszGzOSI6bZ0riIzgfYF5VYAFcR5AN1SgQeTIQGcFo2Q40di9Pq/Bc90A6eV4HlnWqN3/A3xvqpIVGoTzfWdXagUAI5JB3aEhZhLcCzZwrAFZT6tko5ZXcSbavbzwZOsPtY8I/NC47/MAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="husk_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAOVBMVEUAAADozZfJrXCxmmeRgFuAdmN8bVJzZklqXUpeU0FXTDRQRzVFPClENyA2LyMwJRIpIhchGg0NCgUIoVxNAAAAAXRSTlMAQObYZgAAAG5JREFUeNp1z0EOwjAMRNFmPCGTBFPo/Q9LVBukSjC7/xaWvP3ZWLs0AY5Ll5RslQKzNj6AWgAY79kslQaALeShWiXCyGdAV1WX+pwJOte/MHhbJU3l1VcjYCDZji3EvZF0Xx07dl+2R4ec+/33G9GaBCwskW7NAAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="iron_golem_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAATlBMVEUAAADy49jl4+PQ0ND/1QDWxLW8vL3trAClpae5mYOQkJGbiH50ozKZfGh6enp4ZluBYkxjYGBVbiloUUFpTj9fRDFcPyo+URpJNCVGMCFr0DdSAAAAAXRSTlMAQObYZgAAAIlJREFUeNpNjNsSgzAIBY2IBgNJi9TL//9oGaIz7lN255ChU53hRc0Aub59Bpij3D7CCDOs9QmYEjr0fQZp37b9umjtpUJKpZSGlCMoJ06ttCbUJx9knn6OB7K4AGb3UyjHjfLE2APREQtGPD0oLRp/kHpwRFVsuAuJyBIeRXUhErXwwA4zO+L5B8E4CJHOEp9kAAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="llama_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAGFBMVEUAAAD/8NH35b/x3K/PtYKzkW+RdFR9ZEjeY2d1AAAAAXRSTlMAQObYZgAAAGlJREFUeNpFzEEOAzAIA8HgNfj/P64aota3HSHObmbmnF+cMXjOYmAMwgP5gsdVSPT4gaoEOAtxXZA7uU9VVSDZ29y2sTvvQEiy7QuoCIR+AEA3fxA9M9N+YIR3nbNyaftKvHn7LklefgCewgMnQavHoQAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="magma_cube_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAMFBMVEUAAAAIAAAQAAApAABACAhQDg5hFRXaaRjLPQehLgR1HQDmmDbtt0v663JjGQAAAAAzFbboAAAAAXRSTlMAQObYZgAAAH9JREFUeNpNjlsWgzAQQs3AvKJm9r/bxtpU7x8cOLDdtMn2okEV7a1JEbRHm0GV0pZBI6iKegpGKCH1D5gSy+hpRhIQGTmmgfQchHBkZF0J9f08jt0jEuMyQvt5Hu6uiPEd8aN3M9UI1L2a+2x4dJFaP3DPrGcFEUCqtkVNfvIDyMoERHGvixAAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="mooshroom_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAALVBMVEUAAAA4BwxWVlZmCxOBgYGzs7OgDxDg4ODMISOoW1yJWV1EREQzMzMhISEpBQkqnHD6AAAAAXRSTlMAQObYZgAAAG5JREFUeNoFwbFhwCAQBDD9QZUA++9ppzQfibWQJFhL6CUZI2V1CapSVAqCNyMY+UNUDCh2iOdNLpN66xEMgw9BZIY70d4jaOqDDsHtC12awIWmEN0mWoPQ9dEAAwLN/X1AnTF+5szeAM45e2/wD588IfUWoZ+6AAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="mule_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAANlBMVEUAAAClkHOAalhmVUZmSDZaPy9mOCJaMR1QLBo1Mi9FJxk4IBYnJSQ0HBYuFxQjExEWFhYaDgx3sFxPAAAAAXRSTlMAQObYZgAAAIJJREFUeNo1zkEWAyEIBFHHONCxVeT+lw1PTK3gb6AUMytljL1LjsUAs/0d2wzwC8Te4B9oVEG0jAeWQVSBTl8HjCJHuDwgBCoC9D7n3UVFW0MnlyeItFobOGeCSrPnsUYmKLQ+USWZoHg/0TsvEECNOOfyktKBzjxyxBnlWzeP7voDvkMIXoaomy4AAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="nautilus_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAOVBMVEUAAABmRS65noLh183/a1QvRXo1Wos+dqNLmMRjyf+shGasKCRZHBt1JSPDtJnUyLbbWkGzQTKAVzktOAFXAAAAAXRSTlMAQObYZgAAAHpJREFUeNpNi1sCwyAIBF2MRpuHwP0PW8Cmcf52GNJEjbSgwiy6bKJxD9L3vm3MS6OasxVD8dsjqwulD55A/UUJIS7GprcXguOMD+QpCOQJkAfYAMVPuQSAFwDkLCaYBYFIiCo8sX0UF3t79l5rSWF676232EYtf2pKX/5XB9/lcxS7AAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="ocelot_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAJFBMVEUAAAD/+/X/7r3/3XTy0Zrww2nfply/nmfBjU6gcT6OVSprPyBRmsdCAAAAAXRSTlMAQObYZgAAAFFJREFUeNpjwAc4J6xaxTkBxJBKtlgIZqgIJzuBGY7BxikgBlejskXaAhDDyMw4cwOIYWZs2gZmNFstSwMzUpRcPEEMhuUuLtUQo2fOnIDNSgCOoBT8d0Ot6AAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="panda_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAJ1BMVEUAAAD////l5eWysrKSkpJzc3NZWVkvLzsbGyIQEBQICAoEBAUAAAAwaQoaAAAAAXRSTlMAQObYZgAAAHVJREFUeNo9yFEWwDAERFE1BGH/661IT9+Zn7l0046+9k5SMEMpM/ubeYE7lLsn5fnPc0QqooiqlC9gVVGnEDNmd5FFA2wXAuv/PhCyfgAO4IKYi/dCBgzcuTMDyIbUkflaB8IVk8ZuGDlFzB+piLnzp+q++wJ1iATZNOZIOQAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="parched_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAMFBMVEUAAABXTTWsmGvOtoZ+bEd0bmZUVEhmZlpKRz2HfnaQiXrdw47AqHI2MipAPTVwY0QNymeZAAAAAXRSTlMAQObYZgAAAGlJREFUeNp1j0EOgzAMBMk6u3ZSQv7/20bUUkGCuc3IPuz2wlzc3KxqXh0exPw7I2CGI8NBYV+ukQf4LPZOxchgBlejNPKjddIvoTlP5BmidS4ao/yCR8hdEbVsWUipYnlSKoD0LCfPu78CrgOPxDj/xgAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="parrot_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAANlBMVEUAAAD65QDgrAC1iwD/TU2ZbgAHg/vwIiIDXP8IRdEHP7i7AAecABcwMDAGL4qHABtrABkPDw8eGJArAAAAAXRSTlMAQObYZgAAAF9JREFUeNqNzEEOgCAMRFFakAFbqNz/skYJBFz5d32Z1PXM3JqZBtsgKD4TFdknAqxiEgCoLT8ekGsdlALRIZ6A0kT4mEAoTXnCGYla85zqgBSJPac8wNWcuN9T3ty/biFSA8Vd7b4cAAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="phantom_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAKlBMVEUAAADt6tHDuaGVjHl5bmBQYaRhVUtDUYpWSkJJPzgtP1YpL0ofJT8UGClVMXaXAAAAAXRSTlMAQObYZgAAAGtJREFUeNpjQAZnciA0z+KqA2DGqaLyNWCB5YJK1SAhNsXAcuUEICMrNLC8ahuQcTxQSMlqLZBxSLW4vNgWyEgvLyqvWgnSXW5stWotiLFESXnVXiCDw9jFxXgCyMQpxsaeYCs4Z86cgOQEAE4XHhyk8IWUAAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="pig_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAGFBMVEUAAAD/ubXxnpjsiYXmcW/GYVqmS0uRQECy7QJpAAAAAXRSTlMAQObYZgAAAFdJREFUeNp1j1sKwEAMAjdqzP1vXNh3oZ0/J0Kw/WDbryxSvjNAyFcOAEgvgYheqVWILqgcxowAlZSWQCd5hEqsI4QkQGsLKW1Lud9Mqk0qpXHfpvO9+wEJ9wIrFqe5NwAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="piglin_brute_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAS1BMVEUAAAD//67l2pX12iryuobooHTVlXreihzJgmWhjEe7clulY1C6WkOKaj6VW0qrVxaxRjKAPyWJNih2Kw1hMBxgIwowLzUjIicHBghQVjoQAAAAAXRSTlMAQObYZgAAAIZJREFUeNp1j0sOgzAMRCHEg+MSFxdocv+T1kl/qlSeZjHzJC88nGDOzxRAvspIQMQge2++xEgLmPa+wUaReBVjNGMiFsFyW711YUZMMUIX2183AoNHpe+UoKzMKio5NzGmu4IZWtLYRA5hK+qUIwQXbnLetsPxMjypZZrmudThQ71Wz/+/H5zmB2B1es0HAAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="piglin_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAPFBMVEUAAAD//67l2pX12iryuobooHTVlXreihzJgmWhjEe7clulY1CKaj6VW0qAPyVrOSR2Kw1hMBxTKxozGhAeHxlWAAAAAXRSTlMAQObYZgAAAH1JREFUeNp1j1sOwyAMBBOKt2ZjmwTuf9cC6kOV2vmbkfZjtz/E4EsJ8JNCCBFQ4uV65Cw4VK7l0JDhQChmCTIylESQK0SISs5wxvXcEAEEnMtLgaurOp1mM+ylOlThtewzWEpn80E7U7JtFrNzYXOx6K3e7rX17U1f/P79ACyZBoWzkao3AAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="pillager_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAQlBMVEUAAADHzs6ts7KTqKeVm5tmh4VxeHhaXl4+WVhITUw8QD9aLzg3Ozo5OTlLJi0uMC8qKik2GB4eHRwjEBQUFBMNDQzjzQiIAAAAAXRSTlMAQObYZgAAAHJJREFUeNp1z90OgyAMhmEspT9swJhy/7e6Dm2iiX5n75P0oOFhars0IZJe+yxaCgBiaerQTKzb2w8AiIiReBdFACZmQwcEtbGDLAmtM6coE9Ya5Q8S+3rAq2aDXvsW5rZPzbb+HSG4pCWm2S4yhoz7v383PgTlKwbCbwAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="polar_bear_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAHlBMVEUAAAD////09O7V0Muoo5uCfXxzb21NS1EvLzsQEBQ8FeSTAAAAAXRSTlMAQObYZgAAAF9JREFUeNpdzNEKwDAIQ1FrTGb//4eHaMtY3u4BtR5Jmt0wwh20RrpXlzhYAGKtkiDYJ94AsX9gDYQa/AD0a4QOVNYafE1ecDyZT3whM/cFlOwdMU9HgOkSTcrOJGnyBUhnAps1kthJAAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="pufferfish_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAARVBMVEUAAAD85bz8yWr/yQjduYVjyf/7pwyEtcC7qxq4k3DNjhpel6ZLmMS2eCZ4dyCHZUk7fI8+dqOWXSAxcIaATxw1WosvRXpRB/9YAAAAAXRSTlMAQObYZgAAAHlJREFUeNqNiuEOwyAIBrEqtdQqyvT9H3VKu7mfOxKS73LwLwHCfGummmqARSVEqitIZJHwSuEbWIsjef0EhOM+CTMqRMy32Ak3Yza6dr63oBk4R6KGT3G63SGnDCHS8+Hmzl2mgF5iVlrroKJF76OPpTwCWn9oAPAGTmUGiW/2ieAAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="rabbit_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAJFBMVEUAAAD3uMbJrJG0kXO1hFmldk+XakZ5UDNhRC5iPyhRNCNCKxurTdcJAAAAAXRSTlMAQObYZgAAAFxJREFUeNqNyzkSgDAMQ9FgYQuL+9+XLDi0/ELFm1EbSbUrRWhtARaggEb1aLkhGUGhIMEzItILxHMAUx/EhLsgZuQLHOC+gdYBx4ENEGEGIOtCOXqutrvYu9q/Hg+zA3JcFIwCAAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="ravager_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAALVBMVEUAAADHzs6Trq2EkYZmh4VveGxgX1pHZmVbUEk5UlFHS0VFQEA3NDMmJiQcHBsFxc+tAAAAAXRSTlMAQObYZgAAAH9JREFUeNo1zFESAyEIA1BXMbKC3v+4TWibHyZvMjQArbVkeFT2AHu4BwVjEwbUJRgECgIQhAaEOQWSOQkSnHPuvaEu2EBEpMcuWP0BMjIjbL0Cx9MPsyxCkFy4nmiRtfBa3FoIene/34UVWO92mWV6+pelqJe8xrBWr7zMr34AnCMGd980vfcAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="salmon_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAASFBMVEUAAADg09Njyf+5rK6zpqi0p3uilGmZjpBLmMSpcT2LfSldhWXYSUc+dqNUc1qFUiWrNTM1WotUTk9uRB+CNTIvRXpZJyRHHx2q1LRFAAAAAXRSTlMAQObYZgAAAHJJREFUeNqdy9sSwiAMRdEA2lLKJZCE/v+fGmN17GvP214zB25v6i7NyDz/O19l5owqx68xY1qYv9IItVXwoA80THXfa+JG1ltzz6pbQtvIgB7OuRDCSgZEMtbw7iFkHylx2HoXMOjR++hjKSdAl3MdAF4fCgfOfPowbgAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="sheep_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAMFBMVEUAAAD////s7Oz/uLjHx8fguJ3mlJS8moGZmZmtinGceWB1dXWHY0peXl5zVD9eRTShp0bnAAAAAXRSTlMAQObYZgAAAGBJREFUeNp1z9sSwBAMRVHiuAX1/3/b0DA10563vXiJ+VmRHQ0ilLNVVtshqSwgOwFNG1YhtfXB+xhjBhbQ6MgvGJ03XBBxjgH0BxiUQxCo3agwZMzd6Hpl2XjfMvd99w2fywOf67hmjAAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="shulker_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAHlBMVEUAAADm8K26tnm1grWZj2WXapd3VHdmRmZWPlk+LkLpJ/0RAAAAAXRSTlMAQObYZgAAAF5JREFUeNp1j0EKwEAIA1fdxPj/D5fKSim08TSDEF0/kaQXE6DefMxw3CY1AtGCNQtxB2DWLMDdneQRmXQz41O9LSJg+6DW9gDS96q5MglK0tSQ2VPrpJq7dEzn++8LdbcC8JdVreQAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="silverfish_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAARVBMVEUAAAClpaWOlIWNk4SJiYl4jpt3jpp+g496fot7e3tuc2dra2tZWVlTYT5MWWFDSVlISEhBQUEzMzMrKysfHx8XFxcAAACOwMG3AAAAAXRSTlMAQObYZgAAAG1JREFUeNqNj8EShDAIQ+k2xdWgy4r2/z/VGcvBo++WQBgir1GpT1l98/UxFCcaXSWZVpYCmMuUjpeZNO468uI2FzSY7XljQ/kAbeGv6kigkWbk2NB6GoFG867jmTP+X3CJo0vSj4hInc7Ny5YXEEYEpRfM59gAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="skeleton_horse_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAG1BMVEUAAADo6Ojc3NzNzc24uLigoKCEgIBfXFxFRUXmv1ZrAAAAAXRSTlMAQObYZgAAAGpJREFUeNpVjkkOg0AQA2m8/v/FUWAmAd+qZMk+7iTJ8UgEKS+GoPx5Zgg4W2AGFtRfgTIBuY8CQKmbTYGW3CViwtFdyYlxyFjiJWYAi5ZwC+taFWF33SYA2mTX8TlBid7Pqm/cHjttu/ADkScDSanzjNsAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="skeleton_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAG1BMVEUAAADa2trKysq8vLypqamTk5N5dnZXVVVAQEBMRAqqAAAAAXRSTlMAQObYZgAAAFpJREFUeNp1j0EKwEAIxKpxxv3/iwuyCy20uU3MxeuH7u7XFla/dhn1824l7iMQItA6QUagQF47iEiUSEdkAA+RxaDawlOQeIuyVSV7ijEgwexheZi9zfD99w09KwJ9qf4s8AAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="slime_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAFVBMVEUAAACU1nx1uWRRmj5KgDg8YzIvTSeGe5irAAAAAXRSTlMAQObYZgAAAF5JREFUeNpVjkkOAzEMw2Jq+f+TC0yaTMsbBVnw2iTJ+iEC5d/BeX0G4ZuEGUzUW2BwJPcUNAByz4ExgN27YBDWDhiAOxuxiXIaQoLEb0MCSe59/PhDKj3adWjbr34AD1ICOrp6hAcAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="sniffer_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAPFBMVEUAAAD83VH6yTfopSHRgR8piGClVAEsc02SQQAdXTyJKBqBIRhbNgkTRzMPNCpgDQ0LJh9KBwc7BgYuBQX+Ji3WAAAAAXRSTlMAQObYZgAAAIJJREFUeNpNykEShCAMRFEwQABNh8D97zqMqMWvbPpV3Aozt4VYmLFvlhLLJyjMEjeBFHAULu19AIQZLI+Ai56CE1jQwUJ+RiJof1ARfxyH93igqlKiedbauKHWcBFdwVQ/CIEomC3QqjmnlHM3G+4WTRQopL72lKFqZn0M9zZmz/wBgukHmAQxhRAAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="snow_golem_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAPFBMVEUAAADr9/fJ1NPyqkSotbTWphXjih2MlpbMdxZ4gIKheAC4ZxGJZyegVguFYQBoTh5+PQ5ERERjMAxCMRO5Pce/AAAAAXRSTlMAQObYZgAAAHhJREFUeNptjFEOAiEMBWl5FljsWuT+d7WAmJA4X53JS8OX+w4Hdj3s8FovtcMl12o/d41SRW0HiSPk+t6DGFVEnVVMRaFZE2yFBFVqHhhlht4Z5BHc+/RXJ6IGgP10f3ZmIiZmhkvwWfK7sVOGDQoY2C9XmYS/fADgPAVjmj/9kQAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="spider_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAIVBMVEUAAACSiX91al9gVEhSSD5HPjU+NS4yKyYmIBsbFxMSDgqAlwxXAAAAAXRSTlMAQObYZgAAAGxJREFUeNp1jEESwzAMAh3bgOD/D+7YqafNIdx2JWgvse0HC5QfPAn5x3NMgOUjMAYmqJyHscVU5RYcuwHpiHUG+RU2BexRJWvRl0AQqh6kWZYukbqqskqB1UuqrmBzklqikmXur522IWl/ST7qNgSCnXfK9wAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="squid_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAOVBMVEUAAAC9ubljyf+hnZ1LmMRwiJk+dqNUbYBEXXA1WoszTV8vRXqWFxciO01zDQ0ZMEESJzdbBgZHAABdrQojAAAAAXRSTlMAQObYZgAAAGRJREFUeNqNjEEWgCAIBck08QNZ3f+wWWQvd/3dzBugv6ttA4MZ9cu5DfXD6TJWu8jpFth6kB5h2xBkoAt/wa/g7MFzIjvYA7NDLlF0AhrZvIqLJeqkOutSipCbEGKInYnkHRGdUW8FfMZ0hzQAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="stray_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAMFBMVEUAAADd6urM29qz1OO8ycysur2crqyEprWDlZRtgYFYbnBRY2VGW1w2SEg3RkctPT3+NKaPAAAAAXRSTlMAQObYZgAAAG1JREFUeNpjQAb//0NovlVrPoAZbyJWnQcLrHmz5swHEGPpqRNnHgAZO86dOtpxDsjYHXGqJWQfSGSSV5BmD5Cxqy00rOMMkPGnK+LE2ftAxqdTPWfu9gIZ/JcO2sSCjf57uRYoAxL6//8DkhMAtHUu61zbghIAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="strider_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAALVBMVEUAAAD24L/NqIZPGht0JyldVl1HPj+cNDa9RERvaG9cHyE9FBYkHyA1LS0XERGMbu87AAAAAXRSTlMAQObYZgAAAH1JREFUeNpFy0ESxCAIRFFB6DYJeP/jjqhV07v/KNpZX2v/aTfSut6U3aQeEWlqOgreLveBG6hfnZt007EAlPerl9YpBYMmBaefJUS+3waM54IVBDn8AUmzAyDhIB1mc0M6YQvdsCHDYb4YkQUtAgh4ZkZ1ycyMyuqzuXbzBzGzBS7UwNLNAAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="tadpole_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAKlBMVEUAAABjyf9LmMSHY0Y+dqN2Vz01WotjSTMvRXpXPSdJLxk2IRAmFwsUDAZe2F9bAAAAAXRSTlMAQObYZgAAAGRJREFUeNpjwA/OnIHQPMtnHQAzTpmX7wEzDptXrgXLLA6fvvoCSGnp9MpVQAZPzOzjc24BGcfX1NycC2KcurOychVIzR2O26tX7W1gYOA9onv37rUMoK42RSEhFxCDrQMIEhgArD8pLR8W1rgAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="trader_llama_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAALVBMVEUAAAD/8NH35b/x3K//vgDPtYKzkW/MjimRdFR9ZEhDX5EsRWwkOV6BEgBiDgAnK37CAAAAAXRSTlMAQObYZgAAAHxJREFUeNotz0EWBCEIA1GbGERR73/cAZw8NvV3tDeLtVpFMwK09nAC2RICzAQafa3lrsaCSGVM3R/sTXyCkL0TWh/4PkDI0bPNF6JJcPlMGB0CESH7KDgXmHl6T0EfAFQBHb3gHqjFlOcWqApYU02oRx5ll0y+rK7N2D9/jdoE1ENphKgAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="tropical_fish_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAP1BMVEUAAABPSkqWjI5jIwCMNgDTkm3sq4f///9jyf9LmMQ+dqMvRXo1Wot4KgDmah70uZXw5OTLWRKoQQDCuLhrZGWfKnLlAAAAAXRSTlMAQObYZgAAAG1JREFUeNqdy0kSwyAMRFEJSMJkrOn+Zw0WVIat/65fVcPtbPa3lUh/5NAXEYX4hXESPSV+tozBzJK2WKCTZw81XCBMVyrJwfTgKxGJAR1M1k64wBoGnQVs6J9WC3q9N3DoJeeSS60boLddB4A3xScGnzJN4YkAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="turtle_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAKlBMVEUAAADHxIm0rHtLxE2fk2w/pEJ4fU07kkA1fDxgYz4naTVNTy8ZVC0WRSbPPfk3AAAAAXRSTlMAQObYZgAAAGhJREFUeNp1z0kKAzEMRFEPmmJX3f+6EcIONKQ/3tRDG7eXkD12qAae+8jdU7OFCzoLgvdgHlj8HRRFXNC5VOEHkODhHhlR4Nb7yGcFUJqMLn2IGAMNwY+dNhcbybZNTMR2jWpX///9BSNuBJO4FQkCAAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="vex_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAJ1BMVEUAAADz+Pzg6fHG2eqvyuOhutKUrMODm7Jvh55nd4dTa4FEV2k1RFKeh9VHAAAAAXRSTlMAQObYZgAAAGxJREFUeNqNikESwyAMAykQSZb5/3tLQj2TY/dgjdZqNxF1D/GJd0SgBHbZ0dEjN9HR75f7GClQOUZ323imJi445+lAzklCC/AZ2ATpXL9J2hacudwekgRIabUSF0m9hHBBkku0ZVUv89D+4wuhkwSR35JKvwAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="villager_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAKlBMVEUAAADWnXq+iGyWZEmQXkOEUTxxVE13QjVaQj1pOi9MODNZMShEMi4yKihCcLhwAAAAAXRSTlMAQObYZgAAAGFJREFUeNp1z0EOgDAIRFEZRKHS+1/XSVsWTfTv5oUNx0/Btn0CZ+x7SW0RikUB/Lo8U586EFFVg9qUgIipGbEAcjMrSADcQegTXBe0AvcgZEvCkObBkgerni0Zd9VH33+/mDADoFbtAlEAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="vindicator_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAOVBMVEUAAACts7Kho6KVm5t+fHtxeHhaXl4nXmFITUw8QD83Ozo5OTk8ODQhPkUuMC8vLCgWLi4lJiUQISGJ7OfSAAAAAXRSTlMAQObYZgAAAGxJREFUeNp1z0ESwjAMQ1FcV45D0jj0/odFxXSGzlDt/tvpcTPnLg1V+LV/xVsTUW3DTxgU9nh+GyIATGEpriIGM2JCqIpzlFdCh7KrIRJm73FAROwJZYl6wLoRUkrl5mTn9q0sa/Ypn/3//QYJwgSfZUol1QAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="wandering_trader_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAATlBMVEUAAADywDnWnXrMjim+iGyWZEmkXx6EUTw3VIJ3QjWAQxhaQj1kOC2mFgBpMQ0kOV5UKAqBEgAkMkooNCAzJBFiDgAaJTYeJhgQFyESFw7d7p0rAAAAAXRSTlMAQObYZgAAAHdJREFUeNp1z0sOwyAMRdFSMFCISfk4tPvfaC1HjhopubN3JA/8uGnjTnuNsf1JscZY78uxPSJWokMKjpzzGPTWA3QAEBz5XYrBZ4AQQGGz1b04oPTZIdrKe6HUFCIJNIU19oVhNs8gwsDNJFuk9zln5619peu/f3PZB0y31OnBAAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="warden_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAANlBMVEUAAADR1rYp3+uir4aBmYhudXsAkpVAV2wFYl0YT1cvQE8DQVAjMDsGLjcRGyENEhcFBBIBAQN9CjstAAAAAXRSTlMAQObYZgAAAIhJREFUeNo9jUkSxDAIxPACDgn02P//7ICz9AmpSgWRqhLNGN2n1qo04Y5531oPS05jRwiTWnFdPsLUKkZmKhIiJqJmRHRyKSHQOp9EKVopkBA8bLNfjiwA/NLMFsVI0zuvXbSCwAHOJhMkSybYiffWngI7Ye4d4lG8bwB8T/bmAhLXoncr9uAfgTIIdK5/vqYAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="witch_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAS1BMVEUAAADEtqOmmoiHemsltDWQXkNuYlGEVDoMixpeUUZ1Ry9jOydANzAdPAk7GmEuJyInJiYxFU8TLgEmDz4NHwEVByUUCCEKDAsAAAB5dO1SAAAAAXRSTlMAQObYZgAAAHhJREFUeNptytEOwyAIhWGBWed0VkcHff8nHYm4pEn/Oz5O8FTDJe3dxd/9+eh6/k89PadMCIhIWw4OWHOu+051DQBijMkm1QcAKaZERAsQXta24IuIdhcDmdDIIBqMBa0VW/BgCVNGKxbbwBNu7w/Pv4sch0i47QeKaQa1MCZ18gAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="wither_skeleton_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAG1BMVEUAAABLTU08QUE0NDQpKSkfHx8VFRUODg4DAwOmrv0FAAAAAXRSTlMAQObYZgAAAGJJREFUeNptjVsOwzAMw2K9nPufeGjmrR0w/pGAoPWmu3s9aDPuH5fpfrgtMP0JFMWi97hRRRWdPaEKFO4gFEjQngDxQtaEEAAJfCeJJSea4LMn7t9Ykq6TYSd2jg/7sP7yAmpGArHH0BHEAAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="wither_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAJFBMVEUAAAClpaWOjo54eHhLTU08QUE0NDQpKSkfHx8VFRUODg4DAwPcKqYdAAAAAXRSTlMAQObYZgAAAGlJREFUeNp1jkEOwyAQA6FZD4b9/39LRUi5ZLQXr8aSy2JMysFws8eZacbjnyUMfewHEb+OcwsRDYx7PoKgcSsjUABgk0sAJHA4lxHzRMRphMB6MRRctdbPZZHPUMlS38vSBvfMssnJHb9d8AS6W7NLiAAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="wolf_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAALVBMVEUAAADm4+Tk2NnKx8jTwLi2srHEq5yxmIWfmpaagGmAe3hmXldPSUQ5ODUmJyaguBBNAAAAAXRSTlMAQObYZgAAAG1JREFUeNptykEWgCAIRVHxh+FX3P9yI8pGvcMA7qH85O5lRLncLYhTQResB1SIiKIbCAFU+YIPiCDEpicMExENMc6EfFCzmBcU0lo77QOgVV/15AbTdtR69PGBdY/6YMCWaN/RpBmZ95as/HYBhEwEuuqnWE8AAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="zoglin_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAWlBMVEUAAAD6+vrj4+Pg4OD/ubX4q6a8vLzxnpitq62ksY2np6fsiYWynXeTpYDmcW+Tk5OjdlHGYVppjkV4d3hhezKmS0tnZWVgZGWRQEBUYiRUVFRFS046TRghLDW+AxFYAAAAAXRSTlMAQObYZgAAAKNJREFUeNpNjFEWwiAMBCm2gI0GU9mIqdz/mpZafc4XM4+s22muteb+aG19NPwU4PZYiYHDJ57GFUQ84eMk4xhjJKFeEAmljJel3AQU4cAMf16ImKW/+6T3wS/blyL7rAU/z2EhFrlx3UOe/bXsqz2oBg1mJQIENnM6qGa75yJg1WELaThpzvkZJz4NybYbS0n1CaSUzFzHrDCzSK3uy+tV66FvSF4MiQv4elMAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="zombie_horse_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAJFBMVEUAAAAbIhEnOSk8VSoyRSpNXy5ZbTKKlFcHDAgmLBkZHxATFwy3bpxGAAAAAXRSTlMAQObYZgAAAHZJREFUeNo1i1EWRCEIQh+IlrX//U5xmvslV/jMPOB7AJi9Foh7XlHVixEiqiwCzhIQFkRkxoGbFmBVuYKNz5tyQ+J2HrdAUGRegxyj1E1m0iKzOLsnSFqMUK9D/ydRseZh8U0YwXaBuMImRMnZZot+O5t9ePEHy1QDpH5OgyAAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="zombie_nautilus_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAP1BMVEUAAADk6dEvRXo1WosKERQkNCs3RzM+dqNLmMRjyf8YJiOasyKJf1srgCgylADFxqp8ng1hVjPZ2r+npoR3bElqgOvmAAAAAXRSTlMAQObYZgAAAIFJREFUeNpNilkWgzAMA7MCKZBYtu5/1qZJWeZLM09uwo57QdNmfLvfdzE+Lt6k6l1I77WaEn9XT69NaQeuA1Wa0IB5gKdIMxoOzKCU2pTnDAkqqNYU54nkXEgZ6NsUQE6hh2XJGOQ8QszLpPsn/MK6Xb7GGNwopZStbMM7MdxE577/BQjc8ivY7wAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="zombie_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAM1BMVEUAAAB9oWhyk14Ar69ph1YAf39KaS0iWo04UiZBN5kAW1sxRyIwKHIAR0cnOBomIVscGyaVAnXMAAAAAXRSTlMAQObYZgAAAGZJREFUeNp1j1sOgCAMBG3ZLdYHev/TKoVoSHT+Zro/nX4oN4PPZnMZPcrrUMVbCkQUCuthNREB8EzWGEDV+mSBSnWY7S2kpKiQLRxMAbmcLXhmeN5qiOJO0r16cG7ume3eS/D99wXbkwPSNxALPgAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="zombie_villager_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAMFBMVEUAAACIqltskkN4ZFdScDJRbjJmU0dIYShGXytTRDk4TSNCOCwsPRw2LyUzLCUnJB50by7QAAAAAXRSTlMAQObYZgAAAGVJREFUeNp1z0sOwCAIRVFB/KBQ9r/bYiNNTNo7eydMSD8N79iESOPcW2LDkjYCUJnVjCQOAEopHanJPgDopXciCsgwvBagNaNvacQWUBfoC1yrLOBpKUQ89YPdNVk935E9ff99A+1fBFWL7tUtAAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="zombified_piglin_spawn_egg" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAUVBMVEUAAAD6+vrj4+Pg4OD/ubX4q6a8vLzxnpitq63siYWTpYCxl3HmcW+Tk5PGYVppjkV4d3hhezKmS0tnZWVkY2SRQEBUYiRUVFRrOSRTKxozGhC89mhBAAAAAXRSTlMAQObYZgAAAIZJREFUeNp1z9sOgyAMgGFFaT20MtoxDu//oENYzJbM/4p+CU063KQq8jOz3+mLFDZnkaxcs3GzxWO14QPGgNsRZcUmChU2TyhEDaIBA37GgyR0YIboMFTpP5SVH+AOEtJ4wqhJmT1K0vGE57TkpPqSnJcpth0xppRr9TH0Sm5ShqvS+n/3Gw/uCP4Cxa7SAAAAAElFTkSuQmCC"/>
+  </symbol>
+</svg>

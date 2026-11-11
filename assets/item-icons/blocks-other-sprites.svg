@@ -1,0 +1,979 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges">
+  <defs>
+      <image id="texture-block-barrel_side" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAHlBMVEWLZzyZcUCAXjZ4WDZrUzJmTShFPztVOh8wLCkoIhwpiTDPAAAAaUlEQVR42l2MwQnDMBRDRfDHV9VN6TXYNZqgZCPjScxfwds2aW7RQyBdHvi4gPECkWKlEnprzcfomNPnGajsB98Cg/DCe0OgcV3WDZYCPykC8Rmo/yg6jgE+Wu8+/O7ZC+piPAvlmpWVf7P/GOxd0BSQAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-barrel_top" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAFVBMVEWZcUCLZzyAXjZrUzJmTShbW1t6enrZYO7aAAAAXElEQVR42gXBgVEAQRAEIXpf80/YuhFcCCGXn9GLXvnLxwyJd7EBb+xmz9hm4xgN8XJiYOZ1PTWAdsvvT0bgIIDy+d7eKMT1bg9Q7VYJUhw6hQtfx+XORXMhhNw/AeErQxtCGLcAAAAASUVORK5CYII="/>
+      <image id="texture-block-glass" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAWklEQVQ4y2O48Orlf3Lxigs3/zOAGA0NDQzkYKwGkGJg9brtqAaQ6hoUA0DOIdULGC4gFXcfPEuZAQPvguFiADnxD7OULBcgqyfbBSiZCUSAMMg0GE0MhukDAIj/+eJKhLbdAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-obsidian" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAD1BMVEU7J1QnHj0QDBwGAwsAAAFbDTSxAAAAaUlEQVR42gVAARGAMAj8mUA3AzhYAOUJoED/TB68Ut/xNLiFb9wVhfPpaybePs3KHJ+sqmRCVpCNBbG9+ekJvySq3hPVZI7qgl56aBihTmPph+Cyu4ng3kJ2vRSHMoQ+8FGHLU9o5FwkfyEoFb7iY82bAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-beacon" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAHlBMVEX////u///W//7E//7M7PCc8u1v49xJ1cwry8ArubCw6MYmAAAAV0lEQVR42gXBwU0AQRAEMfdwH/IPF2kLGwDA/EJg/B0qhXCkSiVOIkXygXrO4Ix69QqOeFVPcRLAzLG5bTuWg+222+AD88MwZ8ZmDB+MNuBjaAzsAwD8AxUIMSZhV4BeAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-bedrock" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAAAAAA6mKC9AAAAbUlEQVR42gXBgQAAMBDEsLG8QmEKcFDVXfIGYDNBfGytRe2Qx8EBoeaebZ4pAL4jAGG18VBROIXj1VzN1eKeigoHMt9K0NWqnnCITKC9LVYc1eCdCq7c6p7AhAWAby1P4HD1NkFwJfg4uBruwH1D0lUfTgxevgAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-bee_nest_front_honey" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAM1BMVEXIhkTZpFP3zkb73HX6vyn63inqphbqjhb/+c98USu8mG1wTC6JZEWigWbIpnFiSDFvUzrzN+fbAAAAe0lEQVR42gXBCU7DMAAEwFm7SssV+v9ngkRVSLzMZBCA0zRQaJ1znhII1aC5qwA9ZGY2CrkdtT0uKwXt6JJ1aYnCim+5Nxo4nvo6Egj043f7SlIiYKwCAJDP9LC2ANjfrtftHbsdsve5cguAOcdf5s8GzhW5H+PhZQD4B4bVNKXt2CszAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-bee_nest_side" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAIVBMVEXZpFPIhkR8USvkxHTIpnG8mG1vUzqigWb73HWgajT3zkYt9cvvAAAAW0lEQVR42l3LQQ7AIAgF0flUWuX+B25AjYlvMWgI9B7Rp8gXOaK+pVMiAgSZYWY2xshk2QcbEOVcSpScgbB1vAHPQ7awSNLe6IJd0NFak/Csu7cF9+/zNOu8lx+djwQ0RA9QFQAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-bee_nest_top" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAD1BMVEX73HX3zkbIhkSgajR8USthNg9ZAAAAV0lEQVR42gXBgQHCAAwEIc5m/4mrL9xZJkycLxoNnmMYhna4idHLYb+BPtUNA9Y4wU0v7Pot9vUABxCtuoEeYZyMF2Bn0yBw0QdQdXhpNDiiReA8JibL/qDuLEmLNU13AAAAAElFTkSuQmCC"/>
+      <image id="texture-block-beehive_front_honey" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAJ1BMVEW4lF+vj1XCnWKfhE2WdEHojAj6qxzIagj/zl3/5H+Li4pnUCx+YjffZH0RAAAAdklEQVR42gXBgW3DMBAEMN5LBtpk/1UToJB9JWMAwGNLAiSxhxKIlrylREWxHU9UOk86e7sp6tbce+fYN9B1/IyX0rYZXsaHlhn42N21AFY6OW0zs660PbaF1pWGla0gzxSsa/+15ORu/Zp8Q8VJ4pu8pVFEU/8JSEBPA7nm8wAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-beehive_side" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAGFBMVEXCnWK4lF+vj1WLi4qYfkeKaTh+YjdnUCxgxACvAAAAXklEQVR42gXBgQHCMAwDMDmE7f9/aY0kAEDy/YWC0B1KIFryaqioYF2FoswAAGwP+Bwga0AHsI49QD/HbOaWophMLy0tXHlaACSegAXybOYSAkmmDRVJos2rqaDS+AOkLyxMqJpBCwAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-beehive_end" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAD1BMVEXCnWK4lF+vj1WfhE2WdEG+hkbaAAAAUUlEQVR42gXBgQHDIAAEIc66/8bxCwIAymFlQ16OlQ1YIkOTl8OAzHJNhthHFECu1ABazgDIu8IImlwjLPMRqCA5Q5nR+znBGM5+EkA1AQD9Ab90JC055qxbAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-blast_furnace_front" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAMFBMVEVZWFh0dHRoaGiIh4iPj4+cnJyrrKvFxcURERG1tbVnYWF/f39yeW4/PkJJSEhPT0+FBdbvAAAAg0lEQVR42mWMWw4DMQgDzSvpNgHuf9vG0f51LCFrEGAOdxVGlB0jS7syqyrZ4YVd1d1As0P2trvObnboafgCaMpUCNdA571rgVQbkYNSnGGTjDG0SvlDYnyYUP7wZ4a+As/jUFeKYBChRwh2TGbDrrDaL+WmgFkdcLEFYNmSl7UW/vgBFFUGpi+4I5kAAAAASUVORK5CYII="/>
+      <image id="texture-block-blast_furnace_side" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAALVBMVEVoaGjFxcW1tbWrrKucnJyPj4+Ih4h/f39yeW50dHRnYWFZWFhPT09JSEg/PkLqp8/3AAAAfElEQVR42l2MSRICUQhDo93AR4b7H9eAbpRieAkFeFwicIezlq8uZHVXVQ9DKk5VZkbkMPwc3XVnDgOkeAX3YzaAWa+sOQO8cmTOIDj8o7P3c/me9EYNAPL8CQH0lpspoqpCDRVaRE6xNWyQXVkGBDtzlZsHwm3g28f4izfFewiMuKhdXgAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-blast_furnace_top" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAElBMVEV0dHRoaGhZWFhPT09JSEg/PkI6Ln9TAAAAZElEQVR42gXBgQGDMAAEIS66/8Q1X6hJYEZ6lpjpU49NxZbfu27FjPGUrbZRZ50KmPi93GobdOoczSbhvoKzsKZz5lzNyDrHJjK678YRi3i8gdzR95qtdlWbx45Kik+tJXDPPX+F0EA419fduAAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-brewing_stand" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAS1BMVEUAAABNTU1ZWVmp4OfX9/v9//+zGBjdNDSMCAjMr6WpRyW8VTGXNxaTSzyCPS9eLCIeHBzKYyrSgzPUtzrVsU7ZzD88PDwxMTFhYWFU59e2AAAAAXRSTlMAQObYZgAAAHpJREFUeNoFwUFKA0EUBcD6n4lCXIiizdz/dM4sBRcm6X6pggEw0FBAQaPs9f1Vu0Ixbq/SVvl/OW1UjhpLnXkvmiNKouSg2X8NGIL2dl4hgLauwSr8oT1ud2RhoLeefaGCH3RsEylAq1xySpxgm8xZKgIAPj4BDRDAE64VL4bkvuCXAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-brewing_stand_base" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAElBMVEVpXV1wZGR0bGyDfX2cjo6PgoLhy3j+AAAAZElEQVR42gXBAQEAMAyDMKC7f8tPAAAAVABbAqoA7uWqrAAfwKusBE/olVWIO7ppe2+K7W7pTl6CltYBDSjNusCAdjdrlxPY5Zu2eyFcwCstFR7gq9IUGr1VWQjYElQBUAEAAD7OwgGAFVUquQAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-cauldron_side" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAGFBMVEVPT09JSEg/PkI0NDgtLTJdXV1nYWFZWFhHwM2wAAAAYElEQVR42gXBsQ0CMAAEMV+EyP7jpuGxw2XIQxkQ0Mcgg3TIhjI6swvefSmud9eE54ivJg/CBe+up5ztehde/ZK2i3fGQmgwup5jtH6u7iuZzHaTCmyzTqvAtnaOAijnD9kjMzbORPUEAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-cauldron_top" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAGFBMVEUAAABnYWFZWFhPT09JSEg/PkI0NDgtLTIa/QFYAAAAAXRSTlMAQObYZgAAAE5JREFUeNoFwYENwCAAArDi+P9iF2z7MQYhqmYI4ZYflpkc3VwAnQIAWQ0ApjMAFgUArAAABQCRCgB2NAsAoTIASEONsKByWEYIdRlGiAdBGR5GfSDw4gAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-cauldron_inner" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAADFBMVEU/PkI0NDgtLTInJyvJ69g/AAAASUlEQVR42gXBAQEAAACCIPw/uiCAGEQgwySCZW1JiwZbiRZmVhRgs5IAs1UEsC0VgE1KgLEkATNJLdbMEmmstSUtpmERGjABguH+Li8U6Xlm1AAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-anvil" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAAAAAA6mKC9AAAAcUlEQVR42i2OsQ1EUQjDGCuNm5S5jvLtP8jpAw2So8SiwE7ee687hsLpHuxJCpIMvZcOhT18GxeJr9LppoQT/7qTGFTD4I9taRzJnHRQMYlPnXXM3PeYwPZJmGDQi6gkgfCiNA0jcdPSJsPb0Gp3IP0BMSFEiD54mEoAAAAASUVORK5CYII="/>
+      <image id="texture-block-chipped_anvil_top" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAGFBMVEUAAABycHBaWlpSUlJKSkpCQkI9PT04ODi/dgb9AAAAAXRSTlMAQObYZgAAAGpJREFUeNpdzzEOAwEMAkHbsOb/P04R504K5RQIqqrAlmSob7Ak2eZgA4okH3iyaUkcxJN25D1YO+NADkhkJtmD9GxIT55ST6dHczDgifTuWGBt9geTbA8veLpH8v594QFsA+QgAMtuquoDcQgCwkY4UvkAAAAASUVORK5CYII="/>
+      <image id="texture-block-smooth_stone" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAAAAAA6mKC9AAAAe0lEQVR42gXBMQEAMAzDsILuXwhBsMuPz0CcNLd3u8luspebFW1bfWBmeQ8EUN25tqhtFTJRQGxb3NmqqvJ43ETb0irqTniPB48H7c21VlTRZlZVbGvbmxXhPRAkc6ptW22bCWCL8B5mroJaFb1ZsK22Aju3yV2S293LfSmPnq/M1KtgAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-comparator" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAJ1BMVEWLjYvr3tTV2NXdy77Tx7nFysW7u7vFuKmsqqx7fXtYAQFHAQIsAwBUiXv3AAAAeElEQVR42k2PQQ7EIAwDp0DcuOz/37ukcOhISLGRlRgD+x2sXEiKhRLIPUpZACUOEQJOYPtp0B6sVj9gZwQeo7fXByz5vvpQSwM4hO9+jd4yDBGp0stRqzQpKrEyvSnBKT/FnFOx1/qZvxeFzun6dil5vN3lWx3zB7v7BS2JwvpCAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-redstone_torch_off" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAATElEQVR42mMYBYMdhDEw/PcAYrINAGnWpMSA+fUB/3PDzcg3YGqp2/9QVz3KXOBkqkSRASAXDKAXQAFoayBLmRes9aQpc4G5ljheAwDfuCS54awVVgAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-composter_bottom" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAgMAAABinRfyAAAADFBMVEWHWC54SR9cNBFRKwpi81wXAAAAV0lEQVR42gUAOw5AUKzt68LUOIONRSJGeigHcDCnICJmm88BnrymAowqXE3y4mj7hqXdiUxBydkE2ycGasAxDHVxhrjmV8ho6QiSAoszsPrB0H8+A6PKD4jSHAOhd1HKAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-composter_side" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAJFBMVEWHWC5RKwo+JQ4lFAVGMQ5eOQ5+TRVGQAa0dT5cNBGjcEN4SR+GrySbAAAAZUlEQVR42nWOQQ7AIAgEF7pYhf//t0g0MU27IMzFCejeM+5rOIBYDxGoVZQVRZAxRLKlQAb0upRKa0ZjMgLujjmKtinWypJXMP8ZaaqkJmNKKsg+Dlnw51C11ow3T8eGLSnLp+MBgd4ENztuHKUAAAAASUVORK5CYII="/>
+      <image id="texture-block-composter_top" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAD1BMVEX///+0dT6jcEOHWC54SR9mbLw6AAAAAXRSTlMAQObYZgAAAEZJREFUeNpjEFQUVBIUFBJkUHYxdjFxMXZkEGEAA0cGYQjDCINhyKACU6MMYcB1OcEZcMVwBjbFzi7Gxi4mjgxgZwgJCQIAbEEItGfJXm0AAAAASUVORK5CYII="/>
+      <image id="texture-block-crafter_north" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAMFBMVEWPj4/CnWKhoaGvj1WfhE17e3uWdEFqamp+YjdgYGBUVFRnUCxHR0dQPR44ODg7KxLwV+dnAAAAh0lEQVR42i2PUQ4EMQhCqS1rl6H2/rfdjZn3gWBCoogAokE7EC/MbG+7yomU5KqCvZ9z6ps653lsMNe8u8rad64EyDnummOMdcckAK7Pn9X6YQDcp9TU2b04AiOCCZ2uVFIEKGaRfR/Q0jPMjgR6JAJllS2VXAiQQLx0UibJzGyRINnvX138ARJ0BfrPk+udAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-crafter_east" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAP1BMVEWhoaHWrG3CnWK4lF+vj1WPj4+fhE17e3uWdEFqamp+YjdUVFRnUCxHR0c4ODg7KxJbFxwtIAw/EhYZFAwgCw7m2CvOAAAAh0lEQVR42gXBQVYDMQwFMPkn0z7oAu5/TVaQjo20vj/VWn01YCcJz75Ih33ajmI6ii3jpsWdmdQzN2hf/Kz31vfSPaql66zUzCRr5eyc6c2jI2gevzZvjdtc/ti8TQ1qzh1bQtAfh1z1yt0Reum7Uq4CPVhz6qk51wGu1KtpjbRsW0QxHWX6H7vDRX6E8SVcAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-crafter_top" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAIVBMVEWPj497e3uhoaE/EhYwDhFMFRpbFxwaCg1gYGBUVFRqamqxvsXKAAAAe0lEQVR42j2OQQ7DMAzDKMvNYv3/wcPSroRPNAiIZUmIg7zwZyaRkj0zH6OJAKqqyAhtum233a0AoYXFJZoAwtRVtSiXbnGt9TvfItVineQvXCep6iN2+W2QYOM3IYKhT2KqtQWjbrt9hg0weZaDMoLMREn2nrmf6AcPX7VTAzDftRzdAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-crafting_table_front" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAANlBMVEX////Y2Ni1tbXCnWK4lF+vj1WfhE2WdEF+YjdnUCxzOSBLKxhBIw44IRYoHgsbFg0ZFAwRDggy6vjwAAAAjklEQVR42gXBW1bDAAxDwSvZKSfAB/vfJtDmaXVGP/8Jn7dIPUHfJnLvBbVZMoZkZrN3IYamCZKxCi6as27AnHy91qHRrEdkDCtD4zgEwh80TQVLZskmTHPwGMYcABfG83vFdvkBxkTEgpAwNEuC1FRU+0JzTxDmpO4cH02QiRHRAo2UkQBJQMeIpNKKIG8DCkhY9AxuRwAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-crafting_table_side" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAANlBMVEXY2Ni1tbXCnWK4lF+vj1WfhE2WdEF+YjdnUCxzOSBLKxhBIw44IRYmIBIoHgsbFg0ZFAwRDggHqts1AAAAiUlEQVR42gXBAUpDURAEwe7ZDRhB8P7nFMlPzBur/P5p+XxL5xf8CjV7DcwjGgLtOY+ZS+SwLEVDrJTlNW8gvFAkeO5znyShPSzpdApFhGV6/V073AqV5cnZK+EJIEtqTZhaYaljgFI5LLcWvfGqOCzvUyS8mLf9WIqhQaqyaI8CKrAN0m7XCv0HAkhFdvdbsCMAAAAASUVORK5CYII="/>
+      <image id="texture-block-crafting_table_top" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAHlBMVEW8mGKuaTyeWTJzOSBVOCRLKxhBIw4aFQ0ZFAwOCwZHZAmgAAAAaElEQVR42nWPUQoDUQgDE9dEvf+FCy5vaSk7+OOAxKBn2tfimmoM4OASBgYD88EYtJnKTElKuuFgBpMUmQzj4m5HXytS9zzizKuQlPo+UVAMkSvuWK3e2PKm3ND1/3r9lit0TZ36PdMft8EDNpiNkFcAAAAASUVORK5CYII="/>
+      <image id="texture-block-daylight_detector_side" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAUUlEQVQ4T2OwMVb6TwlmABFhrtpw7O+g+d9YW5ooMRQDPG3UwdjJXAWumJAY9QwAOQckAML2pspgxcSIwQ0ASSJjPXVxosRGA3E0EKkbiJRgADmGnL2RZlPwAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-daylight_detector_top" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAG1BMVEU8MyLk287f1MXZy7jSwavKtpy+qo5lTzFHPSmem/SnAAAASUlEQVR42mOAA3aXihL3dpcCBhbhCCfTFuEABhaTDGfXFpMEBvawitL09rACBo4OMGhAUewoClPsRlBxhiPEZBEkxeFAxXBXAAAlbCR9KqkeNwAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-dispenser_front" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAKlBMVEVQTk5oaGh3d3ddW1uRkZGdnZ2oqKiwsLDFxcUhISEQEBB/f3+FhYU8OzvEJDKrAAAAjUlEQVR42k2PQRIEMQgC0YA6k/H/392Y01JFF3ADox53H09bZm6fHx6vGZxr2fo4kwOw76ta7pcG4KTMcr9cjXarRJodlJ0BxqSxihMW0F6hSjJLUd5oOyH5vpGhMgCRt79P5YkApEg97zOD1GgFlXu6GASaCimqJEoEsClSQR5yA7ivfO895wz/9xsAfoleBPNaM0/rAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-furnace_side" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAJFBMVEVQTk5dW1t3d3doaGiFhYWRkZGdnZ2oqKjFxcWwsLB/f388OzssRTY3AAAAe0lEQVR42gXBQW7DMBAEMI6UFEX0/6f6UDjeKQkOzjnOIbI0mdCYLrr2tEmTROyQ7+quxncjhojhs4623Tt9rHnEXp5EWtXuc8dqzGyJz0tGRvoqkyt+UwD6Fz+xZoFnP++cWwCYe6m2Csq63lVVnfYttkpBeALn4uDCP1TkRnZGCC1gAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-furnace_top" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAFVBMVEVQTk6RkZGFhYV3d3doaGhdW1s8OztCEpz6AAAAdklEQVR42k2PuQ0DARACh2/7L9nynQNHiE8CAA64O+4AttXO2rgDFimZ5doBKkuLJDcBYjlrJC09rmvntPHGwaxakje7cJFc6VVznL4Yv9yAJLl1Yxsgj/OoW49bnOrNKXDeuify60Rb1iS/6UvjsHZN+b9/AB9cpQKIH34ARQAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-dropper_front" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAKlBMVEVQTk5oaGh3d3ddW1uRkZGdnZ2oqKiwsLDFxcUhISEQEBB/f3+FhYU8OzvEJDKrAAAAjklEQVR42k2PQRIEMQgC0YA6k/j/766Z01IF1XADV33dPcZombkdnxyvOzjXsnV4Jwdg51Qt9y8NwFBmuX+5Gu1WiTSbKJsBxqSxihcW0F6hSjJLUd5oG0hGRIbKAAzk877v89QgAClSz+0ZUqMVVO7bxSDQVEhRJVEigE2RCo7EDeB75Xvve87wf78B4AeIbgTy/XKL6AAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-enchanting_table_side" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAKlBMVEUAAAD////D+/Gi9udK7dEszbGiKSk7J1R/ByhrAC8nHj0QDBwGAwsAAAHmTmT4AAAAAXRSTlMAQObYZgAAAGhJREFUeNqtisENAiAAxNoDY2Li/rsqcIYdbD99lD+gMiZwWZtOpfQAsUIApgBO4O4+Db01tvHNqWQxSoXsk4HbcNVokSikepLSCnw/mx7T9W1OOcyw0BcKHhDcyUDKVioMxiM2UAIAPz/3K1duHTewAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-enchanting_table_top" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAHlBMVEX////D+/Gi9udK7dEszbGiKSl0HTJ/ByhYFixrAC8DkiHoAAAATElEQVR42mNgFJkJBI4CDELKpaGh4UaKCIazeWhYamixCcP00rCOjtTwSoapoRkdHW2hkUBGBxCAGGEgRiqcgZCCK4ZrRxiIaRfMGQCJpTAVX3ynKQAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-fletching_table_front" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAQlBMVEXXwYXkzY6un3allGeei2FtQhhJNhWQWB9ra2vGxsbY2Nj///8oHguJZycbFg1ERERtbW2WlpZLKxg4IRa4qHXIt3rMyslOAAAAl0lEQVR42gXBAUrDUBBF0Xsn8UtbCbSd7H+BgYKiSJDkeY4VMGDAQFX6WcmzkjZpZmAMelovfWHFKczxCA7didPj0+M2eD1+zFWKzUQ2tis7bBVZFBEFXWYMAkH4o7z3dG+K/pgaSn5JBBWwSAAgQVYKzi8IrkcGxPm0cvuWvJtdmHS8DSy9VSszzRhNQZdNgZzLqwRL6h8baTgfs4b/wQAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-fletching_table_side" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAe1BMVEXXwYXIt3qllGeei2HY2Nj///+JZycoHgvg5OT+/v6WlpZ0IwObIhq/JSn6+vrb4OHj5ufR19j19vbh5OXc4eHW29zv8fLw8vLz9PXX3N319/fm6er9/f3o6+vZ3t/r7u74+fnp7OxLKxgbFg04IRbGxsa4qHWun3bkzY7Td7G/AAAArUlEQVR42k2PSZKDUAxDJRsINJ8hPc+ZwPb9TxhcWSRVfl5oodKDR8QjUNAUSCgbUAAaMCGsBgFxF9H8WtWVCoRsv/7/viey2j2REJz6Mgyln4mGBngcy/zzO5bZooEFLsupPA/9SxmX83lZLvB4L1O/ZXtDQwASb+V1nPalJXZEQNDdSg9EHcwAbdd9fozktoOA5i7Nk7paVSF3sdVXTzlD4inoBmgKmnuaKs2vqo8QCToFThMAAAAASUVORK5CYII="/>
+      <image id="texture-block-fletching_table_top" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAKlBMVEXXwYW4qHWun3bIt3r////T09OWlpa+vr7Y2NhJNhVoTh6llGeei2HkzY5swQuAAAAAfUlEQVR42gXByWHDAAwDwV2Quhyh/1LztGeYAdrSAgSMJmpMFOy2lGGYhMQ9NJpkfCF7bVtaggPueQQAnAAe1wYARHjd8wgAiH+Me24AqLuBHOcVALp3QpMzUtq9VV4npxqfW3zBaUt9PlJhVKN+kugAAFgFwBf48g8P+JUfzhMGBHL9y+gAAAAASUVORK5CYII="/>
+      <image id="texture-block-flower_pot" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAElBMVEUAAACJTDuDSTl5QzR0PzFnOS0nMDtBAAAAAXRSTlMAQObYZgAAADBJREFUeNpjIBEwCZoEgBmMDAwOuBkGEIaSEZRhpAJlKDsHQKVg5iirQBkmLgEMDADZJQVXZ5QTAQAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-dirt" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAFVBMVEV5VTq5hVyHh4eWbEpsbGx0WERZPSk6VlZqAAAAa0lEQVR42gXBwQnDQAxFwSd+0FnLgs8+5SyjsA2kgZQgY9j+S8gMM61oM9R6W85NeBDs4BPLSpbk9bBeary02zGC02JIMIpVFCm5kkbtDUPIYt5HnaQuffNxPCuAgfiVH1bk7T5EkTPPovwPGbIOYwnMHcMAAAAASUVORK5CYII="/>
+      <image id="texture-block-furnace_front" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAJ1BMVEXFxcWwsLCoqKidnZ2RkZGFhYV3d3doaGhdW1tQTk48OzshISERERGSYbg8AAAAdElEQVR42gXBwQHCMAwEMJ1jHt1/XGgOKQ9SQqPWVWkqTSeT9Lpp773NtW2zAf2KVZ8B8vklEzO0LXPZwoUOuvF+FcTcXbLJTdo06hEAzLNGmoO3abLS2RP0/V1dyeeAbN7XGIe25bwxuaOF1mnWOVdBuvEHfptGY6k/wX4AAAAASUVORK5CYII="/>
+      <image id="texture-block-dark_oak_log" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAElBMVEU/MR1YRChKOB4zJxUwJRMpIBHj3MsTAAAAaElEQVR42gXBwQ3DIBREwSd2/90SKWAl8B0lDRAqcPpvJjM4lWpHuFevtkV9qttb3LJUezBV6nLInu7TYe2xEof15M1Q8I+3xgh8WZp5oKnkPLiprro2L8bdi8W142Egh9s+kLOnOfoDKZ4L2kN8RTwAAAAASUVORK5CYII="/>
+      <image id="texture-block-grindstone_pivot" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAVElEQVQ4y2PwN5L4jw1HmEEwjM2ACyArhmmw0xTCMASnASDFyBpB2EpFEC5G0AXoikEGGMjxYbgCrwHotoMMQPcKTgNAimGakDHMQIIuGAWjYFAAAEsaXKFOwPwFAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-grindstone_round" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAAAAAA6mKC9AAAAAnRSTlMAAHaTzTgAAABPSURBVHjarY2xEcBADMJ+XA9AzwjqWcALeMBUufj7UOoAnUxmMjlvInB5gTIWvRvGC4wsvCZdCDF7cn80RnUBIW8LRmhrjVE+0JNkcn7MAzbxNUOFlDbGAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-grindstone_side" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAAAAAA6mKC9AAAAAnRSTlMAAHaTzTgAAABgSURBVHjarc5BDQQxDEPRwh0A//4h+B4CIRCAq22rQTC+5SmWvHq6Z7qratY/rUkUvEBkIy+QKOZCRDCkNkyU5+GFCtkgB1oiaJj7ITEh9AESAeOFe8VbOcN7qrrXR/kB5uNOjL2LqmMAAAAASUVORK5CYII="/>
+      <image id="texture-block-hopper_outside" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAFVBMVEU/PkJJSEhPT09ZWFhnYWEtLTI0NDhHtSwOAAAAV0lEQVR42gXBsWGEABAEMQ1vrv96SdZSfxNgTf1MAOgRa41YoQaZ9TBAaxQA0AthWuaOAwdXTEDmmefJFrW93YfAOB0A4PcAAILz4fhazpcd3+HrBQD8AxiwIV6SD/zZAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-hopper_inside" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAADFBMVEU/PkI0NDgtLTInJyvJ69g/AAAASUlEQVR42gXBAQEAAACCIPw/uiCAGEQgwySCZW1JiwZbiRZmVhRgs5IAs1UEsC0VgE1KgLEkATNJLdbMEmmstSUtpmERGjABguH+Li8U6Xlm1AAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-hopper_top" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAYklEQVQ4y2Pw9PD47+/vD8aRERFwnJ6YiIJh4jC1IAzSywBjkINBeuEGmJhY/Le3cyIKg9RiGACSYCASgNTCDQD5i1wDQHopNwAUwuQaANI7HAwY+Fig2ACqJWWyMxOl2RkAZowlDF2IQ5oAAAAASUVORK5CYII="/>
+      <image id="texture-block-jigsaw_top" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAG1BMVEUmHSrXwtfXs9fCoMKWeJZ2Y3Y1NjUzMzMQEBCtIY6DAAAAbklEQVR42l2PSQ7EQAgDzV7/f/Gol0TR+MChMAY0rY+61cBoRsNSS0DxFCRpqginanQAgNuqs8EQ7mYWSW1QuC15UDUbZBzyZMLxuAe6oXcmL9hdM4MXBIQFVS2pyUjIz9pXDVIf3+wboPX3/vwAPtUEEczyTUYAAAAASUVORK5CYII="/>
+      <image id="texture-block-jigsaw_side" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAGFBMVEUQEBAmHSqWeJY1NjXXs9fXwtd2Y3YzMzPrOX65AAAAYklEQVR42n3PQQrAQAhD0R8dzf1vXGSkm0I30byNiFOS3O2ZmSSA30gECCLYVWCIcwJ8oadXjfTA9pUBIiKqJhcAqgAYsNw90G1ZCOACe1bCnIORWNCA/iFit+9zTsntjfQDDNsB9RShqvAAAAAASUVORK5CYII="/>
+      <image id="texture-block-jigsaw_lock" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAElBMVEXXwtd2Y3Y1NjUzMzMmHSoQEBAlQ/iCAAAAN0lEQVR42rWIMQ4AIQCDei39/5cvUQfdlQESFANECoAtdyDNWhSg0ixPR7uNxcXhHlgx5MuS8wMEnwPiZJ0KDgAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-jukebox_side" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAElBMVEUpKCBaPCl7UDlaNCCUXUFBKBgMz/1lAAAAVUlEQVR42mWPQQrDAAzDFMX+/5cHa0u31kEngSC8NyaaJMYBTK+zAmm2exIgafbADeDt1wA5vF8E/G0MMN7+3RCI66Phdk8GcOp6UIFp68UA87f38x9rNwKFW4i4kgAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-jukebox_top" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAFVBMVEWUXUF7UDlaPClaNCA1LyspKCAYFRRILfkKAAAAT0lEQVR42gXBgQHCAAwEIb7G/SeuJ9xXJljj/Mogs+dU2pSmS2MfL5oDGMgNGMABAFwBwBwAwAEAnAWAdgABDhCgY+FVbG7DyMZ2HgHW+APmMyJEBROnpQAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-lectern_base" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAG1BMVEW4lF+1jVCmgk1nUCx+YjeWdEF+GhqaIyPBn2pPuI4fAAAAaElEQVR42kWMQY4DQQyEgFHv+v8f7ijWSOGA5UMBMl9eH0BP7oVCQKxSOJ6L3JUXL0wzs0IDweykAFKibt3qyXr01lMJ7HZeCASwMuuw7Uq16PmOiU1IMjH9LWfYIPS/hBomL6ktv98PG6oKS12bkrUAAAAASUVORK5CYII="/>
+      <image id="texture-block-lectern_front" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAQlBMVEWWdEF+YjdnUCxBMRpfSSY9LA13MAdjKAW1ejF1jhFecg1OIgdHVBMxY6MqTnrOvym8FhaRERG4lF/Bn2q1jVCmgk12ZROUAAAAd0lEQVR42nXLWQ4CMQwE0XIyzMawJd33vyqRNfCDeHKkqGRTL6mWE39DlBhKUGoqP4EAojBeCsJnIIWRDYaaMC0Des3ztlfkJsmCx7pu+01yz4Ce87Idn5Any3U/7nw36L2NwYxghCRy3GxjmBL5B+OpDpNtybbfTdUI0OehAUMAAAAASUVORK5CYII="/>
+      <image id="texture-block-lectern_sides" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAFVBMVEWWdEGmgk21jVC4lF/Bn2pnUCx+YjftKceGAAAATklEQVR42o2M0QrAMAgDL7H6/588ZBU6+rJDCRwhFMhynwVFkQcU1AduImJFxI61sB3YE3ELJPXvgMx3W3IjshlHi7Oif+I0I8bpath6AGh0Aqg6itdLAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-lectern_top" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAElBMVEW1jVCmgk24lF/Bn2p+YjeWdEHs6Un5AAAAX0lEQVR42gXBgXGDABADMNmQ/Qfu8a6UBwAAIkGCPAkAtle+q1OunvGTJEmS+CnVtGmqFGzn2+ekzJwTWCOMUuhA6YHGESNE3sk7KVn+7EnPxmx0L3aAgkiARCQFAPcP5TAnSXiMf9QAAAAASUVORK5CYII="/>
+      <image id="texture-block-cobblestone" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAElBMVEW1tbWmpqaIh4hubW1hYWFSUlLm8qFQAAAAcUlEQVR42gVAARGDMAz8MAMjh4CSLwIWIgDSIGAD/1p2iPk5pTfFOW3QLR3nGrrGQxSLTL1wp2TJ3PF6W/yaOjSV9eEB2y3a4omQPSerG4f6biMXkP0a8X2DMdpytQkuIWuY49CuziJmclhoIcsjUvgH41gVHD61kt4AAAAASUVORK5CYII="/>
+      <image id="texture-block-lever" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAUElEQVR42mMYBYMd1NbW/i8oKPhPtgENDQ3/i4qKyDdgaqnb/9xwM/INmF8f8N/JVIkyA0Jd9SjywgAbAApAWwNZysLAWk+aMheYa4njNQAADJ4pKdI8qEYAAAAASUVORK5CYII="/>
+      <image id="texture-block-loom_front" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAALVBMVEWkgEiolYyzjFGYgXZSQScyJxhpVDOEb2S8k1pvQjdUMinGoGe1pJ2AYzfKpnGfyjt8AAAAVklEQVR42l3NQQ6AMAgF0emPJlgq97+tEjVNZR6EJcT4tDQioE0jF8izAJpWVIiSQMWmFRDhHpnn9QC8H7NugGSyJ5kE7L8QXEsg0DETgN43OWEuOEs31iMQyTiui4oAAAAASUVORK5CYII="/>
+      <image id="texture-block-loom_side" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAG1BMVEXKpnHGoGe8k1qkgEiAYzePVkeET0JvQjdUMinHmqeOAAAAWElEQVR42gXBgQ3CMAADMCcr/9+L0BrsgF6FS/oBAN8nTwagVnvBhpdDQILy5IgA5tbdDIA0AJCrQRUNTT8A4HeMQbA6QixDQsk2g4XDC2LcUKQomuYAAP5RBh8+xCcRQgAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-loom_top" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAJ1BMVEXTwLTKpnG1pJ2olYy8k1qzjFGkgEiUfHKEb2SAYzdpVDNSQScyJxiynQV9AAAAZUlEQVR42k3MQQ7EMAgDQBvwblv4/3ub0BzIyAryweBtzb+fUHlZ801Q+mJHF9aFN+tiElRW6A3kiqDHFhwm6IdJBm2+YEOPIjFG0ycZqAkIMnb4vYDySs//ySWochJIMRQR7Isv/vQFfR6U1OsAAAAASUVORK5CYII="/>
+      <image id="texture-block-note_block" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAElBMVEUpKCBaPCl7UDlaNCCUXUFBKBgMz/1lAAAAVUlEQVR42mWPQQrDAAzDFMX+/5cHa0u31kEngSC8NyaaJMYBTK+zAmm2exIgafbADeDt1wA5vF8E/G0MMN7+3RCI66Phdk8GcOp6UIFp68UA87f38x9rNwKFW4i4kgAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-observer_front" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAANlBMVEXFxcWvr6+dnZ2Pj4+Ojo56enp5eXllZWVXV1dGQkI9PDw7Ozs1NDQyMjIpKSkpJiYjIyMAAACpyOGBAAAAgUlEQVR42h3FW0pDQRAFwDo97RN0/8vMhxC4OtOGUB/V37Bhgd7XQTnUKa+9amFOechob8YBy0iXiQqY0NeIcp6dOl0/kMkIPpqQp5GqPp8b657356ft/eW24vL4dXX97bnPzhyPR+MmxNwUXYS8+E3QTYa5hGH3TgMgWrPstWFt/60AOy9AaH1MAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-observer_side" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAJFBMVEVGQkI7OzspKSl6enplZWWPj49XV1cyMjIjIyMpJiY1NDQ9PDzgXbscAAAAbUlEQVR42jWLCQ4EIRACgfbY6P+/u87QPRaKpBIlQ6MEjB69R/QkGLZHAs4LeKA5aZRjij8QwIGha639ZSFr54saKLErrgVg502HEk756qurdubKZUFK/BCpkI9ApdcfbGNERGvjHa0RtBd1/zwfMAtqsRUD0wAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-observer_top" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAAAAAA6mKC9AAAA5UlEQVR42j2PwUrDQBCG510akOIhJRJZnKviQQ9V0CG2IisdJFVMiYJhGhpQsUIPW0pLe8kz7Ct2Ny2d2/z8/B8fqDg+6YSIAaoYj04jUG8P+pLy/FoPNF3cR9C+Le6ejRG++a2eim4HsNvPNi9i6T3ppbO0DSovUjO2NdNq+fE3CuA4mWSlWCNU/oxZBRDpKvu0tRHG6nuqWxD2e+wKRgTLaaLPIDwfia09hvDxqkCHnS+s8YHg67rBfvkFwyyEwwb77xcm7BIcNlhfEP8LYYOtrTv3ESJSay9HOesBEzm5nT4d9LdTgWJwP0rH1QAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-piston_side" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAOVBMVEVTUVFEREQ1NTUvLy9wcHCGhoalpaVnUCx+Yjevj1WfhE3Nzc3CnWK4lF+WdEGRkZGFhYV3d3doaGhvPxk2AAAAj0lEQVR42iWMgRHEIAgED0QTE32B/nvNg64zcqAL3jbnGCPKCNqLVvuv9x4lmLWhyhP0KtE/j1SIXHcgcl+BCBFAcb4PG0IBXA0OX8scjALTTGstdXgBwdTMYdmfgUd/rq2QwgFVIL+CQJHdNLKrag5su/lqR3GHrtQQyXIpdAumCIvBGW1bmQjMhZkOzER/ETwKlG0kuiAAAAAASUVORK5CYII="/>
+      <image id="texture-block-piston_top" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAFVBMVEVnUCyvj1XCnWKfhE3b29vKxMR+YjfiiLQNAAAAbElEQVR42mWNSQ5EUQgCC1Huf+SOz6Q3nziwKAI9SaCbJJlmpqq0bzUDWsWSd8NHUdUO1mZDllx2jw1JgKw526Pi0VTp1cocbXsGuAy5GNGVqLTBkKUlfD+cwt/kUPFuQc9Duy3ZrzYA18fMD0nwAlhLJ18CAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-redstone_block" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAD1BMVEXmIAi9IAikGAiUFABzDABFTPGwAAAAV0lEQVR42gXBgWHDQBAEIebcf8fRbwAAQLLELHZQR51I2sns3haVtps9UgX4u+24DdgvcgmwecfegGnOzLwZ4/CT+2QmKS2jbykCwztbvtHMJCYZDADAP7Y+Nw/1IQEFAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-redstone_torch" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAXUlEQVR42mMYBTQEfxkY/iNjsgz4X17+/7+fHwUGbNjw///16+QbAMLrYV4gB0wtdfsf6qr3n+yAnF8f8N/JVIkiA+AuGBgv5Iab/bc1kKXMC9Z60pS5wFxLHK8BAFVXP1qI6bjtAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-scaffolding_top" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAJ1BMVEX////jzGrZwl7Tu1DIsU27qEzBiVivgluZh0Grc0GMaEd7VzVoRSZF+zO8AAAAAXRSTlMAQObYZgAAAIRJREFUeNo9j1EWRCEIQi2lAtv/eiebzjtXvlRE8+ZdYFcIcm/WPMAlCFyM5uaxlToqtod1iPZQiiYmJ0+NI2EZloYVPErduX/7TgTKY9g88LAlk5IcD3VYQLU/r0tSJu7a5yijd6X853dFTI05WJRHRc8ve0X35oJCnVB/33IRghYRzX+XBgbElICbQAAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-scaffolding_side" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAGFBMVEUAAADTu1DIsU27qEzZwl6Zh0F7VzXv2X5Q+aNjAAAAAXRSTlMAQObYZgAAAFlJREFUeNpljzESwDAMwgwi9v9/3GuGXq7xoEEDhpLTtFsvJZdsVoBNUSGtduulTE0gCzadFKuOY5U5hSn5FKJyCX5Cv4w7dHKKuXvcb2WJsWImyl7rb63lBwLyAafgH+jYAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-smithing_table_front" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAALVBMVEUmJy2XXkJ7SzVJS19AQlM4Okc2Nz9fJyEvMDdSIh1KHxpCHBcvFBEaGx4REhNmAL6DAAAAhElEQVR42k2OCw7DMAhD3YYUiuPc/7gj2SLt8ZMtgUDvD+KJottqiAAUlcUW2BqBwyykOc+EJsnckJwCZmZa/lwBkLe3uVvzZi4g5mgVlauWIRpv0tYmFYDy5lWqsWWqA/LLb3e3Ci8jNK59YLdtnCeMTAFdSZ6/UlGGf3lf3zek8Yf0ASymCGypEvjOAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-smithing_table_side" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAM1BMVEU2Nz9SIh0vFBFfJyFKHxpCHBcREhMaGx4mJy0vMDc4OkdAQlNJS19lZ3iXXkJ7SzUjJTNHviNPAAAAdUlEQVR42gXBQY7CQBAEMFdntEv4/0sRAuWQKew8fR75nkg2yak67aDRVTo1hZI/hJLCSqugSCbangWtLPrsfvQzUrGStmlShcXc/y5D6Ey5Xr2u0FYW92jsFKzslFKIJQcGovaK8p6gyKL2tGxDjnELSDj6A2FLRijqBIzMAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-smithing_table_top" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAFVBMVEVJS19TVWxAQlM4Okc2Nz8vMDcmJy13+nPyAAAAYklEQVR42gXBgQ3CMAADMCdF/P8vW4MdyhWDiBKMmMURxnFtakESP+T2ECJPydIXi6wNWcV7kBgUfWDcO2kSgDxSAbhWii1Q4+0H9wcWpBVMjHvPYkWGZSfinovBJIRWvy1/CzowLTC9tFMAAAAASUVORK5CYII="/>
+      <image id="texture-block-smoker_front" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAOVBMVEVnUCzFxcWrrKuIh4h/f3+WdEF0dHRoaGh+YjdZWFhQTk5JSEhRPSQ8Ozs6Lx41KyQnJycjGxUZGRk//bIKAAAAgklEQVR42k2O0Q6DMAwDXbIUd3hNw/9/7KCAxOl0Up4cOH4v3EF1gIRIoQvwWXXNQnBv60NtBMCtlLGfjHV1h9BK2S+sgiBaWa57WBVA38pnXFSDIJlVW2w5MJtbmaE4k5lO0JMIRhxFztnepa7Z+1M+HiGcAd1KIMCMeEwI6t8X6n/R7gl2Ym84ewAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-smoker_side" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAJFBMVEVnUCyRkZGFhYWWdEF3d3doaGh+YjddW1tQTk5RPSQ8Ozs6Lx4pVnRMAAAAgUlEQVR42k2OMQLEQAgCWQVdzv//95JNioxAQYNI/D5kojxAFVxljIE86fFJGJktqXXoAlCKaMaFqEwYDLYYd00UClIHJUY3DVRScdN9GYZNio/JZ2vseXKyUDmFV5gzO/Ar+3y61+rr1tLaVcjaEavFFaGNAu6CTcWK3jA8+4PnD9mBBWBoRVSQAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-smoker_top" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAHlBMVEVQTk48OzsnJycZGRlnUCxUPx5dW1toaGh3d3eFhYWLYXFPAAAAdUlEQVR42k2PWwrDUBBCj7eTUfe/4YZAac6niA9mQIAkpBnmYt1mnZRrgDiJnaQFcNxu2sYJEBedG7GxkG2dB2URrHvO5+ac2qDsS4hQ344CLyEGiPsPtdAmv1pvQPH62dXUBYj3eZLYwFw4DWuvuYbXfcHMF1jgBFvPCvGFAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-spawner" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAFVBMVEUAAABAYngqRFVuBFMqJDUYLDkeGCfkRW1wAAAAAXRSTlMAQObYZgAAAGhJREFUeNptj1sKAwEMAieuk/sfueyjtJQSA+qHKFUzM0milqVgoULZ26BQHmPGzSSTi7Ku8GBdthYCQu2yCM4kgixr3JxGLsp5eOgh3LLSTlr89LAV6DtDE/3KYC9wSQt6f/2z5Xf+C4L5At8Zryp5AAAAAElFTkSuQmCC"/>
+      <image id="texture-block-piston_top_sticky" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAJ1BMVEV+Yjfb29ur65zKxMSEx3TCnWJruVmvj1WfhE1enE8/dDJnUCwzYSilpQc8AAAAj0lEQVR42iWNAQoEMQgDbU1To/7/vVf3RiEgkbHlZla1VtnDl7kf4NYEddythE1lvAAVZtWSMruzqc4yE/F1iL2hNAtxuvmPsker8yEqq2w5TmODBKlPS6UgsqEYbWX2OPTChnu4gR4XdOZAAOyR6V77XtD5Znas54pbN7Wpe0YbId21Qor4tFYP96qycv8BU6sGhOOJUmcAAAAASUVORK5CYII="/>
+      <image id="texture-block-stonecutter_side" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAGFBMVEUAAACPj49/f390dHRoaGhmQidZOyRNMRwf7kIeAAAAAXRSTlMAQObYZgAAAFdJREFUeNqlxrENgCAQBdC/AjTWnAkDgMYF1AnwrtYE6NVjftnBVz38xO8UKc4V+bLOkGeolINZGU2klaYZNa3druDkxjBuPU9wxi4FehoiGhj5puislw9YzBQPxEJMmQAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-stonecutter_top" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAHlBMVEWPj49/f3+WcTR0dHSCZjloaGhfX194WipTU1NoSBTY3BMrAAAAaklEQVR42l2PSQ4DQQwCwdWk4/9/OJI9mkPq4FVIoKqLHrhVqtPBQ9KndLsDBDDdVwQsW7JJmA7GkrTVC4QwuyQkwDvn85KR5PsyB8v2ShdjSDA2zGdNbJPmKYOdENb6mlvrdRo/TLj/+D9tCQKmGEZESgAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-structure_block" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAHlBMVEXXwtfXs9fCoMK0k7SWeJZ4ZHg1NjUzMzMmHSoQEBBG/tT0AAAAYklEQVR42mMo6wCDNIbMmTOdTWbOnMbQ2enSOcNlxgyGzilKLR5KnkCGE6MDi4AKiCHA0cCoEsHQ0uE4cyZLhwdD8xSNmTObPC0QjJYOh5kzRTo84Irh2uEGwq1AWAp1RjoAUlEy1SqpCBEAAAAASUVORK5CYII="/>
+      <image id="texture-block-target_side" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAHlBMVEX+/v338uvz69/v4tDr17rcSkrVNTXILy+5MjKkNDT9cvPnAAAAf0lEQVR42gXBTQrCMBAG0O8oEyFdzww4uEwsYo/THwwuM4vUrQiWHLfvIUsSCUKw8iq9tBVPypo1O4xZWJLjJv/PfvAGC86XK/8wkHOIYcFAs9WBKiLN0SNVRJ6JIi14iAtZdlhure28YmJJorphSqo6jiusl6O8+xd3SZKI+QReeCVlbP4WLwAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-target_top" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAHlBMVEXv4tD+/v338uvz69/r17rcSkrVNTXILy+5MjKkNDRbMuejAAAAiElEQVR42gXBQQ6CMBAF0I8z1K2J8QRygCo1cVkcaDhOjbVxWWOLWzYSjut7MOi5B1u4+IxrLB7bilBpk+GkI2t3CSP/vtMiAc6mTg/dDEXZ8IEDVO/d23HCQPdLrvcJAwc2tQ6o5UOVajOclFKm0wPXRhuDxmOUdkebs4da4xJf64wjhIRw+wNGsCEJxTgYbwAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-tnt_side" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAHlBMVEWRLRH////d2dnOzs6+srPqQxjbLxqxFSc3NlYbGjzJVtJDAAAATElEQVR42mMITYdAhrQCCMTHEFYyVlI2UlJkEOqY1Gyp0WnIoGJp3GFh1KTEIKyh1NRhPNmJQcjSqNnSeJIhgwsUMJRDIT6TywsgEAB9NCyhE+tOxQAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-tnt_top" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAFVBMVEWOjo7qQxjbLxpWVlaRLRGxFScRER49pa71AAAAY0lEQVR42k3OwQ3EQBACQWaAzj/kk+w9eR/9pIR2Zu80Uu80ckYGK6CojUvSQptoZ+DdcxnUcjmGLQDFx0gN2C6vsQaA5TVsBPgzMggs7GOYPMD/h3dYGPsYfbKeNFK+jnH3A4Y6Av62IC04AAAAAElFTkSuQmCC"/>
+      <image id="texture-block-tripwire_hook" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAHlBMVEUAAAC8mGK0kFqUlJSQkJCJiYmfhE2EhIR6enpzXjl8DxcpAAAAAXRSTlMAQObYZgAAAD5JREFUeNpjwAtYQksLwAxWj5YACKOBGSLCDmc4mzZAGOEdEAYD2wSofkYBGEMBymCCMxKgDDYYg3MCAwMDAJYGCQIPAAhaAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-oak_planks" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAFVBMVEW4lF+vj1WfhE1nUCx+YjeWdEHCnWJT722OAAAAaUlEQVR42gXBgRHAMAyEMKCX339jVwLZtrFt4wH6ElAoBMQqhec75A45Dw/WtrUNDQSzlwJIifoArb6sT6++SmBDt23bCASwMusxtEq1yA/lDvQ4YLFB2xobCmWBqFhiD6zq+9KKL0P9AbiHDNWkCjANAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-vault_front_off" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAANlBMVEUAAACvycmdtraBmptvgoJscWtYYFhAYniURA5FSkIqRFU3OzUyNUAsLTsqJDUYLDkQHSUYFCSN0elUAAAAAXRSTlMAQObYZgAAAI1JREFUeNo9jVEOwzAIQ2nahGFSzO5/2ZFU3RMf1kNg6aMPD1UgvGIXs+GBEtuYibl78sOarGjCLCIUEVlQkCKSjOAOEHAL4BVKQjPXgZZU0bXgt2CFJbhEGf4FoQRr1gmeFpbW5/vzIxXQtzaTJAqSlaX34cfRWjuvy0fvMsy8nec2bjZkLu55L+ac8wdU1QmyYrOBrgAAAABJRU5ErkJggg=="/>
+      <image id="texture-block-vault_side_off" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAALVBMVEUAAACvycmdtraBmptvgoJscWtYYFhAYnhFSkIqRFU3OzUyNUAsLTsYLDkQHSWy0ig6AAAAAXRSTlMAQObYZgAAAHdJREFUeNptjEsOwzAIRCd2wHwC9z9ugUWzaJ/MaPSEAREJMxXMUglmMuFBrCSki0lh1h2RRQzToDVIYCJSf8XJWe7RitMCqDcx4v3yFaF6Co34czRwMl+Rs1GEFhHdQMR2XWutfd/GRGARW3uPMRGGN48/jbv7By++B+6QYZGGAAAAAElFTkSuQmCC"/>
+      <image id="texture-block-vault_top" width="16" height="16" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAJ1BMVEUSDxslHy5rh5lAYngqRFUYLDkQHSUsLTsyNUA6QEVscWtYYFg3OzXH1J7tAAAAbUlEQVR42gXBAUokARBFsfyaXha8/2UF7WeyL7bvsP/FvlKu7rXZ558f9CN6b4+WaOm6EyWUulGokl1nd8jOefZb8m5MHnvFOrM89vFSO5zzasbV63VQhkpnClPM0zrIxTw85d7P3m08Zua4Fn8vmE8+7PJXpgAAAABJRU5ErkJggg=="/>
+  </defs>
+  <symbol id="air" viewBox="0 0 16 16">
+  </symbol>
+  <symbol id="barrel" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-barrel_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-barrel_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-barrel_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="barrier" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAXElEQVR42q2TyQ0AIAgEsf9qbMBmLMTjReLBEIVkf8zsByR0SkqtipiZO0dYlzh5ZG3GhjlXCcDrzlUAsBYYAoZBADAJAGYBwCwAmAVeWAX/h6STH095k3gS+sEdGgfXopZkuo0AAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="beacon" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-glass" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-glass" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-glass" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 13 12 3" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 0 0.068 8.25 6.875)">
+      <use href="#texture-block-obsidian" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 13 12 3" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.2344 0.2344 0 0.068 13.5 9.125)">
+      <use href="#texture-block-obsidian" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 2 12 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 -0.2344 0.2344 8.25 6.875)">
+      <use href="#texture-block-obsidian" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="3 2 10 11" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.2734 0.1172 0 0.2578 8.375 3.25)">
+      <use href="#texture-block-beacon" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="3 2 10 11" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.1953 0.1953 0 0.2578 12.75 5.125)">
+      <use href="#texture-block-beacon" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="3 3 10 10" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.2734 0.1172 -0.1953 0.1953 8.375 3.25)">
+      <use href="#texture-block-beacon" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="bedrock" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-bedrock" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-bedrock" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-bedrock" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="bee_nest" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-bee_nest_front_honey" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-bee_nest_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-bee_nest_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="beehive" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-beehive_front_honey" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-beehive_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-beehive_end" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="blast_furnace" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-blast_furnace_front" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-blast_furnace_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-blast_furnace_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="brewing_stand" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="7 2 2 14" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 0 0.3281 8.875 5.25)">
+      <use href="#texture-block-brewing_stand" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="7 2 2 14" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0391 0.0391 0 0.3281 9.75 5.625)">
+      <use href="#texture-block-brewing_stand" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="7 7 2 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 -0.0391 0.0391 8.875 5.25)">
+      <use href="#texture-block-brewing_stand" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="9 14 6 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1641 0.0703 0 0.0469 10.375 9.5)">
+      <use href="#texture-block-brewing_stand_base" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="5 14 6 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.1172 0.1172 0 0.0469 13 10.625)">
+      <use href="#texture-block-brewing_stand_base" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="9 5 6 6" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1641 0.0703 -0.1172 0.1172 10.375 9.5)">
+      <use href="#texture-block-brewing_stand_base" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="1 14 6 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1641 0.0703 0 0.0469 8.125 6.75)">
+      <use href="#texture-block-brewing_stand_base" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="1 14 6 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.1172 0.1172 0 0.0469 10.75 7.875)">
+      <use href="#texture-block-brewing_stand_base" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="1 1 6 6" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1641 0.0703 -0.1172 0.1172 8.125 6.75)">
+      <use href="#texture-block-brewing_stand_base" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="1 14 6 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1641 0.0703 0 0.0469 5.625 9.25)">
+      <use href="#texture-block-brewing_stand_base" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="9 14 6 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.1172 0.1172 0 0.0469 8.25 10.375)">
+      <use href="#texture-block-brewing_stand_base" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="1 9 6 6" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1641 0.0703 -0.1172 0.1172 5.625 9.25)">
+      <use href="#texture-block-brewing_stand_base" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="cauldron" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="14 0 2 13" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 0 0.3047 8 1)">
+      <use href="#texture-block-cauldron_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 13" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.3047 8.875 1.375)">
+      <use href="#texture-block-cauldron_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 2 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-cauldron_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 2 12 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 -0.2344 0.2344 8.25 6.5)">
+      <use href="#texture-block-cauldron_inner" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 2 13" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 0 0.3047 14.125 3.625)">
+      <use href="#texture-block-cauldron_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 13" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.3047 15 4)">
+      <use href="#texture-block-cauldron_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="14 0 2 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 -0.3125 0.3125 14.125 3.625)">
+      <use href="#texture-block-cauldron_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 0 12 13" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 0 0.3047 8.875 1.375)">
+      <use href="#texture-block-cauldron_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 0 12 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 -0.0391 0.0391 8.875 1.375)">
+      <use href="#texture-block-cauldron_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 0 12 13" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 0 0.3047 4.5 5.75)">
+      <use href="#texture-block-cauldron_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 14 12 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 -0.0391 0.0391 4.5 5.75)">
+      <use href="#texture-block-cauldron_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="12 13 4 3" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1094 0.0469 0 0.0703 8 5.875)">
+      <use href="#texture-block-cauldron_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="14 13 2 3" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0391 0.0391 0 0.0703 9.75 6.625)">
+      <use href="#texture-block-cauldron_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="12 13 2 3" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0391 0.0391 0 0.0703 8.25 6.875)">
+      <use href="#texture-block-cauldron_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 13 4 3" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1094 0.0469 0 0.0703 13.25 8.125)">
+      <use href="#texture-block-cauldron_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="14 13 2 3" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0391 0.0391 0 0.0703 15 8.875)">
+      <use href="#texture-block-cauldron_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="12 13 2 3" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0391 0.0391 0 0.0703 14.375 9.5)">
+      <use href="#texture-block-cauldron_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="12 13 4 3" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1094 0.0469 0 0.0703 3.625 10.25)">
+      <use href="#texture-block-cauldron_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 13 2 3" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0391 0.0391 0 0.0703 5.375 11)">
+      <use href="#texture-block-cauldron_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="14 13 2 3" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 0 0.0703 4.25 9.625)">
+      <use href="#texture-block-cauldron_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 13 2 3" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0391 0.0391 0 0.0703 5.125 10)">
+      <use href="#texture-block-cauldron_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 13 4 3" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1094 0.0469 0 0.0703 8.875 12.5)">
+      <use href="#texture-block-cauldron_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 13 2 3" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0391 0.0391 0 0.0703 10.625 13.25)">
+      <use href="#texture-block-cauldron_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 13 2 3" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 0 0.0703 10.375 12.25)">
+      <use href="#texture-block-cauldron_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 13 2 3" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0391 0.0391 0 0.0703 11.25 12.625)">
+      <use href="#texture-block-cauldron_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="chain_command_block" viewBox="0 0 16 16">
+  </symbol>
+  <symbol id="chest" viewBox="0 0 16 16">
+  </symbol>
+  <symbol id="chipped_anvil" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="2 12 12 4" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 0 0.0938 8.25 6.5)">
+      <use href="#texture-block-anvil" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="4 2 -4 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.2344 0.2344 0 0.0938 13.5 8.75)">
+      <use href="#texture-block-anvil" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 2 12 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 -0.2344 0.2344 8.25 6.5)">
+      <use href="#texture-block-anvil" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="4 11 8 1" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.2188 0.0938 0 0.0234 8.8125 6.8125)">
+      <use href="#texture-block-anvil" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="5 3 -1 10" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.1953 0.1953 0 0.0234 12.3125 8.3125)">
+      <use href="#texture-block-anvil" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="4 3 8 10" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.2188 0.0938 -0.1953 0.1953 8.8125 6.8125)">
+      <use href="#texture-block-anvil" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="6 6 4 5" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1094 0.0469 0 0.1172 9.375 5.625)">
+      <use href="#texture-block-anvil" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="10 4 -5 8" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.1563 0.1563 0 0.1172 11.125 6.375)">
+      <use href="#texture-block-anvil" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="3 0 10 6" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.2734 0.1172 0 0.1406 9.3125 1.5625)">
+      <use href="#texture-block-anvil" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="16 0 -6 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.1406 13.6875 3.4375)">
+      <use href="#texture-block-anvil" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="3 0 10 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.2734 0.1172 -0.3125 0.3125 9.3125 1.5625)">
+      <use href="#texture-block-chipped_anvil_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="command_block" viewBox="0 0 16 16">
+  </symbol>
+  <symbol id="comparator" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 14 16 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.0469 8 6.25)">
+      <use href="#texture-block-smooth_stone" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 14 16 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.0469 15 9.25)">
+      <use href="#texture-block-smooth_stone" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 6.25)">
+      <use href="#texture-block-comparator" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="7 6 2 5" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 0 0.1172 6.3125 8.5625)">
+      <use href="#texture-block-redstone_torch_off" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="7 6 2 5" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0391 0.0391 0 0.1172 7.1875 8.9375)">
+      <use href="#texture-block-redstone_torch_off" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="7 6 2 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 -0.0391 0.0391 6.3125 8.5625)">
+      <use href="#texture-block-redstone_torch_off" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="7 6 2 5" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 0 0.1172 8.9375 9.6875)">
+      <use href="#texture-block-redstone_torch_off" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="7 6 2 5" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0391 0.0391 0 0.1172 9.8125 10.0625)">
+      <use href="#texture-block-redstone_torch_off" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="7 6 2 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 -0.0391 0.0391 8.9375 9.6875)">
+      <use href="#texture-block-redstone_torch_off" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="7 6 2 3" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 0 0.0703 10.4375 7.0625)">
+      <use href="#texture-block-redstone_torch_off" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="7 6 2 3" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0391 0.0391 0 0.0703 11.3125 7.4375)">
+      <use href="#texture-block-redstone_torch_off" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="7 6 2 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 -0.0391 0.0391 10.4375 7.0625)">
+      <use href="#texture-block-redstone_torch_off" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="composter" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 6.25)">
+      <use href="#texture-block-composter_bottom" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="14 0 2 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 0 0.375 8 1)">
+      <use href="#texture-block-composter_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 8.875 1.375)">
+      <use href="#texture-block-composter_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 2 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-composter_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 2 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 0 0.375 14.125 3.625)">
+      <use href="#texture-block-composter_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-composter_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="14 0 2 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 -0.3125 0.3125 14.125 3.625)">
+      <use href="#texture-block-composter_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 0 12 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 0 0.375 8.875 1.375)">
+      <use href="#texture-block-composter_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 0 12 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 -0.0391 0.0391 8.875 1.375)">
+      <use href="#texture-block-composter_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 0 12 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 0 0.375 4.5 5.75)">
+      <use href="#texture-block-composter_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 14 12 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 -0.0391 0.0391 4.5 5.75)">
+      <use href="#texture-block-composter_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="conduit" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAGFBMVEX////EvbW6rZawooC0iGuAclJhUzFANiH9KO18AAAAAXRSTlMAQObYZgAAAF9JREFUeNqNzzEOAgAIBEHZW+D/PzaKWktxxeQg4fHPxASDwkF3N77ywNpt7J1fYwapXbxGNzVDdecNGMYZjQcYgyrflYK88xq9U/hKD2q7lN0PGCiE6oNJ7mriP68+AR4tAg6sklyEAAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="crafter" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-crafter_north" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-crafter_east" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-crafter_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="crafting_table" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-crafting_table_front" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-crafting_table_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-crafting_table_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="daylight_detector" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 10 16 6" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.1406 8 4.75)">
+      <use href="#texture-block-daylight_detector_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 10 16 6" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.1406 15 7.75)">
+      <use href="#texture-block-daylight_detector_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 4.75)">
+      <use href="#texture-block-daylight_detector_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="decorated_pot" viewBox="0 0 16 16">
+  </symbol>
+  <symbol id="dispenser" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-dispenser_front" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-furnace_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-furnace_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="dropper" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-dropper_front" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-furnace_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-furnace_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="enchanting_table" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 4 16 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.2813 8 2.5)">
+      <use href="#texture-block-enchanting_table_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 4 16 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.2813 15 5.5)">
+      <use href="#texture-block-enchanting_table_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 2.5)">
+      <use href="#texture-block-enchanting_table_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="fletching_table" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-fletching_table_front" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-fletching_table_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-fletching_table_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="flower_pot" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="10 10 1 6" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0273 0.0117 0 0.1406 8.625 7.25)">
+      <use href="#texture-block-flower_pot" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="5 10 6 6" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.1172 0.1172 0 0.1406 9.0625 7.4375)">
+      <use href="#texture-block-flower_pot" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="5 5 1 6" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0273 0.0117 -0.1172 0.1172 8.625 7.25)">
+      <use href="#texture-block-flower_pot" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="5 10 1 6" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0273 0.0117 0 0.1406 10.8125 8.1875)">
+      <use href="#texture-block-flower_pot" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="5 10 6 6" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.1172 0.1172 0 0.1406 11.25 8.375)">
+      <use href="#texture-block-flower_pot" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="10 5 1 6" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0273 0.0117 -0.1172 0.1172 10.8125 8.1875)">
+      <use href="#texture-block-flower_pot" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="6 10 4 6" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1094 0.0469 0 0.1406 9.0625 7.4375)">
+      <use href="#texture-block-flower_pot" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="6 5 4 1" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1094 0.0469 -0.0195 0.0195 9.0625 7.4375)">
+      <use href="#texture-block-flower_pot" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="6 10 4 6" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1094 0.0469 0 0.1406 7.5 9)">
+      <use href="#texture-block-flower_pot" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="6 10 4 1" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1094 0.0469 -0.0195 0.0195 7.5 9)">
+      <use href="#texture-block-flower_pot" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="6 6 4 4" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1094 0.0469 -0.0781 0.0781 8.75 8.5)">
+      <use href="#texture-block-dirt" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="furnace" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-furnace_front" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-furnace_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-furnace_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="grindstone" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="2 9 2 7" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 0 0.1641 11.375 8.5)">
+      <use href="#texture-block-dark_oak_log" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="10 16 -4 -7" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0781 0.0781 0 0.1641 12.25 8.875)">
+      <use href="#texture-block-dark_oak_log" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="12 9 2 7" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 0 0.1641 7 6.625)">
+      <use href="#texture-block-dark_oak_log" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="10 16 -4 -7" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0781 0.0781 0 0.1641 7.875 7)">
+      <use href="#texture-block-dark_oak_log" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="6 0 2 6" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 0 0.1406 11.6875 5.9375)">
+      <use href="#texture-block-grindstone_pivot" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 6 6" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.1172 0.1172 0 0.1406 12.5625 6.3125)">
+      <use href="#texture-block-grindstone_pivot" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="8 0 2 6" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 -0.1172 0.1172 11.6875 5.9375)">
+      <use href="#texture-block-grindstone_pivot" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="6 0 2 6" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 0 0.1406 7.3125 4.0625)">
+      <use href="#texture-block-grindstone_pivot" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="8 0 2 6" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 -0.1172 0.1172 7.3125 4.0625)">
+      <use href="#texture-block-grindstone_pivot" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 8 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.2188 0.0938 0 0.2813 9.125 2.375)">
+      <use href="#texture-block-grindstone_round" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 12 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.2344 0.2344 0 0.2813 12.625 3.875)">
+      <use href="#texture-block-grindstone_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 8 12" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.2188 0.0938 -0.2344 0.2344 9.125 2.375)">
+      <use href="#texture-block-grindstone_round" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="hopper" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 5 16 1" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.0234 8 2.875)">
+      <use href="#texture-block-hopper_outside" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 5 16 1" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.0234 15 5.875)">
+      <use href="#texture-block-hopper_outside" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 2.875)">
+      <use href="#texture-block-hopper_inside" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="14 0 2 5" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 0 0.1172 8 1)">
+      <use href="#texture-block-hopper_outside" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 5" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.1172 8.875 1.375)">
+      <use href="#texture-block-hopper_outside" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 2 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-hopper_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 2 5" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 0 0.1172 14.125 3.625)">
+      <use href="#texture-block-hopper_outside" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 5" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.1172 15 4)">
+      <use href="#texture-block-hopper_outside" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="14 0 2 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 -0.3125 0.3125 14.125 3.625)">
+      <use href="#texture-block-hopper_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 0 12 5" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 0 0.1172 8.875 1.375)">
+      <use href="#texture-block-hopper_outside" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 0 12 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 -0.0391 0.0391 8.875 1.375)">
+      <use href="#texture-block-hopper_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 0 12 5" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 0 0.1172 4.5 5.75)">
+      <use href="#texture-block-hopper_outside" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 14 12 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 -0.0391 0.0391 4.5 5.75)">
+      <use href="#texture-block-hopper_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="4 6 8 6" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.2188 0.0938 0 0.1406 8.5 5.25)">
+      <use href="#texture-block-hopper_outside" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="4 6 8 6" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.1563 0.1563 0 0.1406 12 6.75)">
+      <use href="#texture-block-hopper_outside" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="6 12 4 4" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1094 0.0469 0 0.0938 8.75 8.5)">
+      <use href="#texture-block-hopper_outside" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="6 12 4 4" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0781 0.0781 0 0.0938 10.5 9.25)">
+      <use href="#texture-block-hopper_outside" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="jigsaw" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-jigsaw_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-jigsaw_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-jigsaw_lock" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="jukebox" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-jukebox_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-jukebox_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-jukebox_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="lectern" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 14 16 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.0469 8 6.25)">
+      <use href="#texture-block-lectern_base" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 6 16 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.0469 15 9.25)">
+      <use href="#texture-block-lectern_base" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 6.25)">
+      <use href="#texture-block-lectern_base" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 8 13" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.2188 0.0938 0 0.3047 8.5 3.375)">
+      <use href="#texture-block-lectern_front" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 16 13 -8" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.1563 0.1563 0 0.3047 12 4.875)">
+      <use href="#texture-block-lectern_sides" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 4" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4368 0.1872 -0.0299 0.1165 7.9057 2.048)">
+      <use href="#texture-block-lectern_sides" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 4 13 4" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.2346 0.118 -0.0299 0.1165 14.8948 5.0433)">
+      <use href="#texture-block-lectern_sides" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 1 16 13" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4368 0.1872 -0.2346 0.118 7.9057 2.048)">
+      <use href="#texture-block-lectern_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="lever" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="5 0 6 3" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1641 0.0703 0 0.0703 8.9375 8.07)">
+      <use href="#texture-block-cobblestone" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="4 0 8 3" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.1563 0.1563 0 0.0703 11.5625 9.195)">
+      <use href="#texture-block-cobblestone" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="5 4 6 8" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1641 0.0703 -0.1563 0.1563 8.9375 8.07)">
+      <use href="#texture-block-cobblestone" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="7 6 2 10" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0276 -0.0055 -0.1381 0.3038 11.8682 5.9953)">
+      <use href="#texture-block-lever" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="7 6 2 10" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0547 -0.0234 -0.1381 0.3038 11.4262 5.9069)">
+      <use href="#texture-block-lever" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="7 6 2 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 -0.0276 -0.0055 10.9932 5.6203)">
+      <use href="#texture-block-lever" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="light" viewBox="0 0 16 16">
+  </symbol>
+  <symbol id="loom" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-loom_front" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-loom_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-loom_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="note_block" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-note_block" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-note_block" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-note_block" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="observer" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-observer_front" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-observer_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 16 16 -16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-observer_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="piston" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-piston_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-piston_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-piston_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="redstone_block" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-redstone_block" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-redstone_block" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-redstone_block" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="redstone_torch" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="7 6 2 10" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 0 0.2344 8.875 6.75)">
+      <use href="#texture-block-redstone_torch" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="7 6 2 10" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0391 0.0391 0 0.2344 9.75 7.125)">
+      <use href="#texture-block-redstone_torch" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="7 6 2 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 -0.0391 0.0391 8.875 6.75)">
+      <use href="#texture-block-redstone_torch" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="8 5 1 1" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.082 0.0352 -0.0586 0.0586 8.8125 7.4375)">
+      <use href="#texture-block-redstone_torch" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="6 6 1 1" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.082 0.0352 0 0.0703 7.875 7.25)">
+      <use href="#texture-block-redstone_torch" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="9 7 1 1" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0586 0.0586 0 0.0703 8.8125 6.3125)">
+      <use href="#texture-block-redstone_torch" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="repeater" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAKlBMVEUAAAC7wLekp6GVdUZoZ2p2XjhnUjFCNSI3KheFBARlAgJYAQFDBg0oAAD0MkgHAAAAAXRSTlMAQObYZgAAAD9JREFUeNpjwAVmwRhzYAwzGMMczoCoU3KIAKtT2q0AVic08y6YYb5zrZIDkGY0vysIpIGMCEGwBAOToAIOawG8BQrI0+PO0AAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="repeating_command_block" viewBox="0 0 16 16">
+  </symbol>
+  <symbol id="scaffolding" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-scaffolding_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="14 0 2 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 0 0.375 8 1)">
+      <use href="#texture-block-scaffolding_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="14 0 2 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0391 0.0391 0 0.375 8.875 1.375)">
+      <use href="#texture-block-scaffolding_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="14 0 2 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 0 0.375 3.625 5.375)">
+      <use href="#texture-block-scaffolding_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 2 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0391 0.0391 0 0.375 4.5 5.75)">
+      <use href="#texture-block-scaffolding_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 2 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 0 0.375 9.75 8)">
+      <use href="#texture-block-scaffolding_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 2 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0391 0.0391 0 0.375 10.625 8.375)">
+      <use href="#texture-block-scaffolding_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 2 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0547 0.0234 0 0.375 14.125 3.625)">
+      <use href="#texture-block-scaffolding_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="14 0 2 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0391 0.0391 0 0.375 15 4)">
+      <use href="#texture-block-scaffolding_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 0 12 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 0 0.0469 8.875 1.375)">
+      <use href="#texture-block-scaffolding_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="14 0 -12 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.3281 0.1406 0 0.0469 4.5 5.75)">
+      <use href="#texture-block-scaffolding_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="14 0 -12 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.2344 0.2344 0 0.0469 14.375 4.625)">
+      <use href="#texture-block-scaffolding_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="2 0 12 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.2344 0.2344 0 0.0469 8.25 2)">
+      <use href="#texture-block-scaffolding_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="smithing_table" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-smithing_table_front" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-smithing_table_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-smithing_table_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="smoker" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-smoker_front" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-smoker_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-smoker_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="spawner" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-spawner" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-spawner" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-spawner" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="16 0 -16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.4374 -0.1875 0 0.3749 14.9985 4.001)">
+      <use href="#texture-block-spawner" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="16 0 -16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3124 0.3124 0 0.3749 8.0003 1.0018)">
+      <use href="#texture-block-spawner" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="16 0 -16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.4374 -0.1875 -0.3124 0.3124 14.9985 4.001)">
+      <use href="#texture-block-spawner" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="sticky_piston" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-piston_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-piston_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-piston_top_sticky" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="stonecutter" viewBox="0 0 16 16">
+  </symbol>
+  <symbol id="structure_block" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-structure_block" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-structure_block" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-structure_block" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="structure_void" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAElBMVEUAAABlhYhbd3oSXmQPUVwPSE59tdD6AAAAAXRSTlMAQObYZgAAAFBJREFUeNptj0EOwCAMw7KY/P/LE6UMTcInxz1VV0bzbVIw9rYKM/q+ih0yQxSQTLSDYkN0gvyUnwD/YCYneEpghWBHJdASFWwJTdSkuX7+AvfcAdVOYxDJAAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="target" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-target_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-target_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-target_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="tnt" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-tnt_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-tnt_side" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-tnt_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="trapped_chest" viewBox="0 0 16 16">
+  </symbol>
+  <symbol id="tripwire_hook" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="5 3 6 1" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0497 -0.0099 -0.011 0.0243 9.7565 8.7738)">
+      <use href="#texture-block-tripwire_hook" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="5 8 6 1" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0984 -0.0422 -0.011 0.0243 8.961 8.6147)">
+      <use href="#texture-block-tripwire_hook" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="5 3 6 6" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0984 0.0422 -0.0497 -0.0099 8.1815 8.0988)">
+      <use href="#texture-block-tripwire_hook" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="7 3 2 1" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0328 -0.0141 -0.011 0.0243 8.9664 8.4957)">
+      <use href="#texture-block-tripwire_hook" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="7 8 2 1" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0166 -0.0033 -0.011 0.0243 8.4414 8.2707)">
+      <use href="#texture-block-tripwire_hook" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="7 9 2 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0383 0.0164 0.0221 0.0044 7.5696 8.5326)">
+      <use href="#texture-block-oak_planks" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="9 9 5 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0552 0.1215 0.0221 0.0044 8.1821 8.7951)">
+      <use href="#texture-block-oak_planks" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="7 2 2 5" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.0383 0.0164 -0.0552 0.1215 7.5696 8.5326)">
+      <use href="#texture-block-oak_planks" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="6 7 4 8" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1094 0.0469 0 0.1875 6.25 9.125)">
+      <use href="#texture-block-oak_planks" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="14 7 2 8" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.0391 0.0391 0 0.1875 8 9.875)">
+      <use href="#texture-block-oak_planks" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="6 0 4 2" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.1094 0.0469 -0.0391 0.0391 6.25 9.125)">
+      <use href="#texture-block-oak_planks" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+  <symbol id="vault" viewBox="0 0 16 16">
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 0 0.375 8 1)">
+      <use href="#texture-block-vault_front_off" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3125 0.3125 0 0.375 15 4)">
+      <use href="#texture-block-vault_side_off" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="0 0 16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(0.4375 0.1875 -0.3125 0.3125 8 1)">
+      <use href="#texture-block-vault_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="16 0 -16 13" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.4374 -0.1875 0 0.3046 14.9985 4.001)">
+      <use href="#texture-block-vault_front_off" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="16 0 -16 13" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.3124 0.3124 0 0.3046 8.0003 1.0018)">
+      <use href="#texture-block-vault_side_off" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+    <svg x="0" y="0" width="16" height="16" viewBox="16 0 -16 16" preserveAspectRatio="none" overflow="hidden" transform="matrix(-0.4374 -0.1875 -0.3124 0.3124 14.9985 4.001)">
+      <use href="#texture-block-vault_top" width="16" height="16" image-rendering="pixelated"/>
+    </svg>
+  </symbol>
+</svg>

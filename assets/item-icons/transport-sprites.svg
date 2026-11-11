@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges">
+  <defs>
+  </defs>
+  <symbol id="acacia_boat" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAG1BMVEUAAABIJBO6aDtfMBqtXTKNTSzLekQ2IBZ1PSL+7zyHAAAAAXRSTlMAQObYZgAAAGpJREFUeNptz0sKQ0EIRNGuKj+1/xUH7ZAHSZzIPQPB83dsfEFBM5+mFEFa754EAFpPSrY4cBOlTHNuYw8CVOaFKDltUKFeYGVeoS6MFI2MlSZZFQHGIxXhHlk4HZXd54BMnZXu3QDw8/kLN68Cb365Uc4AAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="acacia_chest_boat" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAANlBMVEUAAABfMBq6aDutXTLLekSNTSwoHgtoTh5HNyVCLwt/XyKreS2nbh+PaR11PSI3MSc2IBZIJBN1cbjzAAAAAXRSTlMAQObYZgAAAHxJREFUeNpdyEkOAyEMRFEPYOjGBnz/y8YMUpSUavMfnI0Bdzffd/ykmepAvG3a1OKj4wHR1tavdCmiZogmQgtQahHzhFKEPMDTE+JOWC/wlhLCODdQiNQnhPBAiCTqnnnLpJDE7MRfie5zScASTnlOACfKCFsi1zwG//sAL0UFrzMjTGwAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="bamboo_chest_raft" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAP1BMVEUAAADv2X7jzGrZwl7Cq0ireS2SgDunbh+PaR11ZTR/XyJcZitoTh5ZSC0+Rx1HOiRHNyU3MSdCLws0KhkoHgtYwrDUAAAAAXRSTlMAQObYZgAAAIhJREFUeNpVyAsOwyAMA1DWUCDQ8Ivvf9aRsk6qZcnycztj7P3fnMfrphTj4OeneMa0+shAPE/rI8iIyQLQLZgZSQTo8CYB1xI9pHcUWsJ03fKRiVLCAm+CrodAKjfXvAn6XEKyYAtmYQ2+iHNbPFclXyr9JDDXpqUGA5PArTmnREHdlnaPquoXHv0IZdhjnlUAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="bamboo_raft" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAMFBMVEUAAADv2X7u1nDjzGrZwl7Tu1DCq0i7qEySgDt1ZTRcZitgTzJZSC0+Rx1HOiQ0KhkaT0CNAAAAAXRSTlMAQObYZgAAAHtJREFUeNpjQALcu2EMO44JYMbWF1c8wQIVLatSQEIcLW5ZSzyB9C2XMy4goSatJZ+PgYQmqazyl3FZ1ckwzclryecjZ+cxPEtSWZVv4zOPgS/NSWvlj6wDDEChzPtua30YGPgyZt77dQPIYHgx7wG/Sz8DUOgBA8P//wC1Mi7y6omYGAAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="birch_boat" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAG1BMVEUAAABbUDjXy42BcE/It3qvn2fl2Z9GMyucj2Czj45JAAAAAXRSTlMAQObYZgAAAGpJREFUeNptz0sKQ0EIRNGuKj+1/xUH7ZAHSZzIPQPB83dsfEFBM5+mFEFa754EAFpPSrY4cBOlTHNuYw8CVOaFKDltUKFeYGVeoS6MFI2MlSZZFQHGIxXhHlk4HZXd54BMnZXu3QDw8/kLN68Cb365Uc4AAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="birch_chest_boat" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAANlBMVEUAAACBcE/Xy43It3rl2Z+vn2coHgtoTh5HNyVCLwt/XyKreS2nbh+PaR2cj2A3MSdGMytbUDgt45sgAAAAAXRSTlMAQObYZgAAAHxJREFUeNpdyEkOAyEMRFEPYOjGBnz/y8YMUpSUavMfnI0Bdzffd/ykmepAvG3a1OKj4wHR1tavdCmiZogmQgtQahHzhFKEPMDTE+JOWC/wlhLCODdQiNQnhPBAiCTqnnnLpJDE7MRfie5zScASTnlOACfKCFsi1zwG//sAL0UFrzMjTGwAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="black_harness" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAM1BMVEUAAADQ6umoqKhvmqS9cUhxcXFXeoGcXTteXl59Til3RyddNho4NkdOLBMqKTs4IRAaGCOuZmOYAAAAAXRSTlMAQObYZgAAAHlJREFUeNp1j1EOwjAMQ0O2kq6Ja9//tKhMAiYxf0R6T86H7S4ArhgxgAuOiDiVtxPXHTFM0z+4R8JU7m+MfQeSlgfZItydSHRZ8vFk86kOZJsy47aRLPVEQ8lM5CplS8cpaq7S4T5BmZnWG6lZxW7fqErNfoX0f/YLZCUGmu+HtUQAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="blue_harness" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAM1BMVEUAAADQ6umoqKhvmqS9cUhxcXFXeoGcXTtBcbBFWr5eXl59Til3RyddNhoyOXpOLBM4IRBezftpAAAAAXRSTlMAQObYZgAAAHlJREFUeNp1j1EOwjAMQ0O2krRrbN//tKhMAiYxf0R6T86H7S4krxgxyQvOiDiVtxPXnTEN3T+4R9GQ7m+MfSdLVofUItxdLA5Y6fFU845BVusw07ZJSoxiY8IM0ipVK+cpsq/S4d4pmBnWm4SeqWHfIBPNfgXwf/YLjIUGsyKcImAAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="brown_harness" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAM1BMVEUAAADQ6umoqKjRillvmqS9cUixcUFxcXFXeoGcXTteXl59Til9SiV3RyddNhpOLBM4IRDdchk3AAAAAXRSTlMAQObYZgAAAHlJREFUeNp1j1EOwjAMQ0OytaRzY9//tKhMAiYxf0R6T86H7S4kr5g5yQvOzDyV9xPXnTkNzT+4Z9EQ7m/MfSdLVofUM91dLA5Y6fFU94ZBVm8w07ZJCoxiZ8AM0ipVL+cpoq3S4d4omBnWm4QWoWHfIALdfgXwf/YLqp4Gsox5dlYAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="cherry_boat" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAHlBMVEUAAADx0sznwrvnurTms63hqKHdnZfNhYCwX2OOOEQA2M3nAAAAAXRSTlMAQObYZgAAAGtJREFUeNptz0EKA0EIRFEtW6u8/4WDdphAEjfy30LQ/k6VvsDFmadBRgDFd09K0siTZBUxcFPOzMLc1h6UwMwL4aysEhjsBXjmFfDCiKOUZ6UBuEcI5yMekT2yYB1+us0EJG2le7ck/Xz+AsHFA2uSXO/dAAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="cherry_chest_boat" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAOVBMVEUAAADx0sznwrvnurTms63hqKHdnZfNhYCreS2wX2Onbh+PaR1/XyKOOERoTh5HNyU3MSdCLwsoHgunZ/yFAAAAAXRSTlMAQObYZgAAAH1JREFUeNpdyIsOwyAIhWHFCwLFWt7/YUdx67KdkJD/S3tr7f/kcayfFGFeiO8WHix+q+MG4zF4PNJtGosgihncgHZOE8po04AcKF8uRIAfKCHTpaAGgIudlwvgBhfL0KnVEAWXXApB/Yp301sCkpZcVVMigIYpRDU++dL/XpXXBh5rcVK2AAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="chest_minecart" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAPFBMVEUAAADNzc2prq+lpaWepKaUl5iAg4mreS2nbh92dnZrbnJnb3OPaR1/XyJoTh4/QkM3MScjLC8oHgsJCQpx8x+aAAAAAXRSTlMAQObYZgAAAHtJREFUeNptylESwyAIRVFLEn0qETD732sV40dnygwf50J4R1WDz+aNW3/IDOg2IwGcwPqGjpQwl/u09JYBBoa7zSDtc4B5sJmHS/LRF6OHSpKbk8r6iCSDFKn6h1WKl5RzulpYpRqVs0Z5Br1cVmIxeyzsYvu6i1//zxcH+QdXdJaL2AAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="command_block_minecart" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAP1BMVEUAAADWzMT5vRXGua+prq+epKa3jXGUl5jHfk+Ag4lhmyiLdWPaTUdrbnJnb3PFOjeAVDY/QkMjLC8oHgsJCQq1BlZMAAAAAXRSTlMAQObYZgAAAHhJREFUeNptylsSwyAIQNFYiUqtlEf2v9Yirc1kJvww98D2GzOb68zS2C6ZnqfMfOec/mLWWsr5lcpXxNjlkYq36QThbqU1T9aAKt0lEgMIpHMkjICKIJ6AQPGhBFhl7LPJIYQUxk4oh2dI1YFD9dBtia7rkrjezwdVMwgVnrDs7gAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="cyan_harness" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAM1BMVEUAAADQ6umoqKhvmqQrq6S9cUhxcXFXeoESlJOcXTteXl59Til3RycRZXZdNhpOLBM4IRDJd/cvAAAAAXRSTlMAQObYZgAAAHlJREFUeNp1j1EOwjAMQ0OWlaarY9//tKhMAiYxf0R6T86H7S4kr5g5yQvOzDyVtxPXnTkN3T+4Z9EQ7m/MfSdLVofUMt1dLA5Y6fFU845BVusw07ZJCoxiY8AM0ipVK+cpoq/S4d4pmBnWm4QeoWHfIALNfgXwf/YLp3kGvT8OTMMAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="dark_oak_boat" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAG1BMVEUAAAArFw5kQSA0IAtXORpLMBWBUiYdEwk/Jw8rQpCqAAAAAXRSTlMAQObYZgAAAGpJREFUeNptz0sKQ0EIRNGuKj+1/xUH7ZAHSZzIPQPB83dsfEFBM5+mFEFa754EAFpPSrY4cBOlTHNuYw8CVOaFKDltUKFeYGVeoS6MFI2MlSZZFQHGIxXhHlk4HZXd54BMnZXu3QDw8/kLN68Cb365Uc4AAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="dark_oak_chest_boat" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAANlBMVEUAAAArFw4dEwk/Jw83MScoHguPaR2nbh+reS1oTh5HNyVCLwt/XyJLMBWBUiZXORpkQSA0IAuZuorIAAAAAXRSTlMAQObYZgAAAHxJREFUeNpdyIEOwyAIRVFBAW2rwP//7Cg2XbYXEnJP2Wtt/zevq/0ks0hzf5qlC8e16htIepf+SqVBwuzORHaD0zGIYTkNMgiAdYYAmB8PaMoIUccEC6HjDDHfEELLKkxNQQtZqmD6leiKtyQU1DURSwGz6SUFMT/Eyv8+Jf0GV+IEW3QAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="furnace_minecart" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAOVBMVEUAAACprq+epKaUl5iRkZGFhYWAg4l3d3drbnJnb3NoaGhdW1tQTk4/QkM8Ozs6OjojLC8oHgsJCQpxP/RwAAAAAXRSTlMAQObYZgAAAHlJREFUeNptyUkSwzAIRFFjCTQBBt//sAmKVPHCbKj/+ljn7vH+iTj8kVzyQ5wzjlJGYV+gvQ8eGZeIszL2njOrWoAwKyJ/87IJSS7WX9KEBiGRUCckAmEzIGgUYA0oST2jW0BIM6hnI7mjQ5JVqma3HVtsr1vm+n4fyTgG07wzFlEAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="gray_harness" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAM1BMVEUAAADQ6umoqKhvmqS9cUhxcXFXeoGcXTtZa3FeXl5RXmF9Til3RydGTk9dNhpOLBM4IRDuyMkgAAAAAXRSTlMAQObYZgAAAHlJREFUeNp1j1EOwjAMQ0O2krSrY9//tKhMAiYxf0R6T86H7S4krxgxyQvOiDiVtxPXnTENwz+4R9GQ7m+MfSdLVofUItxdLHZY6fFU84FOVhsw07ZJSvRiY8IM0ipVK+cpcqzS4T4omBnWm4SRqW7fIBPNfgXwf/YLi48Gq+2GDsQAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="green_harness" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAM1BMVEUAAADQ6umoqKhvmqS9cUhwhR1xcXFXeoGcXTtXdRReXl59Til3RyczUiRdNhpOLBM4IRC+OAXHAAAAAXRSTlMAQObYZgAAAHlJREFUeNp1j1EOwjAMQ0O2lLSrY9//tKhMAiYxf0R6T86H7S4kr5g5yQvOzDyVtxPXnTkN3T+4Z9EQ7m/MfSdLVofUMt1dLA5Y6fFU845BVusw07ZJCoxiY8AM0ipVK+cpoq/S4d4pmBnWm4QeoWHfIALNfgXwf/YLmI4GsJqYNEcAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="hopper_minecart" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAALVBMVEUAAACprq+epKaUl5iAg4lrbnJnb3NiYWJKTEo/QkM+Pj44ODgwMDAjLC8JCQrLL2asAAAAAXRSTlMAQObYZgAAAGtJREFUeNptylEOxCAIRVGoyAOV7n+5E3FI06Tv7x6g/wBQrtLM8M75SOZajwBz7ZU4DAeAERt8GOZOG57QtmS6JCj7sEzuCU3YhzsLa36EsjTv124NOqLB/VLxm+hIiy494g4qibqW5PV7P9ZPBR4+XVFLAAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="jungle_boat" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAG1BMVEUAAABHLx+4h2RWOyiUaEV9VDnBlXU2IBZmRCywd03KAAAAAXRSTlMAQObYZgAAAGpJREFUeNptz0sKQ0EIRNGuKj+1/xUH7ZAHSZzIPQPB83dsfEFBM5+mFEFa754EAFpPSrY4cBOlTHNuYw8CVOaFKDltUKFeYGVeoS6MFI2MlSZZFQHGIxXhHlk4HZXd54BMnZXu3QDw8/kLN68Cb365Uc4AAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="jungle_chest_boat" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAANlBMVEUAAABWOyi4h2SUaEXBlXV9VDkoHgtoTh5HNyVCLwt/XyKreS2nbh+PaR1mRCw3MSc2IBZHLx8TDbk6AAAAAXRSTlMAQObYZgAAAHxJREFUeNpdyEkOAyEMRFEPYOjGBnz/y8YMUpSUavMfnI0Bdzffd/ykmepAvG3a1OKj4wHR1tavdCmiZogmQgtQahHzhFKEPMDTE+JOWC/wlhLCODdQiNQnhPBAiCTqnnnLpJDE7MRfie5zScASTnlOACfKCFsi1zwG//sAL0UFrzMjTGwAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="lead" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAG1BMVEUAAACFRhuuc0umm5O1qJ9yYFSLcF+mZz1eLxCyzwsuAAAAAXRSTlMAQObYZgAAAEpJREFUeNqNj0EKgEAMA5usmvn/i0UEu4gLzqVkILStf8i2oylLQBusHhco9WkUnhJJIlPVCm2DmmHs72tYidyxdyh2TBcOAFaPnrehAXmOdEC6AAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="light_blue_harness" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAM1BMVEUAAADQ6umoqKg0ss9vmqS9cUgpldVxcXFXeoGcXTteXl4uY6N9Til3RyddNhpOLBM4IRB0WN04AAAAAXRSTlMAQObYZgAAAHlJREFUeNp1j1EOwjAMQ0OytaReY9//tKhMAiYxf0R6T86H7S4kr5g5yQvOzDyV9xPXnTkNzT+4Z9EQ7m/MfSdLVofUM91dLA5Y6fFU94ZBVm8w07ZJCoxiZ8AM0ipVL+cpoq3S4d4omBnWm4QWoWHfIALdfgXwf/YLpR8GocYYQ+QAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="light_gray_harness" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAM1BMVEUAAADQ6umoqKhvmqSNj4i9cUh7fXdxcXFXeoGcXTtmZ2ZeXl59Til3RyddNhpOLBM4IRBqtApXAAAAAXRSTlMAQObYZgAAAHlJREFUeNp1j0EOw0AIAykhUNgs9v9fW20jtY3U+IA0I3Ow3AXAFTMncMGZmafSOHHdmVPK9YN7NqRM9Y2570BT+iAjU1WJxihpPp4MdR9Ah5cIt42k+WgErESKXKWOVpzCfJUOVQdLRGq9keVmHPJNmVXIr6j6P/sFnhoGj0uyMT8AAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="lime_harness" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAM1BMVEUAAADQ6umcyTKoqKhvmqRmqRi9cUhxcXFXeoGcXTteXl49dTR9Til3RyddNhpOLBM4IRDswaEgAAAAAXRSTlMAQObYZgAAAHlJREFUeNp1j1EOwjAMQ0OyrqReY9//tKhMAiYxf0R6T86H7S4kr5g5yQvOzDxV9BPXnTkNLT64Z9HgEW/MfSdLVofUMyNCLA5Y6fFUj4ZBVm8w07ZJcoxip8MM0ipVr+ApvK3SEdEomBnWm4TmrmHfwB3dfgXwf/YLp4kGoCFyUikAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="magenta_harness" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAM1BMVEUAAADQ6umoqKhvmqTRWqe9cUhxcXFXeoG9Oq+cXTteXl59Til9NIh3RyddNhpOLBM4IRBlYPaWAAAAAXRSTlMAQObYZgAAAHlJREFUeNp1j1EOwjAMQ0OWlaZzY9//tKhMAiYxf0R6T86H7S4kr5g5yQvOzDyVtxPXnTkN3T+4Z9EQ7m/MfSdLVofUMt1dLA5Y6fFU845BVusw07ZJCoxiY8AM0ipVK+cpoq/S4d4pmBnWm4QeoWHfIALNfgXwf/YLrOgGuj/8ET8AAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="mangrove_boat" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAG1BMVEUAAABHEhN/QjRTGx13NzFrKy+aV0IzExJcISAeB9pEAAAAAXRSTlMAQObYZgAAAGpJREFUeNptz0sKQ0EIRNGuKj+1/xUH7ZAHSZzIPQPB83dsfEFBM5+mFEFa754EAFpPSrY4cBOlTHNuYw8CVOaFKDltUKFeYGVeoS6MFI2MlSZZFQHGIxXhHlk4HZXd54BMnZXu3QDw8/kLN68Cb365Uc4AAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="mangrove_chest_boat" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAANlBMVEUAAABTGx1/QjR3NzGaV0JrKy8oHgtoTh5HNyVCLwt/XyKreS2nbh+PaR1cISA3MSczExJHEhOBGJkrAAAAAXRSTlMAQObYZgAAAHxJREFUeNpdyEkOAyEMRFEPYOjGBnz/y8YMUpSUavMfnI0Bdzffd/ykmepAvG3a1OKj4wHR1tavdCmiZogmQgtQahHzhFKEPMDTE+JOWC/wlhLCODdQiNQnhPBAiCTqnnnLpJDE7MRfie5zScASTnlOACfKCFsi1zwG//sAL0UFrzMjTGwAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="minecart" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAJ1BMVEUAAACprq+epKaUl5iAg4lrbnJnb3NCT1U/QkMuNj0lKzAjLC8JCQoQwjN+AAAAAXRSTlMAQObYZgAAAGBJREFUeNp1zzESgDAIRFExgBvX+5/XrJEZLUL3HzRsywH5S/R+8JcDJJUTpigLOj8H5xA80KAcA/gDaXjTYl74EMDc0gVM84bY1SmQJC32dFxqSWN4kBe3Eta2RNvF1zdjTAR2gm3i7gAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="oak_boat" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAG1BMVEUAAABHOiS8mGJZSC2fhE2DbD3Fpng5JBtvWji00CDNAAAAAXRSTlMAQObYZgAAAGpJREFUeNptz0sKQ0EIRNGuKj+1/xUH7ZAHSZzIPQPB83dsfEFBM5+mFEFa754EAFpPSrY4cBOlTHNuYw8CVOaFKDltUKFeYGVeoS6MFI2MlSZZFQHGIxXhHlk4HZXd54BMnZXu3QDw8/kLN68Cb365Uc4AAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="oak_chest_boat" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAANlBMVEUAAABZSC28mGKfhE3FpniDbD0oHgtoTh5HNyVCLwt/XyKreS2nbh+PaR1vWjg3MSc5JBtHOiR2cu/qAAAAAXRSTlMAQObYZgAAAHxJREFUeNpdyEkOAyEMRFEPYOjGBnz/y8YMUpSUavMfnI0Bdzffd/ykmepAvG3a1OKj4wHR1tavdCmiZogmQgtQahHzhFKEPMDTE+JOWC/wlhLCODdQiNQnhPBAiCTqnnnLpJDE7MRfie5zScASTnlOACfKCFsi1zwG//sAL0UFrzMjTGwAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="orange_harness" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAM1BMVEUAAADQ6un8mi2oqKhvmqTlbg+9cUhxcXFXeoGcXTu/SR9eXl59Til3RyddNhpOLBM4IRCQhQ+fAAAAAXRSTlMAQObYZgAAAHlJREFUeNp1j1EOwjAMQ0OyrsRdY9//tKhMAiYxf0R6T86H7S4kr5g5yQvOzDxV9BPXnTkNLT64Z9HgEW/MfSdLVofUMyNCLA5Y6fFUj4ZBVm8w07ZJcoxip8MM0ipVr+ApvK3SEdEomBnWm4TmrmHfwB3dfgXwf/YLotIGkW+R3EcAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="pale_oak_boat" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAG1BMVEUAAAD67+7n4+HSxsehkZGId3dtY2NPRkYwKirpZSP0AAAAAXRSTlMAQObYZgAAAGpJREFUeNptz0EKQ1EIQ9FnNIn7X3HRV/qhrRO5ZyB4/g7pLwhr5tOQMgHq3ZO2DepJiRQGbjpURcxt70EbqrqQIRZpKNULiKor0IWRAF250gAiMo18JDLZIwunM6r7HAOls9K927Z/Pn8BiNEC/881WKsAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="pale_oak_chest_boat" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAANlBMVEUAAABtY2Pn4+HSxsf67+6hkZEoHgtoTh5HNyVCLwt/XyKreS2nbh+PaR2Id3c3MScwKipPRka51EmpAAAAAXRSTlMAQObYZgAAAHxJREFUeNpdyEkOAyEMRFEPYOjGBnz/y8YMUpSUavMfnI0Bdzffd/ykmepAvG3a1OKj4wHR1tavdCmiZogmQgtQahHzhFKEPMDTE+JOWC/wlhLCODdQiNQnhPBAiCTqnnnLpJDE7MRfie5zScASTnlOACfKCFsi1zwG//sAL0UFrzMjTGwAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="pink_harness" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAM1BMVEUAAADQ6unyj62oqKjocpVvmqS9cUhxcXG/S2hXeoGcXTteXl59Til3RyddNhpOLBM4IRCEON0+AAAAAXRSTlMAQObYZgAAAHlJREFUeNp1j1EOwjAMQ0PSrSZdY9//tKhMAiYxf0R6T86H7S4kr5g5yQvOzDxV9BPXnTkNLT64Z9HgEW/MfSdLVofUMyNCLA5Y6fFUj4ZBVm8w07ZJcoxip8MM0ipVr+ApvK3SEdEomBnWm4TmrmHfwB3dfgXwf/YLqF8GhLkMtW0AAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="purple_harness" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAM1BMVEUAAADQ6umoqKhvmqS9cUiqSs9xcXFXeoGcXTteXl6FMbp9Til3RydaKYxdNhpOLBM4IRCJkL5VAAAAAXRSTlMAQObYZgAAAHlJREFUeNp1j1EOwjAMQ0O2lLSrY9//tKhMAiYxf0R6T86H7S4kr5g5yQvOzDyVtxPXnTkNwz+4Z9EQ7m/MfSdLVofUMt1dLHZY6fFU84FOVhsw07ZJCvRiY8AM0ipVK+cpYqzS4T4omBnWm4QRoW7fIALNfgXwf/YLmWkGssUmUOwAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="red_harness" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAM1BMVEUAAADQ6umoqKhvmqS9cUhxcXFXeoGcXTvSPy5eXl59Tim1MSl3RyddNhp9Gy9OLBM4IRCdN2RAAAAAAXRSTlMAQObYZgAAAHlJREFUeNp1j1EOwjAMQ0O2knRtbN//tKhMAiYxf0R6T86H7S4krxgxyQvOiDiVtxPXnTENwz+4R9GQ7m+MfSdLVofUItxdLHZY6fFU84FOVhsw07ZJSvRiY8IM0ipVK+cpcqzS4T4omBnWm4SRqW7fIBPNfgXwf/YLjwMGuQDw2QsAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="saddle" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAHlBMVEUAAADxi1ywmYjaZix/b2OnTiFVSEN/ORlRIQw1Fwoj1JBHAAAAAXRSTlMAQObYZgAAAE9JREFUeNpjIBZwlBdAGO2C5mC6o9hUFCjEXh5sbBwMZBQKlxobl04ASgRaBJtWABntraatoZ0MQDUV4a2VDRDdlRMgjJkTGFpgZqshrAEATKgTThuNjaAAAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="spruce_boat" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAG1BMVEUAAAA0KBuHYTRHNyV2Vy1jTCybbzspFw9UQCwZ8E+SAAAAAXRSTlMAQObYZgAAAGpJREFUeNptz0sKQ0EIRNGuKj+1/xUH7ZAHSZzIPQPB83dsfEFBM5+mFEFa754EAFpPSrY4cBOlTHNuYw8CVOaFKDltUKFeYGVeoS6MFI2MlSZZFQHGIxXhHlk4HZXd54BMnZXu3QDw8/kLN68Cb365Uc4AAAAASUVORK5CYII="/>
+  </symbol>
+  <symbol id="spruce_chest_boat" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAM1BMVEUAAAA0KBspFw8oHgtoTh43MSdUQCyPaR2nbh+reS1/XyJCLwtjTCybbzt2Vy2HYTRHNyXthfnGAAAAAXRSTlMAQObYZgAAAHtJREFUeNpdyAsOwyAMA1CSAKEtJL7/aRc+2rRaliy/tFPK3u+97/J3VVsrwPnarqbRUrFB2nXNHqmSpakCKuITIMiiNCBZnAJoPCFEDhywJTnEwAs8RPCEODaEyPBK3ZawhwwzcvtJ/MpTAqbY6MwpkXtHWsK8liLpnQ8cDgYqXPezvwAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="tnt_minecart" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAM1BMVEUAAADpno6prq+epKbZg3iUl5iAg4lrbnJnb3PbRBqRLRE/QkNhHwwjLC8bJjIoHgsJCQp+OaXPAAAAAXRSTlMAQObYZgAAAHJJREFUeNptilEOxSAIBJUqgrja+5/2BXw2adL9m9lJ/621Uuyglr5eOGfRY/zNRWc0W2QPnsaWdg3sY8CFadfs2AdCVBt+OnIIIYsaTG0XTDYAYpIoIMTV2uUsSNsIqF3Cdju7qWjcgBvpGJz3mHi/9wNc2AYBWDmsmQAAAABJRU5ErkJggg=="/>
+  </symbol>
+  <symbol id="white_harness" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAM1BMVEUAAADt7e3Q6unQ0NCoqKiXl5dvmqS9cUhxcXFXeoGcXTteXl59Til3RyddNhpOLBM4IRB24pWyAAAAAXRSTlMAQObYZgAAAHdJREFUeNp1j1EOwjAMQxOabSZdY9//tKirBEwCf0R6T/6I7V9I3jFzkDccmbkUsHDekcPQ4o1HFg0ecWEeB1myOiVkRoRY7LDS4ylE2zpZaDDTvkvyrRdBhxmkWSpUcAlvs3RGNArXH2aS0NzV7RO4A/YtgN+zX7DYBo4C503qAAAAAElFTkSuQmCC"/>
+  </symbol>
+  <symbol id="yellow_harness" viewBox="0 0 16 16">
+    <image width="16" height="16" preserveAspectRatio="xMidYMid meet" image-rendering="pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAM1BMVEUAAADQ6un932SoqKjipRFvmqS9cUiwZxNxcXFXeoGcXTteXl59Til3RyddNhpOLBM4IRDS7lxgAAAAAXRSTlMAQObYZgAAAHlJREFUeNp1j1EOwjAMQ0PSzSVdY9//tKhMAiYxf0R6T86H7S4kr5g5yQvOzDxV9BPXnTkNLT64Z9HgEW/MfSdLVofUMyNCLA5Y6fFUj4ZBVm8w07ZJcoxip8MM0ipVr+ApvK3SEdEomBnWm4TmrmHfwB3dfgXwf/YLpUIGeFNmTBQAAAAASUVORK5CYII="/>
+  </symbol>
+</svg>
