@@ -6,11 +6,12 @@
   "scripts": {
     "dev": "concurrently -k -n api,web -c yellow,green \"npm:server\" \"vite --host 127.0.0.1\"",
     "build": "vite build",
+    "complexity": "eslint",
     "lint": "oxlint",
     "preview": "vite preview",
     "server": "node server/index.js",
     "start": "node server/index.js",
-    "test": "node --test test/bot-manager.test.js test/bot-settings.test.js test/chat-colors.test.js test/chat-player-links.test.js test/client.test.js test/config-loader.test.js test/saved-messages.test.js test/ws.test.js"
+    "test": "node --test test/bot-manager.test.js test/bot-settings.test.js test/chat-colors.test.js test/chat-player-links.test.js test/client.test.js test/command-input.test.js test/config-loader.test.js test/saved-messages.test.js test/ws.test.js"
   },
   "dependencies": {
     "better-sqlite3": "^12.11.1",
@@ -27,6 +28,8 @@
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
     "concurrently": "^10.0.7",
+    "eslint": "^10.14.0",
+    "eslint-plugin-sonarjs": "^4.2.2",
     "oxlint": "^1.90.0",
     "vite": "^8.3.6"
   }

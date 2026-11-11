@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import express from 'express';
 import { WebSocketServer, WebSocket } from 'ws';
+import { createActionHandlers } from './ws-actions.js';
 
 const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const distDir = resolve(projectRoot, 'dist');
@@ -50,6 +51,7 @@ export function createControlServer({
             if (client.readyState === WebSocket.OPEN) client.send(payload);
         }
     };
+    const actionHandlers = createActionHandlers({ manager, savedMessages, broadcastSavedMessages });
 
     const isAuthenticated = request => !requireProxyAuth || Boolean(request.headers[proxyUserHeader]);
     const validOrigin = (origin, request) => {
@@ -108,66 +110,12 @@ export function createControlServer({
                     throw new Error('Request must be a JSON object');
                 }
 
-                let result;
-                if (request.type === 'bot:start') {
-                    result = await manager.start(request.id);
-                } else if (request.type === 'bot:stop') {
-                    result = await manager.stop(request.id);
-                } else if (request.type === 'bot:auto-start') {
-                    result = manager.setAutoStart(request.id, request.enabled);
-                } else if (request.type === 'bot:auth-reset') {
-                    result = await manager.resetMicrosoftAuthentication(request.id);
-                } else if (request.type === 'bot:auth-start') {
-                    result = await manager.startMicrosoftAuthentication(request.id);
-                } else if (request.type === 'bot:profile-create') {
-                    result = manager.createBotProfile(request.id, request.profile, request.autoStart);
-                } else if (request.type === 'bot:profile-update') {
-                    result = await manager.updateBotProfile(request.id, request.profile, request.autoStart);
-                } else if (request.type === 'bot:profile-delete') {
-                    result = await manager.deleteBotProfile(request.id);
-                } else if (request.type === 'bot:command') {
-                    result = manager.sendCommand(request.id, request.command);
-                } else if (request.type === 'bot:complete') {
-                    const suggestions = await manager.completeCommand(request.id, request.command);
-                    sendJson(socket, { type: 'bot:completion', requestId, suggestions });
+                const handler = actionHandlers.get(request.type);
+                if (!handler) throw new Error('Unsupported action');
+                const result = await handler(request);
+                if (request.type === 'bot:complete') {
+                    sendJson(socket, { ...result, requestId });
                     return;
-                } else if (request.type === 'bot:inventory-move') {
-                    result = await manager.moveInventoryItem(request.id, request.sourceSlot, request.destinationSlot);
-                } else if (request.type === 'bot:inventory-click') {
-                    result = await manager.clickInventorySlot(
-                        request.id,
-                        request.slot,
-                        request.mouseButton,
-                        request.mode
-                    );
-                } else if (request.type === 'bot:inventory-drop-one') {
-                    result = await manager.dropInventoryItem(request.id, request.slot);
-                } else if (request.type === 'bot:inventory-drop-stack') {
-                    result = await manager.dropInventoryStack(request.id, request.slot);
-                } else if (request.type === 'bot:window-click') {
-                    result = await manager.clickOpenWindowSlot(
-                        request.id,
-                        request.windowId,
-                        request.slot,
-                        request.mouseButton,
-                        request.mode
-                    );
-                } else if (request.type === 'bot:window-close') {
-                    result = await manager.closeOpenWindow(request.id, request.windowId);
-                } else if (request.type === 'saved-message:create') {
-                    if (!savedMessages) throw new Error('Saved messages are unavailable');
-                    result = savedMessages.create(request.entry);
-                    broadcastSavedMessages();
-                } else if (request.type === 'saved-message:update') {
-                    if (!savedMessages) throw new Error('Saved messages are unavailable');
-                    result = savedMessages.update(request.messageId, request.entry);
-                    broadcastSavedMessages();
-                } else if (request.type === 'saved-message:delete') {
-                    if (!savedMessages) throw new Error('Saved messages are unavailable');
-                    result = savedMessages.delete(request.messageId);
-                    broadcastSavedMessages();
-                } else {
-                    throw new Error('Unsupported action');
                 }
                 sendJson(socket, { type: 'action:result', requestId, ok: true, result });
             } catch (error) {

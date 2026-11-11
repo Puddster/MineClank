@@ -23,16 +23,20 @@ function validateSavedMessage(input) {
     const category = typeof input.category === 'string' ? input.category.trim() : '';
     const message = typeof input.message === 'string' ? input.message.trim() : '';
     if (!title) throw new Error('Title cannot be empty');
-    if (title.length > maxTitleLength) throw new Error(`Title cannot exceed ${maxTitleLength} characters`);
-    if (category.length > maxCategoryLength) throw new Error(`Category cannot exceed ${maxCategoryLength} characters`);
+    assertLength(title, maxTitleLength, 'Title');
+    assertLength(category, maxCategoryLength, 'Category');
     if (!message) throw new Error('Message cannot be empty');
-    if (message.length > maxMessageLength) throw new Error(`Message cannot exceed ${maxMessageLength} characters`);
+    assertLength(message, maxMessageLength, 'Message');
     if (/[\r\n]/.test(message)) throw new Error('Saved messages must be a single line');
     if (/\{\{|\}\}/.test(message.replace(placeholderPattern, ''))) {
         throw new Error('Placeholders must use {{name}} with a letter followed by letters, numbers, or underscores');
     }
 
     return { title, category, message };
+}
+
+function assertLength(value, limit, label) {
+    if (value.length > limit) throw new Error(`${label} cannot exceed ${limit} characters`);
 }
 
 function validateId(id) {

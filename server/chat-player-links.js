@@ -16,7 +16,7 @@ function hasNameBoundaries(text, start, end) {
         !(isNameCharacter(last) && isNameCharacter(next));
 }
 
-export function extractPlayerLinks(text, players) {
+function collectLabels(players) {
     const labels = new Map();
     for (const player of Object.values(players ?? {})) {
         const username = player?.username;
@@ -27,7 +27,10 @@ export function extractPlayerLinks(text, players) {
         usernames.add(username);
         labels.set(label, usernames);
     }
+    return labels;
+}
 
+function collectCandidates(text, labels) {
     const candidates = [];
     for (const [label, usernames] of labels) {
         if (usernames.size !== 1) continue;
@@ -41,7 +44,10 @@ export function extractPlayerLinks(text, players) {
             start = text.indexOf(label, start + 1);
         }
     }
+    return candidates;
+}
 
+function removeOverlaps(candidates) {
     candidates.sort((a, b) => a.start - b.start || b.end - a.end);
     const links = [];
     let endOfPreviousLink = 0;
@@ -51,4 +57,8 @@ export function extractPlayerLinks(text, players) {
         endOfPreviousLink = candidate.end;
     }
     return links;
+}
+
+export function extractPlayerLinks(text, players) {
+    return removeOverlaps(collectCandidates(text, collectLabels(players)));
 }
