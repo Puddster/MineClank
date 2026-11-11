@@ -10,35 +10,11 @@ A local web console for managing Mineflayer bots. The Node service owns Minecraf
 
 ## Configure bots
 
-Each bot is configured by one JSON file in `configs/bots/`. The filename, without `.json`, is the bot ID and may contain letters, numbers, underscores, and hyphens.
+Add and manage bot profiles from the dashboard. Select **Add bot** to enter a bot ID, Minecraft username, server host and port, authentication type, optional version, physics setting, and slash commands to run after joining. Use each bot's **Settings** tab to edit or delete its profile and choose whether it starts automatically. Editing or deleting a connected bot stops it first; its Microsoft authentication cache is kept if its profile is deleted.
 
-1. Copy the example profile and open it for editing:
-  ```powershell
-  Copy-Item configs/bots.example.json configs/bots/8JUO.json
-  notepad configs/bots/8JUO.json
-  ```
-2. Set `username` to the Minecraft name for the account, `host` to the server address, and `port` if it is not `25565`. Keep `auth` as `microsoft` for Microsoft-authenticated accounts. `version` is optional and should only be set when you need to pin a protocol version. `physicsEnabled` defaults to `true`; set it to `false` to disable Mineflayer's physics simulation for an idle bot.
+Bot profiles and auto-start preferences are stored in `.data/bots.sqlite`. Profiles in `configs/bots/*.json` are imported once on the first startup to migrate existing installations; afterward, the database is the source of truth. If `.data/bot-settings.json` exists from an earlier version, its auto-start choices are included in that import. Store `.data/` and `.auth/` privately and persist them across deployments.
 
-3. Optionally add an `onJoin` array of slash commands. The manager waits six seconds after each spawn, then sends each command in array order with `bot.chat()`. It repeats this on reconnect. Each entry must be a single-line slash command; up to 20 commands of at most 256 characters are accepted.
-
-Example:
-
-```json
-{
-  "username": "YourMinecraftUsername",
-  "host": "play.example.com",
-  "port": 25565,
-  "auth": "microsoft",
-  "physicsEnabled": true,
-  "onJoin": [
-    "/survival"
-  ]
-}
-```
-
-The supported keys are `username`, `host`, `port`, `auth`, `version`, `physicsEnabled`, and `onJoin`. The loader rejects unknown keys and invalid values. Config files are loaded in alphabetical filename order; startup connects bots sequentially, waiting for each bot to spawn or time out before proceeding.
-
-Local files in `configs/bots/*.json` are intentionally git-ignored, so bot names and server settings are not included in commits. The example profile remains tracked.
+Authentication profiles remain separate per bot under `.auth/<id>/`. Mineflayer creates the directory on first login. Use Microsoft authentication for Microsoft accounts; choose offline only for servers that permit offline accounts. Optional join commands are sent six seconds after each spawn and repeated on reconnect. Each must be a single-line slash command; up to 20 commands of at most 256 characters are accepted.
 
 ### Authentication cache
 
@@ -51,7 +27,7 @@ npm install
 npm run dev
 ```
 
-Open the Vite URL printed in the terminal. The development server proxies API and WebSocket traffic to the Node service. The bot list is empty until a JSON file is added under `configs/bots/`.
+Open the Vite URL printed in the terminal. The development server proxies API and WebSocket traffic to the Node service. Use **Add bot** in the Fleet panel to create the first profile.
 
 ## Production and reverse proxy
 
@@ -73,13 +49,12 @@ By default, the example Compose file expects a reverse proxy that authenticates 
 
 ```sh
 docker network create proxy
-mkdir -p configs/bots
 printf 'ALLOWED_ORIGINS=https://bots.example.net\n' > .env
 docker compose -f docker-compose.example.yml pull
 docker compose -f docker-compose.example.yml up -d
 ```
 
-Change the origin to match the proxy URL. The Compose service is not published on a host port; attach the proxy to the same external Docker network and proxy traffic to `mineclank:3001`. Bot JSON profiles are mounted read-only from `configs/bots/`, the named `mineclank-auth` volume persists Microsoft login tokens, and `mineclank-data` persists the saved-message SQLite database. For local runs, the database defaults to `.data/saved-messages.sqlite`; set `MINECLANK_DATA_DIR` to use another directory. Keep both data volumes private. If the GHCR package is private, authenticate Docker to `ghcr.io` on the deployment host before pulling.
+Change the origin to match the proxy URL. The Compose service is not published on a host port; attach the proxy to the same external Docker network and proxy traffic to `mineclank:3001`. The named `mineclank-auth` volume persists Microsoft login tokens, and `mineclank-data` persists bot profiles and the saved-message SQLite database. Legacy bot JSON files can remain mounted read-only for the one-time import. For local runs, databases default to `.data/`; set `MINECLANK_DATA_DIR` to use another directory. Keep both data volumes private. If the GHCR package is private, authenticate Docker to `ghcr.io` on the deployment host before pulling.
 
 ### Local item sprite maps
 
@@ -93,7 +68,7 @@ The script writes nine SVG maps to `assets/item-icons/`, which is git-ignored an
 
 ## Dashboard controls
 
-The dashboard shows bot connection state, current position, health, hunger and saturation, air, experience, game mode, alive/sleeping status, and current connection session time. Session time is how long this bot has been connected; total server playtime is not generally available unless the server exposes it. Inventory-style server menus opened by commands such as `/vault`, `/pv`, `/ah`, `/shop`, or `/kits` appear in the Server Menu tab. Left-click, right-click, and shift-click on menu or player inventory slots are forwarded to Minecraft, allowing items to be moved between the player inventory and server containers. Menu buttons can trigger server actions such as purchases. The Saved Messages tab stores reusable one-line chat messages and commands in SQLite, shared across bots. Search/filter by category, edit or delete entries, and use `{{placeholder}}` variables; selecting an entry only fills the command box and never sends it. The command field keeps the last 100 sent messages and commands per bot for the current browser session; use Up/Down to browse and return to your draft. When a chat name matches a unique player-list display name, click it to fill the command field with `/msg <username>`; hover over it to see the Minecraft username. Unmatched or ambiguous names remain plain text. Use the per-bot stop control to disconnect a bot, Start bot to reconnect it, the `/survival` and `/hub1` shortcuts for common hops, or the command field for chat and slash commands. Command allowlists are not enforced in this initial version; only grant dashboard access to trusted users.
+The dashboard shows bot connection state, current position, health, hunger and saturation, air, experience, game mode, alive/sleeping status, and current connection session time. Session time is how long this bot has been connected; total server playtime is not generally available unless the server exposes it. Inventory-style server menus opened by commands such as `/vault`, `/pv`, `/ah`, `/shop`, or `/kits` appear in the Server Menu tab. Left-click, right-click, and shift-click on menu or player inventory slots are forwarded to Minecraft, allowing items to be moved between the player inventory and server containers. The player Inventory tab also supports these clicks; its Item actions menu offers Drop one and a confirmed Drop stack action. Menu buttons can trigger server actions such as purchases. The Saved Messages tab stores reusable one-line chat messages and commands in SQLite, shared across bots. Search/filter by category, edit or delete entries, and use `{{placeholder}}` variables; selecting an entry only fills the command box and never sends it. The command field keeps the last 100 sent messages and commands per bot for the current browser session; use Up/Down to browse and return to your draft. When a chat name matches a unique player-list display name, click it to fill the command field with `/msg <username>`; hover over it to see the Minecraft username. Unmatched or ambiguous names remain plain text. Use the per-bot stop control to disconnect a bot, Start bot to reconnect it, the `/survival` and `/hub1` shortcuts for common hops, or the command field for chat and slash commands. Command allowlists are not enforced in this initial version; only grant dashboard access to trusted users.
 
 ## Checks
 

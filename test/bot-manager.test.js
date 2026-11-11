@@ -5,6 +5,7 @@ import os from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
 import { BotManager } from '../server/bot-manager.js';
+import { BotSettings } from '../server/bot-settings.js';
 import { getItemCategory } from '../server/item-category.js';
 
 const tick = () => new Promise(resolve => setImmediate(resolve));
@@ -60,6 +61,7 @@ class FakeBot extends EventEmitter {
         this.isSleeping = false;
         this.currentWindow = null;
         this.windowClicks = [];
+        this.inventoryClicks = [];
         this._client = {
             state: 'play',
             profileKeys: {},
@@ -81,8 +83,10 @@ class FakeBot extends EventEmitter {
     }
 
     async clickWindow(slot, mouseButton, mode) {
-        if (this.currentWindow && [0, 1].includes(mode) && [0, 1].includes(mouseButton)) {
-            this.windowClicks.push({ slot, mouseButton, mode });
+        if ([0, 1].includes(mode) && [0, 1].includes(mouseButton)) {
+            const click = { slot, mouseButton, mode };
+            if (this.currentWindow) this.windowClicks.push(click);
+            else this.inventoryClicks.push(click);
             return;
         }
         if (mode !== 4 || mouseButton !== 0) throw new Error('Unexpected click');
@@ -119,7 +123,7 @@ class FakeBot extends EventEmitter {
     }
 }
 
-async function setupManager(t, { connectTimeoutMs = 100 } = {}) {
+async function setupManager(t, { connectTimeoutMs = 100, botSettings = null } = {}) {
     const root = await mkdtemp(join(os.tmpdir(), 'mf-fe-manager-'));
     const configDir = join(root, 'configs');
     const authDir = join(root, 'auth');
@@ -136,6 +140,7 @@ async function setupManager(t, { connectTimeoutMs = 100 } = {}) {
     const manager = new BotManager({
         configDir,
         authDir,
+        botSettings,
         connectTimeoutMs,
         joinCommandDelayMs: 0,
         reconnectBaseMs: 10_000,
@@ -241,6 +246,25 @@ test('starts configured bots sequentially and sends chat and commands', async t 
     });
     assert.equal(manager.getSnapshot()[0].inventory[36], null);
     assert.equal(manager.getSnapshot()[0].inventory[39].customName, 'Common Crate Key');
+    assert.deepEqual(await manager.clickInventorySlot('alpha', 9), {
+        id: 'alpha', slot: 9, mouseButton: 0, mode: 0, clicked: 'Prismatic Diamond'
+    });
+    assert.deepEqual(await manager.clickInventorySlot('alpha', 10, 1), {
+        id: 'alpha', slot: 10, mouseButton: 1, mode: 0, clicked: null
+    });
+    assert.deepEqual(await manager.clickInventorySlot('alpha', 39, 0, 1), {
+        id: 'alpha', slot: 39, mouseButton: 0, mode: 1, clicked: 'Common Crate Key'
+    });
+    assert.deepEqual(bots[0].inventoryClicks, [
+        { slot: 9, mouseButton: 0, mode: 0 },
+        { slot: 10, mouseButton: 1, mode: 0 },
+        { slot: 39, mouseButton: 0, mode: 1 }
+    ]);
+    await assert.rejects(manager.clickInventorySlot('alpha', 9, 2, 0), /Unsupported inventory click/);
+    await assert.rejects(manager.clickInventorySlot('alpha', 2), /out of range/);
+    bots[0].currentWindow = { id: 1 };
+    await assert.rejects(manager.clickInventorySlot('alpha', 9), /Close the open server menu/);
+    bots[0].currentWindow = null;
     await assert.rejects(manager.moveInventoryItem('alpha', 9, 39), /Destination slot must be empty/);
     assert.deepEqual(await manager.dropInventoryItem('alpha', 9), { id: 'alpha', slot: 9, dropped: 1 });
     assert.equal(manager.getSnapshot()[0].inventory[9].count, 2);
@@ -266,6 +290,74 @@ test('starts configured bots sequentially and sends chat and commands', async t 
     assert.throws(() => manager.sendCommand('alpha', '   '), /cannot be empty/);
     assert.throws(() => manager.sendCommand('alpha', '/'), /Command cannot be empty/);
     assert.throws(() => manager.sendCommand('missing', '/survival'), /Unknown bot/);
+});
+
+test('auto-start preferences filter startup while allowing manual starts', async t => {
+    const values = new Map();
+    const botSettings = {
+        getAutoStart: id => values.get(id) ?? true,
+        setAutoStart: (id, enabled) => values.set(id, enabled)
+    };
+    const { manager, bots } = await setupManager(t, { botSettings });
+    assert.deepEqual(manager.setAutoStart('beta', false), { id: 'beta', autoStart: false });
+    assert.equal(manager.getSnapshot().find(bot => bot.id === 'beta').autoStart, false);
+
+    const starting = manager.startAllSequential();
+    await tick();
+    assert.equal(bots.length, 1);
+    bots[0].emit('spawn');
+    assert.deepEqual((await starting).map(result => result.status), ['online', 'disabled']);
+    assert.equal(manager.getSnapshot().find(bot => bot.id === 'beta').status, 'stopped');
+
+    const manualStart = manager.start('beta');
+    await tick();
+    assert.equal(bots.length, 2);
+    bots[1].emit('spawn');
+    assert.equal((await manualStart).status, 'online');
+});
+
+test('creates, updates, and deletes database-backed bot profiles safely', async t => {
+    const root = await mkdtemp(join(os.tmpdir(), 'mf-fe-profile-store-'));
+    const botSettings = new BotSettings(join(root, 'bots.sqlite'));
+    const { manager, bots } = await setupManager(t, { botSettings });
+    t.after(async () => {
+        botSettings.close();
+        await rm(root, { recursive: true, force: true });
+    });
+
+    assert.deepEqual(manager.createBotProfile('gamma', {
+        username: 'Gamma',
+        host: 'server.test',
+        auth: 'offline',
+        onJoin: []
+    }, false), { id: 'gamma', autoStart: false });
+    assert.equal(manager.getSnapshot().find(bot => bot.id === 'gamma').profile.auth, 'offline');
+
+    const starting = manager.start('gamma');
+    await tick();
+    bots[0].emit('spawn');
+    assert.equal((await starting).status, 'online');
+    assert.deepEqual(await manager.updateBotProfile('gamma', {
+        username: 'GammaUpdated',
+        host: 'new.server.test',
+        port: 25566,
+        auth: 'offline',
+        physicsEnabled: false,
+        onJoin: ['/lobby']
+    }, true), { id: 'gamma', autoStart: true });
+    const updated = manager.getSnapshot().find(bot => bot.id === 'gamma');
+    assert.equal(updated.status, 'stopped');
+    assert.equal(updated.username, 'GammaUpdated');
+    assert.equal(updated.host, 'new.server.test');
+    assert.equal(updated.autoStart, true);
+
+    const restart = manager.start('gamma');
+    await tick();
+    bots[1].emit('spawn');
+    assert.equal((await restart).status, 'online');
+    assert.deepEqual(await manager.deleteBotProfile('gamma'), { id: 'gamma', deleted: true });
+    assert.equal(manager.getSnapshot().some(bot => bot.id === 'gamma'), false);
+    assert.throws(() => manager.start('gamma'), /Unknown bot/);
 });
 
 test('continues the startup queue after a bot fails before spawn', async t => {

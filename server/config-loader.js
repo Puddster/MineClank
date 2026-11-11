@@ -5,8 +5,8 @@ const idPattern = /^[a-z0-9][a-z0-9_-]{0,47}$/i;
 const supportedAuth = new Set(['microsoft', 'offline']);
 const supportedKeys = new Set(['username', 'host', 'port', 'auth', 'version', 'onJoin', 'physicsEnabled']);
 
-function parseConfig(id, text, authDir) {
-    if (!idPattern.test(id)) {
+export function parseConfig(id, text, authDir) {
+    if (typeof id !== 'string' || !idPattern.test(id)) {
         throw new Error(`Invalid bot config filename: ${id}. Use letters, numbers, underscores, and hyphens.`);
     }
 

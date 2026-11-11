@@ -10,7 +10,7 @@ import { createControlServer } from '../server/ws.js';
 class FakeManager extends EventEmitter {
     constructor() {
         super();
-        this.bots = [{ id: 'alpha', username: 'Alpha', status: 'online', logs: [] }];
+        this.bots = [{ id: 'alpha', username: 'Alpha', status: 'online', autoStart: true, logs: [] }];
         this.commands = [];
     }
 
@@ -26,6 +26,22 @@ class FakeManager extends EventEmitter {
         return { id, status: 'stopped' };
     }
 
+    setAutoStart(id, enabled) {
+        return { id, autoStart: enabled };
+    }
+
+    createBotProfile(id, profile, autoStart) {
+        return { id, username: profile.username, autoStart };
+    }
+
+    async updateBotProfile(id, profile, autoStart) {
+        return { id, username: profile.username, autoStart, updated: true };
+    }
+
+    async deleteBotProfile(id) {
+        return { id, deleted: true };
+    }
+
     sendCommand(id, command) {
         this.commands.push({ id, command });
         return { id, sent: command };
@@ -37,6 +53,10 @@ class FakeManager extends EventEmitter {
 
     async moveInventoryItem(id, sourceSlot, destinationSlot) {
         return { id, sourceSlot, destinationSlot, moved: 2 };
+    }
+
+    async clickInventorySlot(id, slot, mouseButton, mode) {
+        return { id, slot, mouseButton, mode, clicked: null };
     }
 
     async dropInventoryItem(id, slot) {
@@ -130,6 +150,13 @@ test('streams a snapshot and dispatches validated bot commands', async t => {
     await once(socket, 'open');
     assert.deepEqual(await firstMessage, { type: 'snapshot', bots: manager.getSnapshot() });
 
+    const updatedSnapshot = nextSocketMessage(socket, 'snapshot');
+    manager.emit('snapshot', [{ id: 'alpha', username: 'Alpha Updated' }]);
+    assert.deepEqual(await updatedSnapshot, {
+        type: 'snapshot',
+        bots: [{ id: 'alpha', username: 'Alpha Updated' }]
+    });
+
     const actionResult = new Promise((resolve, reject) => {
         socket.once('message', data => resolve(JSON.parse(data.toString())));
         socket.once('error', reject);
@@ -158,6 +185,79 @@ test('streams a snapshot and dispatches validated bot commands', async t => {
         { id: 'alpha', command: '/survival' },
         { id: 'alpha', command: 'Hello server' }
     ]);
+
+    const autoStartResult = nextSocketMessage(socket, 'action:result');
+    socket.send(JSON.stringify({
+        type: 'bot:auto-start',
+        id: 'alpha',
+        enabled: false,
+        requestId: 'auto-start-1'
+    }));
+    assert.deepEqual(await autoStartResult, {
+        type: 'action:result',
+        requestId: 'auto-start-1',
+        ok: true,
+        result: { id: 'alpha', autoStart: false }
+    });
+
+    const createProfileResult = nextSocketMessage(socket, 'action:result');
+    socket.send(JSON.stringify({
+        type: 'bot:profile-create',
+        id: 'beta',
+        profile: { username: 'Beta', host: 'server.test' },
+        autoStart: true,
+        requestId: 'profile-create-1'
+    }));
+    assert.deepEqual(await createProfileResult, {
+        type: 'action:result',
+        requestId: 'profile-create-1',
+        ok: true,
+        result: { id: 'beta', username: 'Beta', autoStart: true }
+    });
+
+    const updateProfileResult = nextSocketMessage(socket, 'action:result');
+    socket.send(JSON.stringify({
+        type: 'bot:profile-update',
+        id: 'beta',
+        profile: { username: 'Beta Updated', host: 'new.server.test' },
+        autoStart: false,
+        requestId: 'profile-update-1'
+    }));
+    assert.deepEqual(await updateProfileResult, {
+        type: 'action:result',
+        requestId: 'profile-update-1',
+        ok: true,
+        result: { id: 'beta', username: 'Beta Updated', autoStart: false, updated: true }
+    });
+
+    const deleteProfileResult = nextSocketMessage(socket, 'action:result');
+    socket.send(JSON.stringify({
+        type: 'bot:profile-delete',
+        id: 'beta',
+        requestId: 'profile-delete-1'
+    }));
+    assert.deepEqual(await deleteProfileResult, {
+        type: 'action:result',
+        requestId: 'profile-delete-1',
+        ok: true,
+        result: { id: 'beta', deleted: true }
+    });
+
+    const inventoryClickResult = nextSocketMessage(socket, 'action:result');
+    socket.send(JSON.stringify({
+        type: 'bot:inventory-click',
+        id: 'alpha',
+        slot: 10,
+        mouseButton: 1,
+        mode: 1,
+        requestId: 'inventory-click-1'
+    }));
+    assert.deepEqual(await inventoryClickResult, {
+        type: 'action:result',
+        requestId: 'inventory-click-1',
+        ok: true,
+        result: { id: 'alpha', slot: 10, mouseButton: 1, mode: 1, clicked: null }
+    });
 
     const completionResult = new Promise((resolve, reject) => {
         socket.once('message', data => resolve(JSON.parse(data.toString())));

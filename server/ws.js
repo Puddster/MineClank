@@ -115,6 +115,14 @@ export function createControlServer({
                     result = await manager.start(request.id);
                 } else if (request.type === 'bot:stop') {
                     result = await manager.stop(request.id);
+                } else if (request.type === 'bot:auto-start') {
+                    result = manager.setAutoStart(request.id, request.enabled);
+                } else if (request.type === 'bot:profile-create') {
+                    result = manager.createBotProfile(request.id, request.profile, request.autoStart);
+                } else if (request.type === 'bot:profile-update') {
+                    result = await manager.updateBotProfile(request.id, request.profile, request.autoStart);
+                } else if (request.type === 'bot:profile-delete') {
+                    result = await manager.deleteBotProfile(request.id);
                 } else if (request.type === 'bot:command') {
                     result = manager.sendCommand(request.id, request.command);
                 } else if (request.type === 'bot:complete') {
@@ -123,6 +131,13 @@ export function createControlServer({
                     return;
                 } else if (request.type === 'bot:inventory-move') {
                     result = await manager.moveInventoryItem(request.id, request.sourceSlot, request.destinationSlot);
+                } else if (request.type === 'bot:inventory-click') {
+                    result = await manager.clickInventorySlot(
+                        request.id,
+                        request.slot,
+                        request.mouseButton,
+                        request.mode
+                    );
                 } else if (request.type === 'bot:inventory-drop-one') {
                     result = await manager.dropInventoryItem(request.id, request.slot);
                 } else if (request.type === 'bot:inventory-drop-stack') {
@@ -161,6 +176,12 @@ export function createControlServer({
 
     manager.on('bot-state', bot => {
         const payload = JSON.stringify({ type: 'bot:state', bot });
+        for (const client of webSockets.clients) {
+            if (client.readyState === WebSocket.OPEN) client.send(payload);
+        }
+    });
+    manager.on('snapshot', bots => {
+        const payload = JSON.stringify({ type: 'snapshot', bots });
         for (const client of webSockets.clients) {
             if (client.readyState === WebSocket.OPEN) client.send(payload);
         }

@@ -1,7 +1,7 @@
 import { EventEmitter } from 'node:events';
 import { mkdir } from 'node:fs/promises';
 import mineflayer from 'mineflayer';
-import { loadBotConfigs } from './config-loader.js';
+import { loadBotConfigs, parseConfig } from './config-loader.js';
 import { ansiToColorRuns } from './chat-colors.js';
 import { extractPlayerLinks } from './chat-player-links.js';
 import { getItemCategory } from './item-category.js';
@@ -141,7 +141,8 @@ export class BotManager extends EventEmitter {
         reconnectBaseMs = 5_000,
         reconnectMaxMs = 120_000,
         maxLogs = 200,
-        joinCommandDelayMs = 6_000
+        joinCommandDelayMs = 6_000,
+        botSettings = null
     }) {
         super();
         if (!configDir || !authDir) throw new Error('configDir and authDir are required');
@@ -155,6 +156,7 @@ export class BotManager extends EventEmitter {
         this.reconnectMaxMs = reconnectMaxMs;
         this.maxLogs = maxLogs;
         this.joinCommandDelayMs = joinCommandDelayMs;
+        this.botSettings = botSettings;
         this.records = new Map();
         this.connectionQueue = Promise.resolve();
         this.shuttingDown = false;
@@ -168,24 +170,16 @@ export class BotManager extends EventEmitter {
 
     async initialize() {
         await mkdir(this.authDir, { recursive: true });
-        const configs = await loadBotConfigs(this.configDir, this.authDir);
-        this.records = new Map(configs.map(config => [config.id, {
-            id: config.id,
-            config,
-            status: 'stopped',
-            desired: false,
-            bot: null,
-            logs: [],
-            lastError: null,
-            connectedAt: null,
-            reconnectTimer: null,
-            connectPromise: null,
-            completionQueue: Promise.resolve(),
-            completionSequence: 0,
-            inventoryActionQueue: Promise.resolve(),
-            windowActionQueue: Promise.resolve(),
-            attempts: 0
-        }]));
+        let configs;
+        if (this.botSettings?.listProfiles) {
+            if (this.botSettings.needsLegacyImport()) {
+                this.botSettings.importLegacyProfiles(await loadBotConfigs(this.configDir, this.authDir));
+            }
+            configs = this.botSettings.listProfiles(this.authDir);
+        } else {
+            configs = await loadBotConfigs(this.configDir, this.authDir);
+        }
+        this.records = new Map(configs.map(config => [config.id, this.createRecord(config)]));
         this.publishSnapshot();
         return this.getSnapshot();
     }
@@ -223,6 +217,16 @@ export class BotManager extends EventEmitter {
             username: record.config.username,
             host: record.config.host,
             port: record.config.port,
+            profile: {
+                username: record.config.username,
+                host: record.config.host,
+                port: record.config.port,
+                auth: record.config.auth,
+                ...(record.config.version ? { version: record.config.version } : {}),
+                physicsEnabled: record.config.physicsEnabled,
+                onJoin: [...record.config.onJoin]
+            },
+            autoStart: this.botSettings?.getAutoStart(record.id) ?? true,
             status: record.status,
             uptimeSeconds: record.connectedAt ? Math.floor((Date.now() - record.connectedAt) / 1000) : 0,
             position: entityPosition ? {
@@ -242,6 +246,10 @@ export class BotManager extends EventEmitter {
         const outcomes = [];
         for (const id of this.records.keys()) {
             if (this.shuttingDown) break;
+            if (!(this.botSettings?.getAutoStart(id) ?? true)) {
+                outcomes.push({ id, status: 'disabled' });
+                continue;
+            }
             try {
                 outcomes.push(await this.start(id));
             } catch (error) {
@@ -249,6 +257,47 @@ export class BotManager extends EventEmitter {
             }
         }
         return outcomes;
+    }
+
+    setAutoStart(id, enabled) {
+        const record = this.requireRecord(id);
+        if (!this.botSettings) throw new Error('Bot settings are unavailable');
+        if (typeof enabled !== 'boolean') throw new Error('Auto-start setting must be a boolean');
+        this.botSettings.setAutoStart(id, enabled);
+        this.emitState(record);
+        return { id, autoStart: enabled };
+    }
+
+    createBotProfile(id, profile, autoStart) {
+        if (!this.botSettings) throw new Error('Bot profile storage is unavailable');
+        if (typeof autoStart !== 'boolean') throw new Error('Auto-start setting must be a boolean');
+        parseConfig(id, JSON.stringify(profile), this.authDir);
+        if (this.records.has(id)) throw new Error(`Bot already exists: ${id}`);
+        const savedConfig = this.botSettings.createProfile(id, profile, autoStart, this.authDir);
+        this.records.set(id, this.createRecord(savedConfig));
+        this.publishSnapshot();
+        return { id, autoStart };
+    }
+
+    async updateBotProfile(id, profile, autoStart) {
+        const record = this.requireRecord(id);
+        if (!this.botSettings) throw new Error('Bot profile storage is unavailable');
+        if (typeof autoStart !== 'boolean') throw new Error('Auto-start setting must be a boolean');
+        parseConfig(id, JSON.stringify(profile), this.authDir);
+        if (record.status !== 'stopped') await this.stop(id);
+        record.config = this.botSettings.updateProfile(id, profile, autoStart, this.authDir);
+        this.emitState(record);
+        return { id, autoStart };
+    }
+
+    async deleteBotProfile(id) {
+        const record = this.requireRecord(id);
+        if (!this.botSettings) throw new Error('Bot profile storage is unavailable');
+        if (record.status !== 'stopped') await this.stop(id);
+        this.botSettings.deleteProfile(id);
+        this.records.delete(id);
+        this.publishSnapshot();
+        return { id, deleted: true };
     }
 
     start(id) {
@@ -346,6 +395,33 @@ export class BotManager extends EventEmitter {
             this.appendLog(record, `Inventory: dropped stack of ${this.inventoryItemName(item)} from slot ${slot}`);
             return { id, slot, dropped: item.count };
         });
+    }
+
+    clickInventorySlot(id, slot, mouseButton = 0, mode = 0) {
+        const record = this.requireRecord(id);
+        const run = async () => {
+            const bot = this.requireOnlineBot(record);
+            if (bot.currentWindow) throw new Error('Close the open server menu before managing inventory');
+            this.validateInventorySlot(bot, slot);
+            if (![0, 1].includes(mouseButton) || ![0, 1].includes(mode)) {
+                throw new Error('Unsupported inventory click');
+            }
+            if (typeof bot.clickWindow !== 'function') throw new Error('Inventory clicks are unavailable');
+
+            const item = bot.inventory.slots[slot];
+            await bot.clickWindow(slot, mouseButton, mode);
+            this.appendLog(
+                record,
+                `Inventory: ${mode === 1 ? 'shift-clicked' : mouseButton === 1 ? 'right-clicked' : 'clicked'} ` +
+                `${item ? this.inventoryItemName(item) : 'empty slot'} in slot ${slot}`
+            );
+            this.emitState(record);
+            return { id, slot, mouseButton, mode, clicked: item ? this.inventoryItemName(item) : null };
+        };
+
+        const action = record.inventoryActionQueue.then(run, run);
+        record.inventoryActionQueue = action.catch(() => {});
+        return action;
     }
 
     clickOpenWindowSlot(id, windowId, slot, mouseButton = 0, mode = 0) {
@@ -452,6 +528,26 @@ export class BotManager extends EventEmitter {
             throw new Error(`${record.config.username} is not online`);
         }
         return bot;
+    }
+
+    createRecord(config) {
+        return {
+            id: config.id,
+            config,
+            status: 'stopped',
+            desired: false,
+            bot: null,
+            logs: [],
+            lastError: null,
+            connectedAt: null,
+            reconnectTimer: null,
+            connectPromise: null,
+            completionQueue: Promise.resolve(),
+            completionSequence: 0,
+            inventoryActionQueue: Promise.resolve(),
+            windowActionQueue: Promise.resolve(),
+            attempts: 0
+        };
     }
 
     requireRecord(id) {

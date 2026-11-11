@@ -22,6 +22,7 @@ import {
   Save,
   Search,
   Send,
+  Settings,
   Server,
   Square,
   Sparkles,
@@ -102,7 +103,7 @@ function Dashboard() {
   const [chatColorsEnabled, setChatColorsEnabled] = useState(true)
   const [activeView, setActiveView] = useState('stream')
   const [selectedInventorySlot, setSelectedInventorySlot] = useState(null)
-  const [inventoryMoveSource, setInventoryMoveSource] = useState(null)
+  const [inventoryActionsOpen, setInventoryActionsOpen] = useState(false)
   const [confirmDropSlot, setConfirmDropSlot] = useState(null)
   const [suggestions, setSuggestions] = useState([])
   const [savedMessages, setSavedMessages] = useState([])
@@ -113,9 +114,14 @@ function Dashboard() {
   const [savedMessageToFill, setSavedMessageToFill] = useState(null)
   const [savedMessageValues, setSavedMessageValues] = useState({})
   const [savedMessageFillError, setSavedMessageFillError] = useState('')
+  const [botProfileDraft, setBotProfileDraft] = useState(null)
+  const [botProfileToDelete, setBotProfileToDelete] = useState(null)
+  const [botProfileError, setBotProfileError] = useState('')
   const socketRef = useRef(null)
   const pendingRef = useRef({})
   const completionRequestRef = useRef(null)
+  const inventoryActionsRef = useRef(null)
+  const inventoryActionsButtonRef = useRef(null)
   const openWindowsRef = useRef({})
   const commandHistoryRef = useRef({})
   const historyNavigationRef = useRef(null)
@@ -147,6 +153,39 @@ function Dashboard() {
       window.localStorage.setItem(THEME_STORAGE_KEY, theme)
     }
   }, [theme])
+
+  useEffect(() => {
+    if (!inventoryActionsOpen) return
+
+    inventoryActionsRef.current?.querySelector('[role="menuitem"]')?.focus()
+
+    const handlePointerDown = event => {
+      if (!inventoryActionsRef.current?.contains(event.target)) setInventoryActionsOpen(false)
+    }
+    const handleKeyDown = event => {
+      if (event.key === 'Escape') {
+        setInventoryActionsOpen(false)
+        inventoryActionsButtonRef.current?.focus()
+        return
+      }
+      if (!['ArrowDown', 'ArrowUp'].includes(event.key)) return
+
+      const items = [...(inventoryActionsRef.current?.querySelectorAll('[role="menuitem"]') || [])]
+      if (!items.length) return
+      event.preventDefault()
+      const currentIndex = items.indexOf(document.activeElement)
+      const direction = event.key === 'ArrowDown' ? 1 : -1
+      const nextIndex = (currentIndex + direction + items.length) % items.length
+      items[nextIndex].focus()
+    }
+
+    document.addEventListener('pointerdown', handlePointerDown)
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [inventoryActionsOpen])
 
   function toggleTheme() {
     setTheme(activeTheme === 'dark' ? 'light' : 'dark')
@@ -193,7 +232,7 @@ function Dashboard() {
           if (message.bot.status !== 'online') {
             completionRequestRef.current = null
             setSuggestions([])
-            setInventoryMoveSource(null)
+            setInventoryActionsOpen(false)
             setConfirmDropSlot(null)
           }
         } else if (message.type === 'bot:log') {
@@ -214,7 +253,11 @@ function Dashboard() {
           })
           const actionMessages = {
             'bot:command': 'Message sent',
-            'bot:inventory-move': 'Inventory stack moved',
+            'bot:auto-start': 'Auto-start setting saved',
+            'bot:profile-create': 'Bot profile added',
+            'bot:profile-update': 'Bot profile updated',
+            'bot:profile-delete': 'Bot profile deleted',
+            'bot:inventory-click': 'Inventory clicked',
             'bot:inventory-drop-one': 'Dropped one item',
             'bot:inventory-drop-stack': 'Dropped the stack',
             'bot:window-click': 'Server menu clicked',
@@ -226,10 +269,22 @@ function Dashboard() {
           const errorMessage = message.error === 'Unsupported action' && action === 'bot:complete'
             ? 'Restart the backend to enable command completion'
             : message.error
+          if (action?.startsWith('bot:profile-')) setBotProfileError(message.ok ? '' : errorMessage)
           setNotice(message.ok ? actionMessages[action] || 'Bot action complete' : errorMessage)
           if (message.ok && ['saved-message:create', 'saved-message:update', 'saved-message:delete'].includes(action)) {
             setSavedMessageDraft(null)
             setSavedMessageToDelete(null)
+          }
+          if (message.ok && action === 'bot:profile-create') {
+            setSelectedId(message.result.id)
+            setActiveView('settings')
+            setBotProfileDraft(null)
+          } else if (message.ok && action === 'bot:profile-update') {
+            setBotProfileDraft(null)
+          } else if (message.ok && action === 'bot:profile-delete') {
+            setSelectedId(current => current === message.result.id ? null : current)
+            setActiveView('stream')
+            setBotProfileToDelete(null)
           }
           window.setTimeout(() => setNotice(''), 3500)
         }
@@ -241,7 +296,7 @@ function Dashboard() {
         pendingRef.current = {}
         completionRequestRef.current = null
         setSuggestions([])
-        setInventoryMoveSource(null)
+        setInventoryActionsOpen(false)
         setConfirmDropSlot(null)
         setPending({})
         attempts += 1
@@ -282,23 +337,10 @@ function Dashboard() {
     return matchesCategory && matchesSearch
   })
 
-  function handleInventorySlotClick(slot, item) {
-    if (inventoryMoveSource !== null) {
-      if (slot === inventoryMoveSource) {
-        setInventoryMoveSource(null)
-        return
-      }
-      if (item) {
-        setNotice('Choose an empty destination slot')
-        return
-      }
-      if (sendAction('bot:inventory-move', { sourceSlot: inventoryMoveSource, destinationSlot: slot })) {
-        setInventoryMoveSource(null)
-        setSelectedInventorySlot(null)
-      }
-      return
-    }
-    if (item) setSelectedInventorySlot(slot)
+  function handleInventorySlotClick(slot, mouseButton = 0, mode = 0) {
+    setSelectedInventorySlot(slot)
+    setInventoryActionsOpen(false)
+    sendAction('bot:inventory-click', { slot, mouseButton, mode })
   }
 
   function renderInventorySlot(slot, label) {
@@ -306,19 +348,22 @@ function Dashboard() {
     const description = item
       ? `${item.count} x ${item.customName || item.displayName || item.name}`
       : 'Empty'
-    const canChooseDestination = inventoryMoveSource !== null && !item && selectedBot?.status === 'online'
 
     return (
       <button
         type="button"
-        className={`inventory-slot ${item ? 'filled' : ''} ${canChooseDestination ? 'move-target' : ''} ${selectedInventorySlot === slot ? 'selected' : ''}`}
+        className={`inventory-slot ${item ? 'filled' : ''} ${selectedInventorySlot === slot ? 'selected' : ''}`}
         key={slot}
         role="gridcell"
         aria-label={`${label}: ${description}`}
         aria-pressed={selectedInventorySlot === slot}
         title={`${label}: ${description}`}
-        disabled={selectedBot?.status !== 'online' || (!item && inventoryMoveSource === null)}
-        onClick={() => handleInventorySlotClick(slot, item)}
+        disabled={selectedBot?.status !== 'online' || isPending('bot:inventory-click')}
+        onClick={event => handleInventorySlotClick(slot, 0, event.shiftKey ? 1 : 0)}
+        onContextMenu={event => {
+          event.preventDefault()
+          handleInventorySlotClick(slot, 1, event.shiftKey ? 1 : 0)
+        }}
       >
         <span className="inventory-slot-label">{label}</span>
         {item && (
@@ -328,7 +373,6 @@ function Dashboard() {
             {item.count > 1 && <span className="inventory-item-count">{item.count}</span>}
           </>
         )}
-        {canChooseDestination && <span className="inventory-move-target-mark">MOVE HERE</span>}
       </button>
     )
   }
@@ -423,6 +467,58 @@ function Dashboard() {
   function confirmDeleteSavedMessage() {
     if (!savedMessageToDelete) return
     sendAction('saved-message:delete', { messageId: savedMessageToDelete.id })
+  }
+
+  function openNewBotProfile() {
+    setBotProfileError('')
+    setBotProfileDraft({
+      mode: 'create',
+      id: '',
+      username: '',
+      host: '',
+      port: '25565',
+      auth: 'microsoft',
+      version: '',
+      physicsEnabled: true,
+      onJoinText: '',
+      autoStart: true
+    })
+  }
+
+  function openEditBotProfile() {
+    if (!selectedBot) return
+    setBotProfileError('')
+    setBotProfileDraft({
+      mode: 'edit',
+      id: selectedBot.id,
+      ...selectedBot.profile,
+      port: String(selectedBot.profile.port),
+      version: selectedBot.profile.version || '',
+      onJoinText: (selectedBot.profile.onJoin || []).join('\n'),
+      autoStart: selectedBot.autoStart !== false
+    })
+  }
+
+  function saveBotProfile(event) {
+    event.preventDefault()
+    if (!botProfileDraft) return
+    const { mode, id, autoStart, onJoinText, version, ...fields } = botProfileDraft
+    const type = mode === 'edit' ? 'bot:profile-update' : 'bot:profile-create'
+    sendAction(type, {
+      id,
+      profile: {
+        ...fields,
+        port: Number(fields.port),
+        ...(version.trim() ? { version: version.trim() } : {}),
+        onJoin: onJoinText.split(/\r?\n/).map(command => command.trim()).filter(Boolean)
+      },
+      autoStart
+    })
+  }
+
+  function confirmDeleteBotProfile() {
+    if (!botProfileToDelete) return
+    sendAction('bot:profile-delete', { id: botProfileToDelete.id })
   }
 
   function submitMessage(event) {
@@ -613,7 +709,9 @@ function Dashboard() {
               <span className="panel-kicker">ACCOUNTS</span>
               <h2>Fleet <span className="count-badge">{bots.length}</span></h2>
             </div>
-            <Server size={17} className="muted-icon" />
+            <button type="button" className="inventory-action-button fleet-add-button" onClick={openNewBotProfile}>
+              <Plus size={14} /> Add bot
+            </button>
           </div>
 
           <div className="bot-list">
@@ -625,7 +723,7 @@ function Dashboard() {
                 onClick={() => {
                   setSelectedId(bot.id)
                   setSelectedInventorySlot(null)
-                  setInventoryMoveSource(null)
+                  setInventoryActionsOpen(false)
                   setConfirmDropSlot(null)
                 }}
               >
@@ -648,7 +746,7 @@ function Dashboard() {
           <div className="fleet-footer">
             <span className="status-dot status-online" />
             AUTOSTART QUEUE
-            <span className="footer-value">{bots.length ? 'ACTIVE' : 'IDLE'}</span>
+            <span className="footer-value">{bots.filter(bot => bot.autoStart !== false).length}/{bots.length}</span>
           </div>
         </aside>
 
@@ -795,6 +893,17 @@ function Dashboard() {
                     <BookOpen size={15} /> Saved Messages
                     <span className="tab-count">{savedMessages.length}</span>
                   </button>
+                  <button
+                    id="settings-tab"
+                    type="button"
+                    role="tab"
+                    aria-selected={activeView === 'settings'}
+                    aria-controls="settings-panel"
+                    className={`detail-tab ${activeView === 'settings' ? 'selected' : ''}`}
+                    onClick={() => setActiveView('settings')}
+                  >
+                    <Settings size={15} /> Settings
+                  </button>
                   {openWindow && (
                     <button
                       id="menu-tab"
@@ -841,6 +950,52 @@ function Dashboard() {
                     </div>
                   )}
                 </div>
+              ) : activeView === 'settings' ? (
+                <section className="bot-settings-view detail-view" id="settings-panel" role="tabpanel" aria-labelledby="settings-tab">
+                  <div className="settings-section">
+                    <div className="settings-heading">
+                      <span className="panel-kicker">BOT PROFILE</span>
+                      <h3>Connection details</h3>
+                      <p>Manage the configuration stored for this bot. Updating or deleting an online bot stops it first.</p>
+                    </div>
+                    <div className="bot-profile-summary">
+                      <span><strong>Bot ID</strong>{selectedBot.id}</span>
+                      <span><strong>Username</strong>{selectedBot.profile.username}</span>
+                      <span><strong>Server</strong>{selectedBot.profile.host}:{selectedBot.profile.port}</span>
+                      <span><strong>Authentication</strong>{selectedBot.profile.auth}</span>
+                    </div>
+                    <div className="bot-profile-actions">
+                      <button type="button" className="inventory-action-button" disabled={isPending('bot:profile-update')} onClick={openEditBotProfile}>
+                        <Pencil size={14} /> Edit profile
+                      </button>
+                      <button type="button" className="inventory-action-button inventory-drop-stack-button" disabled={isPending('bot:profile-delete')} onClick={() => setBotProfileToDelete(selectedBot)}>
+                        <Trash2 size={14} /> Delete bot
+                      </button>
+                    </div>
+                  </div>
+                  <div className="settings-section">
+                    <div className="settings-heading">
+                      <span className="panel-kicker">STARTUP BEHAVIOR</span>
+                      <h3>Auto start</h3>
+                      <p>Choose whether this bot connects automatically when MineClank starts. Disabled bots can still be started manually.</p>
+                    </div>
+                    <label className="bot-setting-row">
+                      <span className="bot-setting-description">
+                        <strong>Auto start</strong>
+                        <span>{selectedBot.autoStart
+                          ? 'This bot will be included in the startup queue.'
+                          : 'This bot will stay stopped until you start it manually.'}</span>
+                      </span>
+                      <input
+                        type="checkbox"
+                        checked={selectedBot.autoStart !== false}
+                        disabled={isPending('bot:auto-start')}
+                        onChange={event => sendAction('bot:auto-start', { enabled: event.target.checked })}
+                      />
+                    </label>
+                    <p className="bot-settings-note">Changing this setting does not stop or start a bot that is already running.</p>
+                  </div>
+                </section>
               ) : activeView === 'inventory' ? (
                 <section className="inventory-view detail-view" id="inventory-panel" role="tabpanel" aria-labelledby="inventory-tab">
                   <div className="inventory-summary">
@@ -897,38 +1052,41 @@ function Dashboard() {
                             <span className="inventory-select-hint">No custom name, enchantments, or lore</span>
                           )}
                           <div className="inventory-item-actions">
-                            {inventoryMoveSource === selectedInventorySlot ? (
-                              <button type="button" className="inventory-action-button" onClick={() => setInventoryMoveSource(null)}>Cancel move</button>
-                            ) : (
-                              <button
-                                type="button"
-                                className="inventory-action-button"
-                                disabled={selectedBot.status !== 'online' || isPending('bot:inventory-move')}
-                                onClick={() => setInventoryMoveSource(selectedInventorySlot)}
-                              >Move
-                              </button>
-                            )}
                             <button
                               type="button"
                               className="inventory-action-button"
-                              disabled={selectedBot.status !== 'online' || isPending('bot:inventory-drop-one')}
-                              onClick={() => sendAction('bot:inventory-drop-one', { slot: selectedInventorySlot })}
-                            >Drop 1</button>
-                            <button
-                              type="button"
-                              className="inventory-action-button inventory-drop-stack-button"
-                              disabled={selectedBot.status !== 'online' || isPending('bot:inventory-drop-stack')}
-                              onClick={() => setConfirmDropSlot(selectedInventorySlot)}
-                            >Drop stack</button>
+                              ref={inventoryActionsButtonRef}
+                              aria-haspopup="menu"
+                              aria-expanded={inventoryActionsOpen}
+                              disabled={selectedBot.status !== 'online'}
+                              onClick={() => setInventoryActionsOpen(open => !open)}
+                            >Item actions</button>
+                            {inventoryActionsOpen && (
+                              <div className="inventory-context-menu" ref={inventoryActionsRef} role="menu" aria-label="Item actions">
+                                <button
+                                  type="button"
+                                  role="menuitem"
+                                  disabled={isPending('bot:inventory-drop-one')}
+                                  onClick={() => {
+                                    sendAction('bot:inventory-drop-one', { slot: selectedInventorySlot })
+                                    setInventoryActionsOpen(false)
+                                  }}
+                                >Drop one</button>
+                                <button
+                                  type="button"
+                                  role="menuitem"
+                                  disabled={isPending('bot:inventory-drop-stack')}
+                                  onClick={() => {
+                                    setInventoryActionsOpen(false)
+                                    setConfirmDropSlot(selectedInventorySlot)
+                                  }}
+                                >Drop stack…</button>
+                              </div>
+                            )}
                           </div>
                         </section>
                       ) : (
                         <div className="inventory-select-hint">Select an occupied slot to inspect custom item data.</div>
-                      )}
-                      {inventoryMoveSource !== null && (
-                        <div className="inventory-move-notice" role="status">
-                          Select an empty slot to move this stack, or cancel the move.
-                        </div>
                       )}
                     </>
                   )}
@@ -1326,6 +1484,132 @@ function Dashboard() {
           )}
         </section>
       </section>
+
+      {botProfileDraft && (
+        <div className="saved-message-backdrop">
+          <form className="saved-message-dialog bot-profile-dialog" onSubmit={saveBotProfile}>
+            <span className="panel-kicker">{botProfileDraft.mode === 'edit' ? 'EDIT BOT PROFILE' : 'NEW BOT PROFILE'}</span>
+            <h3>{botProfileDraft.mode === 'edit' ? `Edit ${botProfileDraft.username}` : 'Add a bot'}</h3>
+            <label>
+              <span>Bot ID</span>
+              <input
+                autoFocus={botProfileDraft.mode === 'create'}
+                required
+                pattern="[A-Za-z0-9][A-Za-z0-9_-]{0,47}"
+                title="Use 1-48 letters, numbers, underscores, or hyphens; start with a letter or number."
+                disabled={botProfileDraft.mode === 'edit'}
+                value={botProfileDraft.id}
+                onChange={event => setBotProfileDraft(current => ({ ...current, id: event.target.value }))}
+              />
+            </label>
+            <label>
+              <span>Minecraft username</span>
+              <input
+                required
+                maxLength={64}
+                value={botProfileDraft.username}
+                onChange={event => setBotProfileDraft(current => ({ ...current, username: event.target.value }))}
+              />
+            </label>
+            <label>
+              <span>Server host</span>
+              <input
+                required
+                maxLength={253}
+                value={botProfileDraft.host}
+                onChange={event => setBotProfileDraft(current => ({ ...current, host: event.target.value }))}
+              />
+            </label>
+            <div className="bot-profile-fields">
+              <label>
+                <span>Port</span>
+                <input
+                  type="number"
+                  min="1"
+                  max="65535"
+                  step="1"
+                  required
+                  value={botProfileDraft.port}
+                  onChange={event => setBotProfileDraft(current => ({ ...current, port: event.target.value }))}
+                />
+              </label>
+              <label>
+                <span>Authentication</span>
+                <select
+                  value={botProfileDraft.auth}
+                  onChange={event => setBotProfileDraft(current => ({ ...current, auth: event.target.value }))}
+                >
+                  <option value="microsoft">Microsoft</option>
+                  <option value="offline">Offline</option>
+                </select>
+              </label>
+            </div>
+            <label>
+              <span>Version <small>Optional</small></span>
+              <input
+                maxLength={40}
+                placeholder="Auto-detect"
+                value={botProfileDraft.version}
+                onChange={event => setBotProfileDraft(current => ({ ...current, version: event.target.value }))}
+              />
+            </label>
+            <label>
+              <span>Commands on join <small>One slash command per line, up to 20</small></span>
+              <textarea
+                rows="3"
+                value={botProfileDraft.onJoinText}
+                onChange={event => setBotProfileDraft(current => ({ ...current, onJoinText: event.target.value }))}
+              />
+            </label>
+            <label className="bot-profile-checkbox">
+              <input
+                type="checkbox"
+                checked={botProfileDraft.physicsEnabled}
+                onChange={event => setBotProfileDraft(current => ({ ...current, physicsEnabled: event.target.checked }))}
+              />
+              <span>Enable physics simulation</span>
+            </label>
+            <label className="bot-profile-checkbox">
+              <input
+                type="checkbox"
+                checked={botProfileDraft.autoStart}
+                onChange={event => setBotProfileDraft(current => ({ ...current, autoStart: event.target.checked }))}
+              />
+              <span>Start this bot automatically with MineClank</span>
+            </label>
+            {botProfileError && <p className="saved-message-error" role="alert">{botProfileError}</p>}
+            <div className="saved-message-form-actions">
+              <button type="button" className="inventory-action-button" onClick={() => setBotProfileDraft(null)}>Cancel</button>
+              <button
+                type="submit"
+                className="inventory-action-button saved-message-save"
+                disabled={connection !== 'online' || isPending(botProfileDraft.mode === 'edit' ? 'bot:profile-update' : 'bot:profile-create')}
+              >
+                <Save size={14} /> {botProfileDraft.mode === 'edit' ? 'Save changes' : 'Add bot'}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {botProfileToDelete && (
+        <div className="saved-message-backdrop">
+          <section className="saved-message-dialog" role="alertdialog" aria-modal="true" aria-labelledby="bot-delete-title">
+            <span className="panel-kicker">DELETE BOT</span>
+            <h3 id="bot-delete-title">Delete {botProfileToDelete.username}?</h3>
+            <p>This removes the saved profile and stops the bot if it is online. Its Microsoft authentication cache is retained.</p>
+            <div className="saved-message-form-actions">
+              <button type="button" className="inventory-action-button" onClick={() => setBotProfileToDelete(null)}>Cancel</button>
+              <button
+                type="button"
+                className="inventory-action-button inventory-drop-stack-button"
+                disabled={isPending('bot:profile-delete')}
+                onClick={confirmDeleteBotProfile}
+              ><Trash2 size={14} /> Delete bot</button>
+            </div>
+          </section>
+        </div>
+      )}
 
       <footer className="app-footer">
         <span><span className="footer-mark" /> MINECLANK CONTROL</span>

@@ -2,17 +2,23 @@ import { resolve } from 'node:path';
 import 'dotenv/config';
 import { fileURLToPath } from 'node:url';
 import { BotManager } from './bot-manager.js';
+import { BotSettings } from './bot-settings.js';
 import { SavedMessages } from './saved-messages.js';
 import { createControlServer } from './ws.js';
 
 const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
+const dataDir = resolve(projectRoot, process.env.MINECLANK_DATA_DIR || '.data');
+const botSettings = new BotSettings(resolve(dataDir, 'bots.sqlite'), {
+    legacySettingsPath: resolve(dataDir, 'bot-settings.json')
+});
 const manager = new BotManager({
     configDir: resolve(projectRoot, 'configs', 'bots'),
-    authDir: resolve(projectRoot, '.auth')
+    authDir: resolve(projectRoot, '.auth'),
+    botSettings
 });
 await manager.initialize();
 const savedMessages = new SavedMessages(
-    resolve(projectRoot, process.env.MINECLANK_DATA_DIR || '.data', 'saved-messages.sqlite')
+    resolve(dataDir, 'saved-messages.sqlite')
 );
 const controlServer = createControlServer({ manager, savedMessages });
 const address = await controlServer.listen();
@@ -28,6 +34,7 @@ async function shutdown(signal) {
     await manager.close();
     await controlServer.close();
     savedMessages.close();
+    botSettings.close();
 }
 
 process.once('SIGINT', () => void shutdown('SIGINT'));

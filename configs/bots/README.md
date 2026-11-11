@@ -1,1 +1,1 @@
-Add one `<bot-id>.json` file per bot here. Use `../bots.example.json` as a template. Files are loaded in alphabetical order and each bot connects after the previous bot spawns.
+Legacy profiles in this directory are imported once into `.data/bots.sqlite` at startup. New bot profiles should be created and managed in the dashboard. Use `../bots.example.json` as a template only when migrating an existing profile.
