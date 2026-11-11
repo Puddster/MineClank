@@ -26,6 +26,14 @@ class FakeManager extends EventEmitter {
         return { id, status: 'stopped' };
     }
 
+    async resetMicrosoftAuthentication(id) {
+        return { id, status: 'stopped', authenticationReset: true };
+    }
+
+    async startMicrosoftAuthentication(id) {
+        return { id, status: 'connecting', authenticationStarted: true };
+    }
+
     setAutoStart(id, enabled) {
         return { id, autoStart: enabled };
     }
@@ -199,6 +207,54 @@ test('streams a snapshot and dispatches validated bot commands', async t => {
         ok: true,
         result: { id: 'alpha', autoStart: false }
     });
+
+    const authResetResult = nextSocketMessage(socket, 'action:result');
+    socket.send(JSON.stringify({
+        type: 'bot:auth-reset',
+        id: 'alpha',
+        requestId: 'auth-reset-1'
+    }));
+    assert.deepEqual(await authResetResult, {
+        type: 'action:result',
+        requestId: 'auth-reset-1',
+        ok: true,
+        result: { id: 'alpha', status: 'stopped', authenticationReset: true }
+    });
+
+    const authStartResult = nextSocketMessage(socket, 'action:result');
+    socket.send(JSON.stringify({
+        type: 'bot:auth-start',
+        id: 'alpha',
+        requestId: 'auth-start-1'
+    }));
+    assert.deepEqual(await authStartResult, {
+        type: 'action:result',
+        requestId: 'auth-start-1',
+        ok: true,
+        result: { id: 'alpha', status: 'connecting', authenticationStarted: true }
+    });
+
+    const authEvent = nextSocketMessage(socket, 'bot:authentication');
+    manager.emit('bot-authentication', {
+        id: 'alpha',
+        authentication: {
+            status: 'required',
+            userCode: 'ABCD-EFGH',
+            verificationUri: 'https://microsoft.com/devicelogin'
+        },
+        device_code: 'must-not-be-sent'
+    });
+    const authenticationMessage = await authEvent;
+    assert.deepEqual(authenticationMessage, {
+        type: 'bot:authentication',
+        id: 'alpha',
+        authentication: {
+            status: 'required',
+            userCode: 'ABCD-EFGH',
+            verificationUri: 'https://microsoft.com/devicelogin'
+        }
+    });
+    assert.equal(JSON.stringify(authenticationMessage).includes('must-not-be-sent'), false);
 
     const createProfileResult = nextSocketMessage(socket, 'action:result');
     socket.send(JSON.stringify({

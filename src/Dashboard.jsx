@@ -6,9 +6,11 @@ import {
   BookOpen,
   Circle,
   CircleCheck,
+  Copy,
   Drumstick,
   Gamepad2,
   Heart,
+  KeyRound,
   LoaderCircle,
   MapPin,
   Moon,
@@ -116,6 +118,7 @@ function Dashboard() {
   const [savedMessageFillError, setSavedMessageFillError] = useState('')
   const [botProfileDraft, setBotProfileDraft] = useState(null)
   const [botProfileToDelete, setBotProfileToDelete] = useState(null)
+  const [botToReauthenticate, setBotToReauthenticate] = useState(null)
   const [botProfileError, setBotProfileError] = useState('')
   const socketRef = useRef(null)
   const pendingRef = useRef({})
@@ -235,6 +238,10 @@ function Dashboard() {
             setInventoryActionsOpen(false)
             setConfirmDropSlot(null)
           }
+        } else if (message.type === 'bot:authentication') {
+          setBots(current => current.map(bot => bot.id === message.id
+            ? { ...bot, authentication: message.authentication }
+            : bot))
         } else if (message.type === 'bot:log') {
           setBots(current => current.map(bot => bot.id === message.id
             ? { ...bot, logs: [...(bot.logs || []), message.entry].slice(-200) }
@@ -254,6 +261,8 @@ function Dashboard() {
           const actionMessages = {
             'bot:command': 'Message sent',
             'bot:auto-start': 'Auto-start setting saved',
+            'bot:auth-reset': 'Microsoft login cache cleared',
+            'bot:auth-start': 'Microsoft sign-in started',
             'bot:profile-create': 'Bot profile added',
             'bot:profile-update': 'Bot profile updated',
             'bot:profile-delete': 'Bot profile deleted',
@@ -285,6 +294,8 @@ function Dashboard() {
             setSelectedId(current => current === message.result.id ? null : current)
             setActiveView('stream')
             setBotProfileToDelete(null)
+          } else if (message.ok && action === 'bot:auth-start') {
+            setBotToReauthenticate(null)
           }
           window.setTimeout(() => setNotice(''), 3500)
         }
@@ -317,6 +328,7 @@ function Dashboard() {
   }, [])
 
   const selectedBot = bots.find(bot => bot.id === selectedId) || bots[0] || null
+  const authenticationPrompt = bots.find(bot => bot.authentication?.status === 'required')
   const selectedBotId = selectedBot?.id
   const selectedBotStatus = selectedBot?.status
   const onlineCount = bots.filter(bot => bot.status === 'online').length
@@ -519,6 +531,22 @@ function Dashboard() {
   function confirmDeleteBotProfile() {
     if (!botProfileToDelete) return
     sendAction('bot:profile-delete', { id: botProfileToDelete.id })
+  }
+
+  function confirmMicrosoftReauthentication() {
+    if (!botToReauthenticate) return
+    sendAction('bot:auth-start', { id: botToReauthenticate.id })
+  }
+
+  async function copyMicrosoftCode(code) {
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error('Clipboard access is unavailable')
+      await navigator.clipboard.writeText(code)
+      setNotice('Microsoft sign-in code copied')
+      window.setTimeout(() => setNotice(''), 3500)
+    } catch (error) {
+      setNotice(error.message || 'Could not copy the Microsoft sign-in code')
+    }
   }
 
   function submitMessage(event) {
@@ -766,6 +794,14 @@ function Dashboard() {
                     <button className="icon-button stop-button" type="button" title="Stop bot" aria-label="Stop bot" disabled={isPending('bot:stop')} onClick={() => sendAction('bot:stop')}>
                       <Square size={15} fill="currentColor" />
                     </button>
+                  ) : ['connecting', 'reconnecting'].includes(selectedBot.status) ? (
+                    <button className="inventory-action-button inventory-drop-stack-button stop-reconnecting-button" type="button" disabled={isPending('bot:stop')} onClick={() => sendAction('bot:stop')}>
+                      <Square size={14} fill="currentColor" /> Stop reconnecting
+                    </button>
+                  ) : selectedBot.status === 'stopping' ? (
+                    <button className="start-button" type="button" disabled>
+                      <LoaderCircle size={15} className="spin" /> Stopping…
+                    </button>
                   ) : (
                     <button className="start-button" type="button" disabled={isPending('bot:start') || ['connecting', 'reconnecting', 'stopping'].includes(selectedBot.status)} onClick={() => sendAction('bot:start')}>
                       {isPending('bot:start') ? <LoaderCircle size={15} className="spin" /> : <Play size={15} fill="currentColor" />}
@@ -952,6 +988,28 @@ function Dashboard() {
                 </div>
               ) : activeView === 'settings' ? (
                 <section className="bot-settings-view detail-view" id="settings-panel" role="tabpanel" aria-labelledby="settings-tab">
+                  {selectedBot.profile.auth === 'microsoft' && (
+                    <div className="settings-section">
+                      <div className="settings-heading">
+                        <span className="panel-kicker">MICROSOFT ACCOUNT</span>
+                        <h3>Microsoft sign-in</h3>
+                        <p>Starting a Microsoft-authenticated bot opens a sign-in prompt here when needed. You can also clear its saved login and start a fresh sign-in now.</p>
+                        {selectedBot.authentication?.status === 'failed' && (
+                          <p className="saved-message-error" role="status">{selectedBot.authentication.error || 'Microsoft sign-in failed'}</p>
+                        )}
+                      </div>
+                      <div className="bot-profile-actions">
+                        <button
+                          type="button"
+                          className="inventory-action-button inventory-drop-stack-button"
+                          disabled={isPending('bot:auth-start')}
+                          onClick={() => setBotToReauthenticate(selectedBot)}
+                        >
+                          <KeyRound size={14} /> Start Microsoft sign-in
+                        </button>
+                      </div>
+                    </div>
+                  )}
                   <div className="settings-section">
                     <div className="settings-heading">
                       <span className="panel-kicker">BOT PROFILE</span>
@@ -1606,6 +1664,59 @@ function Dashboard() {
                 disabled={isPending('bot:profile-delete')}
                 onClick={confirmDeleteBotProfile}
               ><Trash2 size={14} /> Delete bot</button>
+            </div>
+          </section>
+        </div>
+      )}
+
+      {botToReauthenticate && (
+        <div className="saved-message-backdrop">
+          <section className="saved-message-dialog" role="alertdialog" aria-modal="true" aria-labelledby="reauth-title">
+            <span className="panel-kicker">MICROSOFT SIGN-IN</span>
+            <h3 id="reauth-title">Start a fresh sign-in for {botToReauthenticate.username}?</h3>
+            <p>This stops the bot, clears only its saved Microsoft login cache, and starts it again. A temporary device code will appear here if Microsoft requires authorization.</p>
+            <div className="saved-message-form-actions">
+              <button type="button" className="inventory-action-button" onClick={() => setBotToReauthenticate(null)}>Cancel</button>
+              <button
+                type="button"
+                className="inventory-action-button inventory-drop-stack-button"
+                disabled={isPending('bot:auth-start')}
+                onClick={confirmMicrosoftReauthentication}
+              ><KeyRound size={14} /> Continue</button>
+            </div>
+          </section>
+        </div>
+      )}
+
+      {authenticationPrompt && (
+        <div className="saved-message-backdrop">
+          <section className="saved-message-dialog microsoft-auth-dialog" role="dialog" aria-modal="true" aria-labelledby="microsoft-auth-title">
+            <span className="panel-kicker">MICROSOFT SIGN-IN REQUIRED</span>
+            <h3 id="microsoft-auth-title">Authorize {authenticationPrompt.username}</h3>
+            <p>Open Microsoft’s sign-in page and enter this temporary code. The code is only displayed in the dashboard and is not saved.</p>
+            <a
+              className="microsoft-auth-link"
+              href={authenticationPrompt.authentication.verificationUri}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Open Microsoft sign-in <ArrowUpRight size={14} />
+            </a>
+            <div className="microsoft-auth-code">{authenticationPrompt.authentication.userCode}</div>
+            <p className="microsoft-auth-expiry">
+              Code expires at {new Date(authenticationPrompt.authentication.expiresAt).toLocaleTimeString()}
+            </p>
+            <div className="saved-message-form-actions">
+              <button
+                type="button"
+                className="inventory-action-button"
+                onClick={() => sendAction('bot:stop', { id: authenticationPrompt.id })}
+              ><Square size={14} /> Cancel sign-in</button>
+              <button
+                type="button"
+                className="inventory-action-button saved-message-save"
+                onClick={() => copyMicrosoftCode(authenticationPrompt.authentication.userCode)}
+              ><Copy size={14} /> Copy code</button>
             </div>
           </section>
         </div>

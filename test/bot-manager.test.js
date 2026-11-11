@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { EventEmitter } from 'node:events';
-import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { access, mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
@@ -131,6 +131,7 @@ async function setupManager(t, { connectTimeoutMs = 100, botSettings = null } = 
     await writeFile(join(configDir, 'alpha.json'), JSON.stringify({
         username: 'Alpha',
         host: 'server.test',
+        auth: 'microsoft',
         onJoin: ['/survival'],
         physicsEnabled: false
     }));
@@ -180,6 +181,34 @@ test('categorizes blocks by realm and other items into their inventory groups', 
     assert.equal(getItemCategory({ name: 'zombie_spawn_egg' }, registry), 'spawn-eggs');
     assert.equal(getItemCategory({ name: 'apple' }, registry), 'food');
     assert.equal(getItemCategory({ name: 'oak_boat' }, registry), 'transport');
+});
+
+test('Microsoft device-code callback exposes only user-facing sign-in details', async t => {
+    const { manager, bots } = await setupManager(t);
+    const connection = manager.start('alpha');
+    await tick();
+    const bot = bots[0];
+    const authenticationEvents = [];
+    manager.on('bot-authentication', event => authenticationEvents.push(event));
+
+    bot.options.onMsaCode({
+        device_code: 'private-device-credential',
+        user_code: 'ABCD-EFGH',
+        verification_uri: 'https://microsoft.com/devicelogin',
+        expires_in: 900,
+        interval: 5,
+        message: 'Sensitive provider message'
+    });
+
+    assert.deepEqual(manager.getSnapshot()[0].authentication.status, 'required');
+    assert.equal(manager.getSnapshot()[0].authentication.userCode, 'ABCD-EFGH');
+    assert.equal(manager.getSnapshot()[0].authentication.verificationUri, 'https://microsoft.com/devicelogin');
+    assert.equal(JSON.stringify(authenticationEvents).includes('private-device-credential'), false);
+    assert.equal(JSON.stringify(manager.getSnapshot()).includes('private-device-credential'), false);
+    assert.equal(JSON.stringify(authenticationEvents).includes('Sensitive provider message'), false);
+    bot.emit('spawn');
+    await connection;
+    assert.deepEqual(manager.getSnapshot()[0].authentication, { status: 'authenticated' });
 });
 
 test('starts configured bots sequentially and sends chat and commands', async t => {
@@ -374,6 +403,96 @@ test('continues the startup queue after a bot fails before spawn', async t => {
     const outcomes = await starting;
     assert.equal(outcomes[0].status, 'reconnecting');
     assert.equal(manager.getSnapshot()[1].status, 'online');
+});
+
+test('backs off longer for login throttles and Mojang session service failures', async t => {
+    const { manager, bots } = await setupManager(t);
+
+    const rateLimitedStart = manager.start('alpha').catch(error => error);
+    await tick();
+    bots[0].emit('kicked', { text: 'You are logging in too fast, try again later.' });
+    assert.match((await rateLimitedStart).message, /logging in too fast/);
+    assert.ok(manager.getSnapshot()[0].logs.some(entry => (
+        entry.text === 'Retrying in 60s (login rate-limit cooldown)'
+    )));
+
+    const sessionFailureStart = manager.start('beta').catch(error => error);
+    await tick();
+    bots[1].emit('error', new Error(
+        'Invalid response body while trying to fetch https://sessionserver.mojang.com/session/minecraft/join: Premature close'
+    ));
+    assert.match((await sessionFailureStart).message, /sessionserver\.mojang\.com/);
+    assert.ok(manager.getSnapshot()[1].logs.some(entry => (
+        entry.text === 'Retrying in 60s (session service cooldown)'
+    )));
+});
+
+test('stops an in-flight connection and cancels a scheduled reconnect', async t => {
+    const { manager, bots } = await setupManager(t);
+
+    const connecting = manager.start('alpha').catch(error => error);
+    await tick();
+    assert.equal(bots.length, 1);
+    assert.equal((await manager.stop('alpha')).status, 'stopped');
+    assert.match((await connecting).message, /Connection ended before spawn/);
+    assert.equal(manager.getSnapshot()[0].status, 'stopped');
+    assert.equal(manager.records.get('alpha').reconnectTimer, null);
+    assert.equal(manager.records.get('alpha').desired, false);
+
+    const throttled = manager.start('beta').catch(error => error);
+    await tick();
+    bots[1].emit('kicked', { text: 'You are logging in too fast, try again later.' });
+    await throttled;
+    assert.ok(manager.records.get('beta').reconnectTimer);
+    assert.equal((await manager.stop('beta')).status, 'stopped');
+    assert.equal(manager.records.get('beta').reconnectTimer, null);
+    assert.equal(manager.records.get('beta').desired, false);
+    await tick();
+    assert.equal(bots.length, 2);
+});
+
+test('clears only a Microsoft bot auth cache and leaves the bot stopped for manual sign-in', async t => {
+    const { manager, bots } = await setupManager(t);
+    const authPath = join(manager.authDir, 'alpha');
+    await mkdir(authPath, { recursive: true });
+    await writeFile(join(authPath, 'tokens.json'), '{"refreshToken":"secret"}');
+
+    const connecting = manager.start('alpha').catch(error => error);
+    await tick();
+    bots[0].emit('spawn');
+    await connecting;
+    const result = await manager.resetMicrosoftAuthentication('alpha');
+
+    assert.deepEqual(result, { id: 'alpha', status: 'stopped', authenticationReset: true });
+    await assert.rejects(access(authPath));
+    assert.equal(manager.getSnapshot()[0].status, 'stopped');
+    assert.equal(manager.records.get('alpha').desired, false);
+    assert.ok(manager.getSnapshot()[0].logs.some(entry => (
+        entry.text === 'Microsoft authentication cache cleared; start the bot to sign in again'
+    )));
+
+    manager.records.get('beta').config.auth = 'offline';
+    await assert.rejects(
+        manager.resetMicrosoftAuthentication('beta'),
+        /only available for Microsoft accounts/
+    );
+});
+
+test('starts a fresh Microsoft sign-in after clearing only that bot cache', async t => {
+    const { manager, bots } = await setupManager(t);
+    const authPath = join(manager.authDir, 'alpha');
+    await mkdir(authPath, { recursive: true });
+    await writeFile(join(authPath, 'tokens.json'), '{"refreshToken":"secret"}');
+
+    const result = await manager.startMicrosoftAuthentication('alpha');
+    assert.deepEqual(result, { id: 'alpha', status: 'connecting', authenticationStarted: true });
+    await tick();
+    await assert.rejects(access(authPath));
+    assert.equal(bots.length, 1);
+    assert.equal(typeof bots[0].options.onMsaCode, 'function');
+    bots[0].emit('spawn');
+    await tick();
+    assert.equal(manager.getSnapshot()[0].status, 'online');
 });
 
 test('preserves clickable player usernames in chat log entries', async t => {

@@ -1,5 +1,6 @@
 import { EventEmitter } from 'node:events';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, rm } from 'node:fs/promises';
+import { dirname, resolve } from 'node:path';
 import mineflayer from 'mineflayer';
 import { loadBotConfigs, parseConfig } from './config-loader.js';
 import { ansiToColorRuns } from './chat-colors.js';
@@ -140,6 +141,8 @@ export class BotManager extends EventEmitter {
         stopTimeoutMs = 3_000,
         reconnectBaseMs = 5_000,
         reconnectMaxMs = 120_000,
+        loginRetryBaseMs = 60_000,
+        loginRetryMaxMs = 600_000,
         maxLogs = 200,
         joinCommandDelayMs = 6_000,
         botSettings = null
@@ -154,6 +157,8 @@ export class BotManager extends EventEmitter {
         this.stopTimeoutMs = stopTimeoutMs;
         this.reconnectBaseMs = reconnectBaseMs;
         this.reconnectMaxMs = reconnectMaxMs;
+        this.loginRetryBaseMs = loginRetryBaseMs;
+        this.loginRetryMaxMs = loginRetryMaxMs;
         this.maxLogs = maxLogs;
         this.joinCommandDelayMs = joinCommandDelayMs;
         this.botSettings = botSettings;
@@ -227,6 +232,7 @@ export class BotManager extends EventEmitter {
                 onJoin: [...record.config.onJoin]
             },
             autoStart: this.botSettings?.getAutoStart(record.id) ?? true,
+            authentication: { ...record.authentication },
             status: record.status,
             uptimeSeconds: record.connectedAt ? Math.floor((Date.now() - record.connectedAt) / 1000) : 0,
             position: entityPosition ? {
@@ -300,6 +306,57 @@ export class BotManager extends EventEmitter {
         return { id, deleted: true };
     }
 
+    async resetMicrosoftAuthentication(id) {
+        const record = this.requireRecord(id);
+        if (record.config.auth !== 'microsoft') {
+            throw new Error('Authentication reset is only available for Microsoft accounts');
+        }
+
+        await this.clearMicrosoftAuthentication(record);
+        this.appendLog(record, 'Microsoft authentication cache cleared; start the bot to sign in again');
+        this.emitState(record);
+        return { id, status: record.status, authenticationReset: true };
+    }
+
+    async startMicrosoftAuthentication(id) {
+        const record = this.requireRecord(id);
+        if (record.config.auth !== 'microsoft') {
+            throw new Error('Microsoft sign-in is only available for Microsoft accounts');
+        }
+
+        await this.clearMicrosoftAuthentication(record);
+        this.appendLog(record, 'Starting fresh Microsoft sign-in');
+        this.emitState(record);
+        void this.start(id).catch(() => {
+            record.authentication = {
+                status: 'failed',
+                error: 'Microsoft sign-in could not be started; check the bot log for details'
+            };
+            this.emitAuthenticationState(record);
+        });
+        return { id, status: 'connecting', authenticationStarted: true };
+    }
+
+    async clearMicrosoftAuthentication(record) {
+        if (record.config.auth !== 'microsoft') {
+            throw new Error('Authentication reset is only available for Microsoft accounts');
+        }
+        if (record.status !== 'stopped' || record.desired || record.reconnectTimer) {
+            await this.stop(record.id);
+        }
+
+        const profileDir = resolve(this.authDir, record.id);
+        if (dirname(profileDir) !== resolve(this.authDir)) {
+            throw new Error('Invalid authentication profile path');
+        }
+        await rm(profileDir, { recursive: true, force: true });
+
+        record.attempts = 0;
+        record.retryClass = null;
+        record.lastError = null;
+        record.authentication = { status: 'idle' };
+    }
+
     start(id) {
         const record = this.requireRecord(id);
         if (this.shuttingDown) throw new Error('Bot manager is shutting down');
@@ -317,6 +374,10 @@ export class BotManager extends EventEmitter {
         record.desired = false;
         clearTimeout(record.reconnectTimer);
         record.reconnectTimer = null;
+        if (record.authentication.status === 'required') {
+            record.authentication = { status: 'cancelled' };
+            this.emitAuthenticationState(record);
+        }
 
         const bot = record.bot;
         if (!bot) {
@@ -541,12 +602,14 @@ export class BotManager extends EventEmitter {
             lastError: null,
             connectedAt: null,
             reconnectTimer: null,
+            retryClass: null,
             connectPromise: null,
             completionQueue: Promise.resolve(),
             completionSequence: 0,
             inventoryActionQueue: Promise.resolve(),
             windowActionQueue: Promise.resolve(),
-            attempts: 0
+            attempts: 0,
+            authentication: { status: 'idle' }
         };
     }
 
@@ -577,6 +640,14 @@ export class BotManager extends EventEmitter {
 
         const config = record.config;
         let bot;
+        let pendingMsaCode = null;
+        const onMsaCode = data => {
+            if (!bot) {
+                pendingMsaCode = data;
+                return;
+            }
+            this.handleMsaCode(record, bot, data);
+        };
         try {
             bot = this.createBot({
                 username: config.username,
@@ -585,6 +656,7 @@ export class BotManager extends EventEmitter {
                 auth: config.auth,
                 profilesFolder: config.profilesFolder,
                 physicsEnabled: config.physicsEnabled,
+                ...(config.auth === 'microsoft' ? { onMsaCode } : {}),
                 ...(config.version ? { version: config.version } : {})
             });
         } catch (error) {
@@ -593,6 +665,7 @@ export class BotManager extends EventEmitter {
         }
 
         record.bot = bot;
+        if (pendingMsaCode) this.handleMsaCode(record, bot, pendingMsaCode);
         return new Promise((resolveConnect, rejectConnect) => {
             let settled = false;
             let spawned = false;
@@ -615,8 +688,10 @@ export class BotManager extends EventEmitter {
                 clearTimeout(timeout);
                 record.status = 'online';
                 record.attempts = 0;
+                record.retryClass = null;
                 record.lastError = null;
                 record.connectedAt = Date.now();
+                if (config.auth === 'microsoft') record.authentication = { status: 'authenticated' };
                 this.appendLog(record, `Connected to ${config.host}:${config.port}`);
                 const client = bot._client;
                 const secureChat = client?.serverFeatures?.enforcesSecureChat;
@@ -628,6 +703,7 @@ export class BotManager extends EventEmitter {
                 );
                 this.appendLog(record, `Physics simulation: ${config.physicsEnabled ? 'enabled' : 'disabled'}`);
                 this.emitState(record);
+                this.emitAuthenticationState(record);
                 void this.runOnJoin(record, bot);
                 resolveConnect(this.publicState(record));
             });
@@ -679,6 +755,21 @@ export class BotManager extends EventEmitter {
         if (record.bot === bot) record.bot = null;
         record.connectedAt = null;
         record.lastError = redact(error?.message || error);
+        if (record.authentication.status === 'required') {
+            record.authentication = {
+                status: 'failed',
+                error: 'Microsoft sign-in failed; check the bot log for details'
+            };
+            this.emitAuthenticationState(record);
+        }
+        const failureText = String(error?.message || error);
+        if (/logging in too fast|too many login attempts|rate.?limit/i.test(failureText)) {
+            record.retryClass = 'login-throttled';
+        } else if (/sessionserver\.mojang\.com.*session\/minecraft\/join|session\/minecraft\/join|premature close/i.test(failureText)) {
+            record.retryClass = 'session-service';
+        } else {
+            record.retryClass = null;
+        }
         this.appendLog(record, `Connection failed: ${record.lastError}`);
         if (record.desired && !this.shuttingDown) {
             record.status = 'reconnecting';
@@ -688,6 +779,46 @@ export class BotManager extends EventEmitter {
         }
         this.emitState(record);
         try { bot?.quit('Connection attempt failed'); } catch {}
+    }
+
+    handleMsaCode(record, bot, data) {
+        if (record.bot !== bot || !record.desired) return;
+        let verificationUri;
+        try {
+            verificationUri = new URL(data?.verification_uri);
+        } catch {
+            record.authentication = { status: 'failed', error: 'Microsoft returned an invalid sign-in URL' };
+            this.emitAuthenticationState(record);
+            return;
+        }
+        const microsoftHost = verificationUri.hostname === 'microsoft.com' ||
+            verificationUri.hostname.endsWith('.microsoft.com');
+        if (verificationUri.protocol !== 'https:' ||
+            !microsoftHost ||
+            typeof data?.user_code !== 'string' ||
+            !data.user_code.trim() ||
+            data.user_code.length > 64 ||
+            !Number.isFinite(data?.expires_in) ||
+            data.expires_in <= 0) {
+            record.authentication = { status: 'failed', error: 'Microsoft returned invalid device sign-in details' };
+            this.emitAuthenticationState(record);
+            return;
+        }
+
+        record.authentication = {
+            status: 'required',
+            userCode: data.user_code,
+            verificationUri: verificationUri.href,
+            expiresAt: Date.now() + data.expires_in * 1000
+        };
+        this.emitAuthenticationState(record);
+    }
+
+    emitAuthenticationState(record) {
+        this.emit('bot-authentication', {
+            id: record.id,
+            authentication: { ...record.authentication }
+        });
     }
 
     async runOnJoin(record, bot) {
@@ -707,8 +838,16 @@ export class BotManager extends EventEmitter {
     scheduleReconnect(record) {
         if (!record.desired || this.shuttingDown || record.reconnectTimer) return;
         const exponent = Math.min(Math.max(record.attempts - 1, 0), 5);
-        const delay = Math.min(this.reconnectMaxMs, this.reconnectBaseMs * 2 ** exponent);
-        this.appendLog(record, `Retrying in ${Math.round(delay / 1000)}s`);
+        const isLoginFailure = record.retryClass !== null;
+        const baseDelay = isLoginFailure ? this.loginRetryBaseMs : this.reconnectBaseMs;
+        const maxDelay = isLoginFailure ? this.loginRetryMaxMs : this.reconnectMaxMs;
+        const delay = Math.min(maxDelay, baseDelay * 2 ** exponent);
+        const reason = record.retryClass === 'login-throttled'
+            ? ' (login rate-limit cooldown)'
+            : record.retryClass === 'session-service'
+                ? ' (session service cooldown)'
+                : '';
+        this.appendLog(record, `Retrying in ${Math.round(delay / 1000)}s${reason}`);
         record.reconnectTimer = setTimeout(() => {
             record.reconnectTimer = null;
             if (record.desired && !this.shuttingDown) {

@@ -179,6 +179,7 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
 .start-button:hover { background: var(--forest-hover); }
 .icon-button { width: 36px; color: var(--danger); background: var(--danger-soft); }
 .icon-button:hover { background: var(--danger-hover); }
+.stop-reconnecting-button { display: inline-flex; align-items: center; gap: 7px; }
 .start-button:disabled, .icon-button:disabled, .quick-commands button:disabled, .command-form button:disabled { opacity: .48; cursor: not-allowed; }
 .metrics-row { display: grid; grid-template-columns: .8fr 1.3fr 1fr; border: 1px solid var(--line); border-radius: 6px; background: var(--surface-subtle); }
 .metric { min-width: 0; display: grid; gap: 7px; padding: 12px 14px; }
@@ -367,6 +368,11 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
 .saved-message-dialog { width: min(460px, 100%); max-height: min(90vh, 680px); display: flex; flex-direction: column; gap: 12px; padding: 20px; overflow: auto; border: 1px solid var(--line); border-radius: 8px; color: var(--ink-soft); background: var(--surface); box-shadow: 0 18px 48px rgba(0, 0, 0, .22); }
 .saved-message-dialog h3 { margin: -5px 0 2px; color: var(--ink); font-size: 17px; }
 .saved-message-dialog > p { margin: 0; color: var(--muted); font-size: 11px; }
+.microsoft-auth-dialog { width: min(420px, 100%); }
+.microsoft-auth-link { display: inline-flex; align-items: center; gap: 6px; color: var(--green); font-size: 11px; font-weight: 700; text-decoration: none; }
+.microsoft-auth-link:hover { text-decoration: underline; }
+.microsoft-auth-code { padding: 14px; border: 1px solid var(--line); border-radius: 6px; color: var(--ink); background: var(--surface-input); font: 700 24px var(--mono); letter-spacing: .12em; text-align: center; }
+.saved-message-dialog > .microsoft-auth-expiry { margin-top: -6px; font: 9px var(--mono); }
 .saved-message-dialog label { display: grid; gap: 5px; color: var(--ink-soft); font-size: 11px; font-weight: 650; }
 .saved-message-dialog label > span { display: flex; justify-content: space-between; }
 .saved-message-dialog label small { color: var(--muted); font: 9px var(--mono); }

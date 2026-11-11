@@ -115,6 +115,10 @@ export function createControlServer({
                     result = await manager.stop(request.id);
                 } else if (request.type === 'bot:auto-start') {
                     result = manager.setAutoStart(request.id, request.enabled);
+                } else if (request.type === 'bot:auth-reset') {
+                    result = await manager.resetMicrosoftAuthentication(request.id);
+                } else if (request.type === 'bot:auth-start') {
+                    result = await manager.startMicrosoftAuthentication(request.id);
                 } else if (request.type === 'bot:profile-create') {
                     result = manager.createBotProfile(request.id, request.profile, request.autoStart);
                 } else if (request.type === 'bot:profile-update') {
@@ -186,6 +190,31 @@ export function createControlServer({
     });
     manager.on('bot-log', event => {
         const payload = JSON.stringify({ type: 'bot:log', ...event });
+        for (const client of webSockets.clients) {
+            if (client.readyState === WebSocket.OPEN) client.send(payload);
+        }
+    });
+    manager.on('bot-authentication', event => {
+        const authentication = {
+            status: event.authentication?.status,
+            ...(typeof event.authentication?.userCode === 'string'
+                ? { userCode: event.authentication.userCode }
+                : {}),
+            ...(typeof event.authentication?.verificationUri === 'string'
+                ? { verificationUri: event.authentication.verificationUri }
+                : {}),
+            ...(Number.isFinite(event.authentication?.expiresAt)
+                ? { expiresAt: event.authentication.expiresAt }
+                : {}),
+            ...(typeof event.authentication?.error === 'string'
+                ? { error: event.authentication.error }
+                : {})
+        };
+        const payload = JSON.stringify({
+            type: 'bot:authentication',
+            id: event.id,
+            authentication
+        });
         for (const client of webSockets.clients) {
             if (client.readyState === WebSocket.OPEN) client.send(payload);
         }
