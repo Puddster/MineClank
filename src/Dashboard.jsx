@@ -32,6 +32,7 @@ import {
   Trash2,
   Sun,
   Terminal,
+  Users,
   Wifi,
   WifiOff,
   Wind,
@@ -88,6 +89,56 @@ function formatDuration(seconds) {
   return `${remainingMinutes}m`
 }
 
+function formatOnlinePlayerDisplayName(value) {
+  const rawName = String(value || '').trim()
+  const hasCrownMarker = /[\uE000-\uF8FF]+$/u.test(rawName)
+  const displayName = rawName.replace(/[\uE000-\uF8FF]+$/u, '').trimEnd()
+  if (!displayName) return rawName
+
+  let formattedName = displayName
+  if (!/^\[[^\]]+\](?:\s|$)/.test(displayName)) {
+    const rankAndName = displayName.match(/^(\S+)\s+(.+)$/)
+    if (rankAndName) formattedName = `[${rankAndName[1]}] ${rankAndName[2]}`
+  }
+
+  return hasCrownMarker ? `${formattedName} ${String.fromCodePoint(0x1f451)}` : formattedName
+}
+
+function OnlinePlayerTile({ player, onMessage }) {
+  const displayName = formatOnlinePlayerDisplayName(player.displayName)
+  const distanceTitle = player.isSelf
+    ? 'This bot'
+    : Number.isFinite(player.distance)
+      ? '3D distance in blocks from bot'
+      : 'Distance unavailable; player entity is not currently tracked'
+
+  return (
+    <li>
+      <button
+        type="button"
+        className="online-player-tile"
+        aria-label={`Message ${displayName}`}
+        title={`Message ${displayName}`}
+        onClick={() => onMessage(player.username)}
+      >
+        <span className="online-player-avatar" aria-hidden="true">
+          <Users size={14} />
+          {player.skinUrl && (
+            <>
+              <img className="online-player-skin online-player-skin-face" src={player.skinUrl} alt="" loading="lazy" decoding="async" referrerPolicy="no-referrer" />
+              <img className="online-player-skin online-player-skin-hat" src={player.skinUrl} alt="" loading="lazy" decoding="async" referrerPolicy="no-referrer" />
+            </>
+          )}
+        </span>
+        <span className="online-player-name">{displayName}</span>
+        <span className={`online-player-distance ${player.isSelf ? 'is-self' : ''}`} title={distanceTitle}>
+          {player.isSelf ? 'YOU' : Number.isFinite(player.distance) ? `${player.distance} blocks` : '—'}
+        </span>
+      </button>
+    </li>
+  )
+}
+
 function Dashboard() {
   const [theme, setTheme] = useState(() => {
     const storedTheme = window.localStorage.getItem(THEME_STORAGE_KEY)
@@ -130,6 +181,7 @@ function Dashboard() {
   const historyNavigationRef = useRef(null)
   const completionTimerRef = useRef(null)
   const commandInputRef = useRef(null)
+  const commandFocusAtEndRef = useRef(false)
   const logStreamRef = useRef(null)
 
   useEffect(() => {
@@ -140,6 +192,15 @@ function Dashboard() {
   }, [])
 
   const activeTheme = theme === 'system' ? systemTheme : theme
+
+  useLayoutEffect(() => {
+    if (!commandFocusAtEndRef.current) return
+    commandFocusAtEndRef.current = false
+    const input = commandInputRef.current
+    if (!input) return
+    input.focus()
+    input.setSelectionRange(input.value.length, input.value.length)
+  }, [command])
 
   useLayoutEffect(() => {
     document.documentElement.dataset.theme = activeTheme
@@ -331,6 +392,17 @@ function Dashboard() {
   const authenticationPrompt = bots.find(bot => bot.authentication?.status === 'required')
   const selectedBotId = selectedBot?.id
   const selectedBotStatus = selectedBot?.status
+  const onlinePlayers = selectedBot?.onlinePlayers || []
+  const nearbyPlayers = onlinePlayers
+    .filter(player => !player.isSelf && Number.isFinite(player.distance))
+    .slice()
+    .sort((left, right) => left.distance - right.distance || left.username.localeCompare(right.username))
+  const allOnlinePlayers = onlinePlayers
+    .slice()
+    .sort((left, right) => (
+      formatOnlinePlayerDisplayName(left.displayName).localeCompare(formatOnlinePlayerDisplayName(right.displayName)) ||
+      left.username.localeCompare(right.username)
+    ))
   const onlineCount = bots.filter(bot => bot.status === 'online').length
   const inventorySlots = selectedBot?.inventory || []
   const inventoryItemCount = inventorySlots.filter(Boolean).length
@@ -559,6 +631,20 @@ function Dashboard() {
     }
   }
 
+  function fillWhisperCommand(username) {
+    const value = `/msg ${username} `
+    historyNavigationRef.current = null
+    setSuggestions([])
+    if (value === command) {
+      const input = commandInputRef.current
+      input?.focus()
+      input?.setSelectionRange(value.length, value.length)
+      return
+    }
+    commandFocusAtEndRef.current = true
+    setCommand(value)
+  }
+
   function applySuggestion(suggestion) {
     const value = command.trimStart()
     const wordStart = value.lastIndexOf(' ') + 1
@@ -684,10 +770,12 @@ function Dashboard() {
             ? `Message ${interaction.username}`
             : `Fill command box with ${interaction.command}`}
           onClick={() => {
+            if (interaction.type === 'player') {
+              fillWhisperCommand(interaction.username)
+              return
+            }
             historyNavigationRef.current = null
-            setCommand(interaction.type === 'player'
-              ? `/msg ${interaction.username} `
-              : interaction.command)
+            setCommand(interaction.command)
             setSuggestions([])
             commandInputRef.current?.focus()
           }}
@@ -928,6 +1016,18 @@ function Dashboard() {
                   >
                     <BookOpen size={15} /> Saved Messages
                     <span className="tab-count">{savedMessages.length}</span>
+                  </button>
+                  <button
+                    id="online-players-tab"
+                    type="button"
+                    role="tab"
+                    aria-selected={activeView === 'players'}
+                    aria-controls="online-players-panel"
+                    className={`detail-tab ${activeView === 'players' ? 'selected' : ''}`}
+                    onClick={() => setActiveView('players')}
+                  >
+                    <Users size={15} /> Online Players
+                    <span className="tab-count">{selectedBot.onlinePlayers?.length || 0}</span>
                   </button>
                   <button
                     id="settings-tab"
@@ -1223,6 +1323,46 @@ function Dashboard() {
                     </div>
                   )}
                   <p className="saved-message-hint">Select a message to fill the chat box. It will not be sent until you press Send.</p>
+                </section>
+              ) : activeView === 'players' ? (
+                <section className="online-players-view detail-view" id="online-players-panel" role="tabpanel" aria-labelledby="online-players-tab">
+                  <div className="online-players-heading">
+                    <div>
+                      <span className="panel-kicker">SERVER PLAYER LIST</span>
+                      <h3>Online Players</h3>
+                    </div>
+                    <span className="inventory-total">{onlinePlayers.length} online</span>
+                  </div>
+                  {selectedBot.status !== 'online' ? (
+                    <div className="online-players-empty">Player list is available while the bot is online.</div>
+                  ) : onlinePlayers.length ? (
+                    <>
+                      <section className="online-player-section" aria-labelledby="nearby-players-heading">
+                        <div className="inventory-section-heading">
+                          <h4 id="nearby-players-heading">Nearby</h4>
+                          <span>{nearbyPlayers.length} tracked</span>
+                        </div>
+                        {nearbyPlayers.length ? (
+                          <ul className="online-player-grid" aria-label="Nearby players, nearest first">
+                            {nearbyPlayers.map(player => <OnlinePlayerTile key={player.username} player={player} onMessage={fillWhisperCommand} />)}
+                          </ul>
+                        ) : (
+                          <div className="online-players-empty online-players-empty-compact">No nearby players are currently tracked.</div>
+                        )}
+                      </section>
+                      <section className="online-player-section" aria-labelledby="everyone-players-heading">
+                        <div className="inventory-section-heading">
+                          <h4 id="everyone-players-heading">Everyone</h4>
+                          <span>{allOnlinePlayers.length} players · alphabetical</span>
+                        </div>
+                        <ul className="online-player-grid" aria-label="Everyone online, alphabetical">
+                          {allOnlinePlayers.map(player => <OnlinePlayerTile key={player.username} player={player} onMessage={fillWhisperCommand} />)}
+                        </ul>
+                      </section>
+                    </>
+                  ) : (
+                    <div className="online-players-empty">No online players are reported by the server.</div>
+                  )}
                 </section>
               ) : openWindow ? (
                 <section className="menu-view detail-view" id="menu-panel" role="tabpanel" aria-labelledby="menu-tab">

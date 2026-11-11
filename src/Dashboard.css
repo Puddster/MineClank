@@ -217,6 +217,25 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
 .bot-profile-summary span { display: grid; gap: 4px; min-width: 0; padding: 9px; overflow-wrap: anywhere; border-radius: 4px; color: var(--ink-soft); background: var(--surface-subtle); font-size: 11px; }
 .bot-profile-summary strong { color: var(--text-subtle); font: 8px var(--mono); letter-spacing: .06em; text-transform: uppercase; }
 .bot-profile-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.online-players-view { display: flex; flex-direction: column; gap: 14px; padding: 16px 0 4px; overflow: auto; }
+.online-players-heading { display: flex; align-items: end; justify-content: space-between; gap: 12px; }
+.online-players-heading h3 { margin: 4px 0 0; color: var(--ink); font-size: 15px; }
+.online-player-section { display: flex; flex-direction: column; gap: 7px; }
+.online-player-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 180px), 1fr)); align-content: start; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.online-player-grid > li { min-width: 0; }
+.online-player-tile { width: 100%; min-width: 0; height: 38px; display: flex; align-items: center; gap: 8px; padding: 6px 8px; overflow: hidden; border: 1px solid var(--line); border-radius: 4px; color: var(--ink-soft); background: var(--surface-subtle); font: inherit; font-size: 11px; text-align: left; white-space: nowrap; cursor: pointer; }
+.online-player-tile:hover { border-color: var(--green-selected); background: var(--surface-selected); }
+.online-player-tile:focus-visible { outline: 2px solid var(--green-selected); outline-offset: 1px; }
+.online-player-name { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.online-player-distance { flex: 0 0 12ch; margin-left: auto; overflow: hidden; color: var(--muted); font: 9px var(--mono); text-align: right; text-overflow: ellipsis; white-space: nowrap; }
+.online-player-distance.is-self { color: var(--green-action); }
+.online-player-avatar { position: relative; flex: 0 0 24px; width: 24px; height: 24px; overflow: hidden; border-radius: 4px; color: var(--text-avatar); background: var(--surface-avatar); }
+.online-player-avatar > svg { position: absolute; inset: 5px; width: 14px; height: 14px; }
+.online-player-skin { position: absolute; width: 192px; max-width: none; height: auto; image-rendering: pixelated; pointer-events: none; }
+.online-player-skin-face { left: -24px; top: -24px; }
+.online-player-skin-hat { left: -120px; top: -24px; }
+.online-players-empty { padding: 24px 12px; color: var(--muted); font-size: 11px; text-align: center; }
+.online-players-empty-compact { padding: 10px 12px; text-align: left; }
 .bot-setting-row { max-width: 560px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface-subtle); cursor: pointer; }
 .bot-setting-description { display: grid; gap: 4px; }
 .bot-setting-description strong { color: var(--ink); font-size: 12px; }

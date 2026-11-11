@@ -19,6 +19,7 @@ class FakeBot extends EventEmitter {
         this.maxConcurrentCompletions = 0;
         this.entity = { position: { x: 1.24, y: 64, z: -8.86 } };
         this.inventory = { slots: Array(46).fill(null) };
+        this.players = {};
         this.registry = { blocksByName: { tripwire_hook: {} }, foodsByName: {}, enchantments: [{ name: 'sharpness' }] };
         this.inventory.slots[9] = {
             name: 'diamond',
@@ -219,6 +220,11 @@ test('starts configured bots sequentially and sends chat and commands', async t 
 
     await tick();
     assert.equal(bots.length, 1);
+    bots[0].players.GraysonOakes = {
+        username: 'GraysonOakes',
+        displayName: { toString: () => '[October] [Hero] sophia' },
+        uuid: 'private-player-uuid'
+    };
     bots[0].emit('spawn');
     bots[0].emit('message', {
         toString: () => 'Welcome',
@@ -239,6 +245,13 @@ test('starts configured bots sequentially and sends chat and commands', async t 
     assert.equal(bots[1].options.physicsEnabled, true);
     assert.deepEqual(manager.getSnapshot()[0].position, { x: 1.2, y: 64, z: -8.9 });
     assert.equal(manager.getSnapshot()[0].dimension, 'overworld');
+    assert.deepEqual(manager.getSnapshot()[0].onlinePlayers, [{
+        username: 'GraysonOakes',
+        displayName: '[October] [Hero] sophia',
+        isSelf: false,
+        distance: null
+    }]);
+    assert.equal(JSON.stringify(manager.getSnapshot()[0].onlinePlayers).includes('private-player-uuid'), false);
     assert.deepEqual(manager.getSnapshot()[0].playerStats, {
         health: 18,
         food: 17,
@@ -493,6 +506,63 @@ test('starts a fresh Microsoft sign-in after clearing only that bot cache', asyn
     bots[0].emit('spawn');
     await tick();
     assert.equal(manager.getSnapshot()[0].status, 'online');
+});
+
+test('publishes online player list changes', async t => {
+    const { manager, bots } = await setupManager(t);
+    const starting = manager.start('alpha');
+    await tick();
+    bots[0].emit('spawn');
+    await starting;
+
+    const states = [];
+    manager.on('bot-state', state => states.push(state));
+    bots[0].entity.position = { x: 0, y: 64, z: 0 };
+    const player = {
+        username: 'GraysonOakes',
+        displayName: { toString: () => '[October] [Hero] sophia' },
+        ping: 38,
+        uuid: 'private-player-uuid',
+        entity: { position: { x: 3, y: 68, z: 0 } },
+        skinData: {
+            url: `http://textures.minecraft.net/texture/${'a'.repeat(64)}`,
+            model: 'slim',
+            capeUrl: 'https://textures.minecraft.net/texture/private-cape'
+        }
+    };
+    bots[0].players.GraysonOakes = player;
+    bots[0].emit('playerJoined', player);
+
+    assert.deepEqual(states.at(-1).onlinePlayers, [{
+        username: 'GraysonOakes',
+        displayName: '[October] [Hero] sophia',
+        skinUrl: `https://textures.minecraft.net/texture/${'a'.repeat(64)}`,
+        isSelf: false,
+        distance: 5
+    }]);
+
+    player.displayName = { toString: () => '[October] [Hero] Sophie' };
+    bots[0].emit('playerUpdated', player);
+    assert.deepEqual(states.at(-1).onlinePlayers, [{
+        username: 'GraysonOakes',
+        displayName: '[October] [Hero] Sophie',
+        skinUrl: `https://textures.minecraft.net/texture/${'a'.repeat(64)}`,
+        isSelf: false,
+        distance: 5
+    }]);
+
+    bots[0].players.Unsafe = {
+        username: 'Unsafe',
+        displayName: { toString: () => 'Unsafe' },
+        skinData: { url: 'https://tracker.example/skin.png' }
+    };
+    bots[0].emit('playerJoined', bots[0].players.Unsafe);
+    assert.deepEqual(states.at(-1).onlinePlayers.find(entry => entry.username === 'Unsafe'), {
+        username: 'Unsafe',
+        displayName: 'Unsafe',
+        isSelf: false,
+        distance: null
+    });
 });
 
 test('preserves clickable player usernames in chat log entries', async t => {

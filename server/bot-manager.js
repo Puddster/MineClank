@@ -113,6 +113,49 @@ function inventorySnapshot(bot) {
     return itemSlotsSnapshot(bot?.inventory?.slots, bot?.registry);
 }
 
+function safeSkinTextureUrl(value) {
+    if (typeof value !== 'string') return null;
+    try {
+        const url = new URL(value);
+        if (url.hostname !== 'textures.minecraft.net' || !/^\/texture\/[a-f0-9]{64}$/i.test(url.pathname)) return null;
+        url.protocol = 'https:';
+        url.search = '';
+        url.hash = '';
+        return url.href;
+    } catch {
+        return null;
+    }
+}
+
+function onlinePlayersSnapshot(bot) {
+    const botPosition = bot?.entity?.position;
+    return Object.values(bot?.players ?? {})
+        .filter(player => typeof player?.username === 'string')
+        .map(player => {
+            const playerPosition = player.entity?.position;
+            const isSelf = player.username === bot?.username;
+            const hasPosition = !isSelf &&
+                Number.isFinite(botPosition?.x) && Number.isFinite(botPosition?.y) && Number.isFinite(botPosition?.z) &&
+                Number.isFinite(playerPosition?.x) && Number.isFinite(playerPosition?.y) && Number.isFinite(playerPosition?.z);
+            const onlinePlayer = {
+                username: player.username,
+                displayName: player.displayName?.toString?.().trim() || player.username,
+                isSelf,
+                distance: hasPosition
+                    ? Number(Math.hypot(
+                        playerPosition.x - botPosition.x,
+                        playerPosition.y - botPosition.y,
+                        playerPosition.z - botPosition.z
+                    ).toFixed(1))
+                    : null
+            };
+            const skinUrl = safeSkinTextureUrl(player.skinData?.url);
+            if (skinUrl) onlinePlayer.skinUrl = skinUrl;
+            return onlinePlayer;
+        })
+        .sort((left, right) => left.username.localeCompare(right.username));
+}
+
 function openWindowSnapshot(window, registry) {
     if (!window) return null;
     return {
@@ -242,6 +285,7 @@ export class BotManager extends EventEmitter {
             } : null,
             dimension,
             playerStats,
+            onlinePlayers: bot ? onlinePlayersSnapshot(bot) : [],
             openWindow: bot ? openWindowSnapshot(bot.currentWindow, bot.registry) : null,
             lastError: record.lastError,
             inventory: bot ? inventorySnapshot(bot) : []
@@ -669,9 +713,17 @@ export class BotManager extends EventEmitter {
         return new Promise((resolveConnect, rejectConnect) => {
             let settled = false;
             let spawned = false;
+            let onlinePlayersSignature = JSON.stringify(onlinePlayersSnapshot(bot));
             const timeout = setTimeout(() => {
                 fail(new Error(`Connection timed out after ${this.connectTimeoutMs}ms`));
             }, this.connectTimeoutMs);
+            const refreshOnlinePlayers = () => {
+                const players = onlinePlayersSnapshot(bot);
+                const signature = JSON.stringify(players);
+                if (signature === onlinePlayersSignature) return;
+                onlinePlayersSignature = signature;
+                if (record.bot === bot && record.status === 'online') this.emitState(record);
+            };
 
             const fail = error => {
                 if (settled) return;
@@ -721,6 +773,9 @@ export class BotManager extends EventEmitter {
             });
             bot.on('windowOpen', () => this.emitState(record));
             bot.on('windowClose', () => this.emitState(record));
+            bot.on('playerJoined', refreshOnlinePlayers);
+            bot.on('playerUpdated', refreshOnlinePlayers);
+            bot.on('playerLeft', refreshOnlinePlayers);
             bot.on('kicked', reason => {
                 const text = typeof reason === 'string' ? reason : JSON.stringify(reason);
                 this.appendLog(record, `Kicked: ${text}`);
