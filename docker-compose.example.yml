@@ -9,12 +9,10 @@ services:
       REQUIRE_PROXY_AUTH: ${REQUIRE_PROXY_AUTH:-true}
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:?Set ALLOWED_ORIGINS in .env}
       PROXY_USER_HEADER: ${PROXY_USER_HEADER:-x-auth-request-user}
-      ITEM_ICONS_DIR: /app/local-item-icons
     expose:
       - "3001"
     volumes:
       - ./configs/bots:/app/configs/bots:ro
-      - ./assets/item-icons:/app/local-item-icons:ro
       - mineclank-auth:/app/.auth
       - mineclank-data:/app/.data
     networks:

@@ -63,7 +63,7 @@ function ItemCategoryIcon({ category, name, enchanted = false }) {
     <span className={`inventory-icon-wrap ${enchanted ? 'is-enchanted' : ''}`} aria-hidden="true">
       {hasSprite && (
       <svg className="inventory-category-icon inventory-category-icon-sprite" viewBox="0 0 16 16" aria-hidden="true">
-        <use href={`/local-item-icons/${categoryKey}-sprites.svg#${encodeURIComponent(name)}`} onError={() => setFailedItemIcon(name)} />
+        <use href={`/item-icons/${categoryKey}-sprites.svg#${encodeURIComponent(name)}`} onError={() => setFailedItemIcon(name)} />
       </svg>
       )}
     </span>

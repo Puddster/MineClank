@@ -441,7 +441,7 @@ test('serves locally generated item sprite maps', async t => {
     t.after(() => rm(iconDirectory, { recursive: true, force: true }));
 
     const { origin } = await openServer(t, { localItemIconsDir: iconDirectory });
-    const response = await fetch(`${origin}/local-item-icons/food-sprites.svg`);
+    const response = await fetch(`${origin}/item-icons/food-sprites.svg`);
 
     assert.equal(response.status, 200);
     assert.equal(response.headers.get('content-type'), 'image/svg+xml');
