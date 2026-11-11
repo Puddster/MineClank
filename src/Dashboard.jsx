@@ -48,6 +48,26 @@ const EQUIPMENT_SLOTS = [
 const MAIN_INVENTORY_SLOTS = Array.from({ length: 27 }, (_, index) => 9 + index)
 const HOTBAR_SLOTS = Array.from({ length: 9 }, (_, index) => 36 + index)
 const savedPlaceholderPattern = /\{\{([A-Za-z][A-Za-z0-9_]*)\}\}/g
+const ITEM_SPRITE_MAP_CATEGORIES = new Set([
+  'blocks-overworld', 'blocks-nether', 'blocks-end', 'blocks-other',
+  'materials', 'equipment', 'spawn-eggs', 'food', 'transport'
+])
+
+function ItemCategoryIcon({ category, name, enchanted = false }) {
+  const categoryKey = ITEM_SPRITE_MAP_CATEGORIES.has(category) ? category : 'materials'
+  const [failedItemIcon, setFailedItemIcon] = useState(null)
+  const hasSprite = name && !name.includes(':') && failedItemIcon !== name
+
+  return (
+    <span className={`inventory-icon-wrap ${enchanted ? 'is-enchanted' : ''}`} aria-hidden="true">
+      {hasSprite && (
+      <svg className="inventory-category-icon inventory-category-icon-sprite" viewBox="0 0 16 16" aria-hidden="true">
+        <use href={`/local-item-icons/${categoryKey}-sprites.svg#${encodeURIComponent(name)}`} onError={() => setFailedItemIcon(name)} />
+      </svg>
+      )}
+    </span>
+  )
+}
 
 function savedMessageVariables(message) {
   return [...new Set([...message.matchAll(savedPlaceholderPattern)].map(match => match[1]))]
@@ -303,6 +323,7 @@ function Dashboard() {
         <span className="inventory-slot-label">{label}</span>
         {item && (
           <>
+            <ItemCategoryIcon category={item.category} name={item.name} enchanted={item.hasEnchantmentGlint ?? Boolean(item.enchantments?.length)} />
             <span className="inventory-item-name">{item.customName || item.displayName || item.name}</span>
             {item.count > 1 && <span className="inventory-item-count">{item.count}</span>}
           </>
@@ -1042,6 +1063,7 @@ function Dashboard() {
                             <span className="inventory-slot-label">{slot + 1}</span>
                             {item && (
                               <>
+                                <ItemCategoryIcon category={item.category} name={item.name} enchanted={item.hasEnchantmentGlint ?? Boolean(item.enchantments?.length)} />
                                 <span className="inventory-item-name">{name}</span>
                                 {item.count > 1 && <span className="inventory-item-count">{item.count}</span>}
                               </>
@@ -1089,6 +1111,7 @@ function Dashboard() {
                               <span className="inventory-slot-label">{slot + 1}</span>
                               {item && (
                                 <>
+                                  <ItemCategoryIcon category={item.category} name={item.name} enchanted={item.hasEnchantmentGlint ?? Boolean(item.enchantments?.length)} />
                                   <span className="inventory-item-name">{name}</span>
                                   {item.count > 1 && <span className="inventory-item-count">{item.count}</span>}
                                 </>

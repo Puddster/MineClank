@@ -1,5 +1,8 @@
 import assert from 'node:assert/strict';
 import { EventEmitter, once } from 'node:events';
+import { mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import test from 'node:test';
 import WebSocket from 'ws';
 import { createControlServer } from '../server/ws.js';
@@ -329,4 +332,18 @@ test('allows same-origin websocket access for local non-production use', async t
     await once(socket, 'open');
     assert.deepEqual(await snapshot, { type: 'snapshot', bots: manager.getSnapshot() });
     socket.close();
+});
+
+test('serves locally generated item sprite maps', async t => {
+    const iconDirectory = await mkdtemp(join(tmpdir(), 'mineclank-item-icons-'));
+    const svg = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"></svg>');
+    await writeFile(join(iconDirectory, 'food-sprites.svg'), svg);
+    t.after(() => rm(iconDirectory, { recursive: true, force: true }));
+
+    const { origin } = await openServer(t, { localItemIconsDir: iconDirectory });
+    const response = await fetch(`${origin}/local-item-icons/food-sprites.svg`);
+
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get('content-type'), 'image/svg+xml');
+    assert.deepEqual(Buffer.from(await response.arrayBuffer()), svg);
 });

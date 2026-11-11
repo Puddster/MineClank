@@ -233,6 +233,30 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
 .inventory-slot.selected { outline: 2px solid var(--green-selected); outline-offset: -2px; }
 .inventory-slot.move-target { border-style: dashed; border-color: var(--green-selected); background: var(--surface-selected); }
 .inventory-move-target-mark { color: var(--green-selected); font: 8px var(--mono); }
+.inventory-category-icon {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+}
+.inventory-icon-wrap { position: relative; flex: 0 0 22px; width: 22px; height: 22px; overflow: hidden; isolation: isolate; border-radius: 2px; }
+.inventory-icon-wrap > .inventory-category-icon { width: 100%; height: 100%; }
+.inventory-icon-wrap.is-enchanted::after {
+  position: absolute;
+  inset: -15% -40%;
+  content: '';
+  background: linear-gradient(112deg, transparent 31%, rgba(187, 111, 255, .22) 43%, rgba(255, 255, 255, .72) 50%, rgba(102, 220, 255, .3) 57%, transparent 69%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  animation: inventory-enchantment-shimmer 2.8s ease-in-out infinite;
+}
+@keyframes inventory-enchantment-shimmer {
+  0%, 28% { transform: translateX(-72%) skewX(-18deg); }
+  76%, 100% { transform: translateX(72%) skewX(-18deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .inventory-icon-wrap.is-enchanted::after { animation: none; transform: translateX(0) skewX(-18deg); opacity: .35; }
+}
+.inventory-category-icon-sprite { display: block; object-fit: contain; image-rendering: pixelated; }
 .inventory-slot { text-align: center; font: inherit; cursor: pointer; }
 .inventory-slot:disabled { opacity: .55; cursor: default; }
 .inventory-slot.selected { outline: 2px solid var(--green-selected); outline-offset: -2px; }
@@ -401,6 +425,7 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
   .equipment-grid { gap: 4px; }
   .inventory-grid { gap: 3px; }
   .inventory-slot { padding: 8px 2px 3px; }
+  .inventory-category-icon { width: 18px; height: 18px; }
   .inventory-item-name { font-size: 7px; }
   .inventory-item-details { grid-template-columns: minmax(0, 1fr); gap: 10px; }
   .inventory-item-actions { grid-column: auto; }

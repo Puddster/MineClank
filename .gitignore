@@ -13,6 +13,7 @@ dist-ssr
 *.local
 .auth/
 .data/
+assets/item-icons/
 .env
 !.env.example
 configs/bots/*.json

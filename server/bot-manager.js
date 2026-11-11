@@ -4,6 +4,7 @@ import mineflayer from 'mineflayer';
 import { loadBotConfigs } from './config-loader.js';
 import { ansiToColorRuns } from './chat-colors.js';
 import { extractPlayerLinks } from './chat-player-links.js';
+import { getItemCategory } from './item-category.js';
 
 const tokenPattern = /eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g;
 const redact = value => String(value).replace(tokenPattern, '[REDACTED TOKEN]');
@@ -35,7 +36,7 @@ function itemComponentText(value) {
     return flatten(value).slice(0, maxItemTextLength);
 }
 
-function itemSlotsSnapshot(slots) {
+function itemSlotsSnapshot(slots, registry) {
     if (!Array.isArray(slots)) return [];
 
     return slots.map((item, slot) => {
@@ -44,15 +45,43 @@ function itemSlotsSnapshot(slots) {
             ? item.displayName
             : item.displayName?.toString?.();
         let enchantments = [];
+        let hasEnchantmentGlint = false;
         let lore = [];
         try {
-            enchantments = (Array.isArray(item.enchants) ? item.enchants : [])
-                .filter(enchantment => typeof enchantment?.name === 'string')
+            let rawEnchantments = Array.isArray(item.enchants) ? item.enchants : [];
+            const enchantmentComponent = item.componentMap?.get('enchantments')?.data;
+            const storedEnchantmentComponent = item.componentMap?.get('stored_enchantments')?.data;
+            const componentEnchantments = Array.isArray(enchantmentComponent)
+                ? enchantmentComponent
+                : Array.isArray(enchantmentComponent?.enchantments) ? enchantmentComponent.enchantments : [];
+            const storedEnchantments = Array.isArray(storedEnchantmentComponent)
+                ? storedEnchantmentComponent
+                : Array.isArray(storedEnchantmentComponent?.enchantments) ? storedEnchantmentComponent.enchantments : [];
+            if (rawEnchantments.length === 0 && componentEnchantments.length > 0) rawEnchantments = componentEnchantments;
+            if (rawEnchantments.length === 0 && storedEnchantments.length > 0) {
+                rawEnchantments = storedEnchantments;
+            }
+            hasEnchantmentGlint = rawEnchantments.length > 0;
+            enchantments = rawEnchantments
                 .slice(0, 12)
-                .map(enchantment => ({
-                    name: enchantment.name.slice(0, 80),
-                    level: Number.isInteger(enchantment.lvl) ? enchantment.lvl : 0
-                }));
+                .map(enchantment => {
+                    const name = typeof enchantment?.name === 'string'
+                        ? enchantment.name
+                        : Number.isInteger(enchantment?.id)
+                            ? registry?.enchantments?.[enchantment.id]?.name
+                            : typeof enchantment?.id === 'string'
+                                ? enchantment.id.replace(/^minecraft:/, '')
+                                : null;
+                    return {
+                        name: typeof name === 'string' ? name.slice(0, 80) : null,
+                        level: Number.isInteger(enchantment?.lvl)
+                            ? enchantment.lvl
+                            : Number.isInteger(enchantment?.level) ? enchantment.level : 0
+                    };
+                })
+                .filter(enchantment => enchantment.name);
+            const glintOverride = item.componentMap?.get('enchantment_glint_override')?.data;
+            if (typeof glintOverride === 'boolean') hasEnchantmentGlint = glintOverride;
         } catch {}
         try {
             const rawLore = item.customLore;
@@ -68,28 +97,30 @@ function itemSlotsSnapshot(slots) {
         return {
             slot,
             name: item.name || 'Unknown item',
+            category: getItemCategory(item, registry),
             displayName: displayName || item.name || 'Unknown item',
             count: Number.isInteger(item.count) ? item.count : 1,
             customName,
             enchantments,
+            hasEnchantmentGlint,
             lore
         };
     });
 }
 
 function inventorySnapshot(bot) {
-    return itemSlotsSnapshot(bot?.inventory?.slots);
+    return itemSlotsSnapshot(bot?.inventory?.slots, bot?.registry);
 }
 
-function openWindowSnapshot(window) {
+function openWindowSnapshot(window, registry) {
     if (!window) return null;
     return {
         id: window.id,
         title: window.title?.toString?.() || String(window.title || 'Server Menu'),
         type: String(window.type || 'container'),
         inventoryStart: Number.isInteger(window.inventoryStart) ? window.inventoryStart : window.slots?.length || 0,
-        slots: itemSlotsSnapshot(window.slots),
-        selectedItem: window.selectedItem ? itemSlotsSnapshot([window.selectedItem])[0] : null
+        slots: itemSlotsSnapshot(window.slots, registry),
+        selectedItem: window.selectedItem ? itemSlotsSnapshot([window.selectedItem], registry)[0] : null
     };
 }
 
@@ -201,7 +232,7 @@ export class BotManager extends EventEmitter {
             } : null,
             dimension,
             playerStats,
-            openWindow: bot ? openWindowSnapshot(bot.currentWindow) : null,
+            openWindow: bot ? openWindowSnapshot(bot.currentWindow, bot.registry) : null,
             lastError: record.lastError,
             inventory: bot ? inventorySnapshot(bot) : []
         };

@@ -5,6 +5,7 @@ import os from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
 import { BotManager } from '../server/bot-manager.js';
+import { getItemCategory } from '../server/item-category.js';
 
 const tick = () => new Promise(resolve => setImmediate(resolve));
 
@@ -17,6 +18,7 @@ class FakeBot extends EventEmitter {
         this.maxConcurrentCompletions = 0;
         this.entity = { position: { x: 1.24, y: 64, z: -8.86 } };
         this.inventory = { slots: Array(46).fill(null) };
+        this.registry = { blocksByName: { tripwire_hook: {} }, foodsByName: {}, enchantments: [{ name: 'sharpness' }] };
         this.inventory.slots[9] = {
             name: 'diamond',
             displayName: 'Diamond',
@@ -31,12 +33,22 @@ class FakeBot extends EventEmitter {
             displayName: 'Tripwire Hook',
             count: 1,
             customName: null,
-            componentMap: new Map([['item_name', {
-                data: {
-                    type: 'compound',
-                    value: { text: { type: 'string', value: 'Common Crate Key' } }
-                }
-            }]])
+            componentMap: new Map([
+                ['item_name', {
+                    data: {
+                        type: 'compound',
+                        value: { text: { type: 'string', value: 'Common Crate Key' } }
+                    }
+                }],
+                ['enchantments', { data: { enchantments: [{ id: 0, level: 2 }] } }],
+                ['enchantment_glint_override', { data: true }]
+            ])
+        };
+        this.inventory.slots[37] = {
+            name: 'diamond',
+            displayName: 'Diamond',
+            count: 1,
+            componentMap: new Map([['enchantments', { data: { enchantments: [{ id: 999, level: 1 }] } }]])
         };
         this.game = { dimension: 'overworld', gameMode: 'survival' };
         this.health = 18;
@@ -142,6 +154,29 @@ async function setupManager(t, { connectTimeoutMs = 100 } = {}) {
     return { manager, bots };
 }
 
+test('categorizes blocks by realm and other items into their inventory groups', () => {
+    const registry = {
+        blocksByName: {
+            stone: {}, netherrack: {}, polished_blackstone_bricks: {}, red_nether_bricks: {},
+            end_stone: {}, purpur_block: {}, crafting_table: {}
+        },
+        foodsByName: { apple: {} }
+    };
+
+    assert.equal(getItemCategory({ name: 'stone' }, registry), 'blocks-overworld');
+    assert.equal(getItemCategory({ name: 'netherrack' }, registry), 'blocks-nether');
+    assert.equal(getItemCategory({ name: 'polished_blackstone_bricks' }, registry), 'blocks-nether');
+    assert.equal(getItemCategory({ name: 'red_nether_bricks' }, registry), 'blocks-nether');
+    assert.equal(getItemCategory({ name: 'end_stone' }, registry), 'blocks-end');
+    assert.equal(getItemCategory({ name: 'purpur_block' }, registry), 'blocks-end');
+    assert.equal(getItemCategory({ name: 'crafting_table' }, registry), 'blocks-other');
+    assert.equal(getItemCategory({ name: 'diamond' }, registry), 'materials');
+    assert.equal(getItemCategory({ name: 'iron_pickaxe' }, registry), 'equipment');
+    assert.equal(getItemCategory({ name: 'zombie_spawn_egg' }, registry), 'spawn-eggs');
+    assert.equal(getItemCategory({ name: 'apple' }, registry), 'food');
+    assert.equal(getItemCategory({ name: 'oak_boat' }, registry), 'transport');
+});
+
 test('starts configured bots sequentially and sends chat and commands', async t => {
     const { manager, bots } = await setupManager(t);
     const starting = manager.startAllSequential();
@@ -186,12 +221,19 @@ test('starts configured bots sequentially and sends chat and commands', async t 
     assert.deepEqual(manager.getSnapshot()[0].inventory[9], {
         slot: 9,
         name: 'diamond',
+        category: 'materials',
         displayName: 'Diamond',
         count: 3,
         customName: 'Prismatic Diamond',
         enchantments: [{ name: 'sharpness', level: 3 }],
+        hasEnchantmentGlint: true,
         lore: ['Forged in light', 'Second line']
     });
+    assert.equal(manager.getSnapshot()[0].inventory[36].category, 'blocks-other');
+    assert.deepEqual(manager.getSnapshot()[0].inventory[36].enchantments, [{ name: 'sharpness', level: 2 }]);
+    assert.equal(manager.getSnapshot()[0].inventory[36].hasEnchantmentGlint, true);
+    assert.deepEqual(manager.getSnapshot()[0].inventory[37].enchantments, []);
+    assert.equal(manager.getSnapshot()[0].inventory[37].hasEnchantmentGlint, true);
     assert.equal(JSON.stringify(manager.getSnapshot()[0].inventory).includes('privateValue'), false);
     assert.equal(manager.getSnapshot()[0].inventory[36].customName, 'Common Crate Key');
     assert.deepEqual(await manager.moveInventoryItem('alpha', 36, 39), {
@@ -299,10 +341,12 @@ test('exposes and safely dispatches clicks to open server menus', async t => {
             {
                 slot: 13,
                 name: 'diamond',
+                category: 'materials',
                 displayName: 'Diamond',
                 count: 2,
                 customName: null,
                 enchantments: [],
+                hasEnchantmentGlint: false,
                 lore: ['Top listing']
             },
             ...Array(49).fill(null)
