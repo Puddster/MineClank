@@ -1,4 +1,10 @@
-import InventoryItemIcon from './InventoryItemIcon.jsx'
+import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
+import { DndContext, DragOverlay, KeyboardSensor, MouseSensor, TouchSensor, pointerWithin, rectIntersection, useSensor, useSensors } from '@dnd-kit/core'
+import { MoreVertical, PackageMinus, Trash2 } from 'lucide-react'
+import InventorySlot, { InventorySlotContents } from './InventorySlot.jsx'
+import { inventoryKeyboardCoordinates } from './inventory-drag.js'
+import { useInventoryActionMenu } from './useInventoryActionMenu.js'
 
 const equipmentSlots = [
   { slot: 5, label: 'Head' },
@@ -20,52 +26,61 @@ export default function InventoryView({
   setInventoryActionsOpen,
   setSelectedInventorySlot,
   setConfirmDropSlot,
-  actionsRef,
-  actionsButtonRef,
+  confirmDropSlot,
+  connection,
   isPending,
   sendAction
 }) {
-  function renderSlot(slot, label) {
-    const item = inventorySlots[slot]
-    const description = item
-      ? `${item.count} x ${item.customName || item.displayName || item.name}`
-      : 'Empty'
+  const [activeSlot, setActiveSlot] = useState(null)
+  const suppressClickUntil = useRef(0)
+  const { inventoryActionsRef: actionsRef, closeMenu } = useInventoryActionMenu(inventoryActionsOpen, setInventoryActionsOpen)
+  const sensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 220, tolerance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: inventoryKeyboardCoordinates })
+  )
+  const busy = ['bot:inventory-move', 'bot:inventory-click', 'bot:inventory-drop-one', 'bot:inventory-drop-stack'].some(isPending)
+  const disabled = selectedBot.status !== 'online' || connection !== 'online' || Boolean(selectedBot.openWindow) || busy || confirmDropSlot !== null
 
-    return (
-      <button
-        type="button"
-        className={`inventory-slot ${item ? 'filled' : ''} ${selectedInventorySlot === slot ? 'selected' : ''}`}
-        key={slot}
-        role="gridcell"
-        aria-label={`${label}: ${description}`}
-        aria-pressed={selectedInventorySlot === slot}
-        title={`${label}: ${description}`}
-        disabled={selectedBot.status !== 'online' || isPending('bot:inventory-click')}
-        onClick={event => {
-          setSelectedInventorySlot(slot)
-          setInventoryActionsOpen(false)
-          sendAction('bot:inventory-click', { slot, mouseButton: 0, mode: event.shiftKey ? 1 : 0 })
-        }}
-        onContextMenu={event => {
-          event.preventDefault()
-          setSelectedInventorySlot(slot)
-          setInventoryActionsOpen(false)
-          sendAction('bot:inventory-click', { slot, mouseButton: 1, mode: event.shiftKey ? 1 : 0 })
-        }}
-      >
-        <span className="inventory-slot-label">{label}</span>
-        {item && (
-          <>
-            <InventoryItemIcon category={item.category} name={item.name} enchanted={item.hasEnchantmentGlint ?? Boolean(item.enchantments?.length)} />
-            <span className="inventory-item-name">{item.customName || item.displayName || item.name}</span>
-            {item.count > 1 && <span className="inventory-item-count">{item.count}</span>}
-          </>
-        )}
-      </button>
-    )
+  useEffect(() => () => setInventoryActionsOpen(false), [setInventoryActionsOpen])
+
+  function openMenu(event, slot) {
+    if (disabled || activeSlot !== null || !inventorySlots[slot]) return
+    const trigger = event.currentTarget
+    const rect = trigger.getBoundingClientRect()
+    setSelectedInventorySlot(slot)
+    setInventoryActionsOpen({
+      slot, id: selectedBot.id, trigger,
+      x: event.clientX || rect.left,
+      y: event.clientY || rect.bottom
+    })
+  }
+
+  function selectSlot(event, slot) {
+    if (performance.now() < suppressClickUntil.current) return
+    setSelectedInventorySlot(slot)
+    setInventoryActionsOpen(false)
+    if (event.shiftKey) sendAction('bot:inventory-click', { slot, mouseButton: 0, mode: 1 })
+  }
+
+  function endDrag({ active, over }) {
+    setActiveSlot(null)
+    suppressClickUntil.current = performance.now() + 250
+    if (disabled || !over || active.id === over.id || !inventorySlots[active.id]) return
+    sendAction('bot:inventory-move', { id: selectedBot.id, sourceSlot: active.id, destinationSlot: over.id })
+  }
+
+  function renderSlot(slot, label) {
+    return <InventorySlot key={slot} slot={slot} label={label} item={inventorySlots[slot]}
+      selected={selectedInventorySlot === slot} disabled={disabled} menuOpen={Boolean(inventoryActionsOpen)}
+      onSelect={selectSlot} onMenu={openMenu} />
   }
 
   return (
+    <DndContext sensors={sensors} collisionDetection={inventoryCollision}
+      onDragStart={({ active }) => { setActiveSlot(active.id); setSelectedInventorySlot(active.id); setInventoryActionsOpen(false) }}
+      onDragCancel={() => { setActiveSlot(null); suppressClickUntil.current = performance.now() + 250 }}
+      onDragEnd={endDrag}>
     <section className="inventory-view detail-view" id="inventory-panel" role="tabpanel" aria-labelledby="inventory-tab">
       <div className="inventory-summary">
         <div>
@@ -97,7 +112,42 @@ export default function InventoryView({
             </div>
           </section>
           {selectedInventoryItem ? (
-            <section className="inventory-item-details" aria-label="Selected item details">
+            <InventoryItemDetails item={selectedInventoryItem} slot={selectedInventorySlot}
+              disabled={disabled} menuOpen={Boolean(inventoryActionsOpen)} onMenu={openMenu} />
+          ) : (
+            <div className="inventory-select-hint">Select an occupied slot to inspect custom item data.</div>
+          )}
+        </>
+      )}
+      {inventoryActionsOpen && createPortal(
+        <div className="inventory-context-menu" ref={actionsRef} role="menu" aria-label="Item actions"
+          style={{ left: inventoryActionsOpen.x, top: inventoryActionsOpen.y }}>
+          <button type="button" role="menuitem" disabled={disabled} onClick={() => {
+            sendAction('bot:inventory-drop-one', { id: inventoryActionsOpen.id, slot: inventoryActionsOpen.slot })
+            closeMenu()
+          }}><PackageMinus size={14} aria-hidden="true" />Drop 1</button>
+          <button type="button" role="menuitem" disabled={disabled} onClick={() => {
+            setConfirmDropSlot(inventoryActionsOpen.slot)
+            closeMenu()
+          }}><Trash2 size={14} aria-hidden="true" />Drop All</button>
+        </div>, document.body
+      )}
+    </section>
+    {createPortal(<DragOverlay dropAnimation={null}>
+      {activeSlot !== null && <div className="inventory-slot filled inventory-drag-preview">
+        <InventorySlotContents item={inventorySlots[activeSlot]} label="" />
+      </div>}
+    </DragOverlay>, document.body)}
+    </DndContext>
+  )
+}
+
+function inventoryCollision(args) {
+  return args.pointerCoordinates ? pointerWithin(args) : rectIntersection(args)
+}
+
+function InventoryItemDetails({ item: selectedInventoryItem, slot: selectedInventorySlot, disabled, menuOpen, onMenu }) {
+  return <section className="inventory-item-details" aria-label="Selected item details">
               <div className="inventory-detail-heading">
                 <span className="panel-kicker">SLOT {selectedInventorySlot}</span>
                 <strong>{selectedInventoryItem.customName || selectedInventoryItem.displayName || selectedInventoryItem.name}</strong>
@@ -123,42 +173,14 @@ export default function InventoryView({
               <div className="inventory-item-actions">
                 <button
                   type="button"
-                  className="inventory-action-button"
-                  ref={actionsButtonRef}
+                  className="inventory-action-button inventory-menu-trigger"
                   aria-haspopup="menu"
-                  aria-expanded={inventoryActionsOpen}
-                  disabled={selectedBot.status !== 'online'}
-                  onClick={() => setInventoryActionsOpen(open => !open)}
-                >Item actions</button>
-                {inventoryActionsOpen && (
-                  <div className="inventory-context-menu" ref={actionsRef} role="menu" aria-label="Item actions">
-                    <button
-                      type="button"
-                      role="menuitem"
-                      disabled={isPending('bot:inventory-drop-one')}
-                      onClick={() => {
-                        sendAction('bot:inventory-drop-one', { slot: selectedInventorySlot })
-                        setInventoryActionsOpen(false)
-                      }}
-                    >Drop one</button>
-                    <button
-                      type="button"
-                      role="menuitem"
-                      disabled={isPending('bot:inventory-drop-stack')}
-                      onClick={() => {
-                        setInventoryActionsOpen(false)
-                        setConfirmDropSlot(selectedInventorySlot)
-                      }}
-                    >Drop stack…</button>
-                  </div>
-                )}
+                  aria-expanded={menuOpen}
+                  aria-label="Item actions"
+                  title="Item actions"
+                  disabled={disabled}
+                  onClick={event => onMenu(event, selectedInventorySlot)}
+                ><MoreVertical size={16} aria-hidden="true" /></button>
               </div>
             </section>
-          ) : (
-            <div className="inventory-select-hint">Select an occupied slot to inspect custom item data.</div>
-          )}
-        </>
-      )}
-    </section>
-  )
 }

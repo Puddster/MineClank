@@ -4,6 +4,9 @@ import { access, mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
+import itemLoader from 'prismarine-item';
+import windowLoader from 'prismarine-windows';
+import minecraftData from 'minecraft-data';
 import { BotManager } from '../server/bot-manager.js';
 import { BotSettings } from '../server/bot-settings.js';
 import { getItemCategory } from '../server/item-category.js';
@@ -77,10 +80,15 @@ class FakeBot extends EventEmitter {
     }
 
     async moveSlotItem(sourceSlot, destinationSlot) {
-        const item = this.inventory.slots[sourceSlot];
-        this.inventory.slots[sourceSlot] = null;
-        this.inventory.slots[destinationSlot] = item;
-        if (item) item.slot = destinationSlot;
+        const window = windowLoader('1.21.1').createWindow(0, 'minecraft:inventory', 'Inventory');
+        window.slots = this.inventory.slots;
+        for (const slot of [sourceSlot, destinationSlot]) {
+            window.acceptClick({ slot, mouseButton: 0, mode: 0, item: window.slots[slot] });
+        }
+        if (window.selectedItem) {
+            window.acceptClick({ slot: sourceSlot, mouseButton: 0, mode: 0, item: window.slots[sourceSlot] });
+        }
+        this.inventory.selectedItem = window.selectedItem;
     }
 
     async clickWindow(slot, mouseButton, mode) {
@@ -307,7 +315,7 @@ test('starts configured bots sequentially and sends chat and commands', async t 
     bots[0].currentWindow = { id: 1 };
     await assert.rejects(manager.clickInventorySlot('alpha', 9), /Close the open server menu/);
     bots[0].currentWindow = null;
-    await assert.rejects(manager.moveInventoryItem('alpha', 9, 39), /Destination slot must be empty/);
+    await assert.rejects(manager.moveInventoryItem('alpha', 9, 9), /different destination/);
     assert.deepEqual(await manager.dropInventoryItem('alpha', 9), { id: 'alpha', slot: 9, dropped: 1 });
     assert.equal(manager.getSnapshot()[0].inventory[9].count, 2);
     assert.deepEqual(await manager.dropInventoryStack('alpha', 39), { id: 'alpha', slot: 39, dropped: 1 });
@@ -332,6 +340,73 @@ test('starts configured bots sequentially and sends chat and commands', async t 
     assert.throws(() => manager.sendCommand('alpha', '   '), /cannot be empty/);
     assert.throws(() => manager.sendCommand('alpha', '/'), /Command cannot be empty/);
     assert.throws(() => manager.sendCommand('missing', '/survival'), /Unknown bot/);
+});
+
+test('inventory moves merge, swap and reject unsafe operations without losing items', async t => {
+    const { manager, bots } = await setupManager(t);
+    const starting = manager.start('alpha');
+    await tick();
+    const bot = bots[0];
+    bot.emit('spawn');
+    await starting;
+    const data = minecraftData('1.21.1');
+    const Item = itemLoader('1.21.1');
+    const diamond = count => new Item(data.itemsByName.diamond.id, count);
+    const slots = bot.inventory.slots;
+    slots.fill(null);
+    slots[9] = diamond(12);
+    slots[10] = diamond(60);
+    assert.equal((await manager.moveInventoryItem('alpha', 9, 10)).moved, 4);
+    assert.equal(slots[9].count, 8);
+    assert.equal(slots[10].count, 64);
+    assert.equal(bot.inventory.selectedItem, null);
+    await assert.rejects(manager.moveInventoryItem('alpha', 9, 10), /full or cannot accept/);
+    assert.equal(slots[9].count, 8);
+    assert.equal(slots[10].count, 64);
+    slots[11] = diamond(3);
+    assert.equal((await manager.moveInventoryItem('alpha', 9, 11)).moved, 8);
+    assert.equal(slots[9], null);
+    assert.equal(slots[11].count, 11);
+    const stone = new Item(data.itemsByName.stone.id, 5);
+    slots[12] = stone;
+    await manager.moveInventoryItem('alpha', 11, 12);
+    assert.equal(slots[11], stone);
+    assert.equal(slots[12].name, 'diamond');
+    assert.equal(slots[12].count, 11);
+    const named = new Item(data.itemsByName.diamond.id, 2, 0, { type: 'compound', value: { marker: { type: 'string', value: 'special' } } });
+    slots[13] = named;
+    await manager.moveInventoryItem('alpha', 12, 13);
+    assert.equal(slots[12], named);
+    assert.equal(slots[13].count, 11);
+    bot.inventory.selectedItem = diamond(1);
+    await assert.rejects(manager.moveInventoryItem('alpha', 13, 14), /cursor-held/);
+    assert.equal(slots[13].count, 11);
+    bot.inventory.selectedItem = null;
+    await assert.rejects(manager.moveInventoryItem('alpha', 13, 13), /different destination/);
+    await assert.rejects(manager.moveInventoryItem('alpha', 13, 4), /out of range/);
+    await assert.rejects(manager.moveInventoryItem('alpha', 14, 15), /empty/);
+    bot.currentWindow = { id: 1 };
+    await assert.rejects(manager.moveInventoryItem('alpha', 13, 14), /Close the open container/);
+    bot.currentWindow = null;
+    await Promise.all([
+        manager.moveInventoryItem('alpha', 13, 14),
+        manager.moveInventoryItem('alpha', 14, 15)
+    ]);
+    assert.equal(slots[13], null);
+    assert.equal(slots[14], null);
+    assert.equal(slots[15].count, 11);
+    assert.equal(bot.inventory.selectedItem, null);
+    await assert.rejects(manager.moveInventoryItem('alpha', 15, 5), /compatible equipment/);
+    assert.equal(slots[15].count, 11);
+    slots[16] = new Item(data.itemsByName.diamond_helmet.id, 1);
+    await manager.moveInventoryItem('alpha', 16, 5);
+    assert.equal(slots[5].name, 'diamond_helmet');
+    await assert.rejects(manager.moveInventoryItem('alpha', 5, 15), /compatible equipment/);
+    assert.equal(slots[5].name, 'diamond_helmet');
+    await manager.moveInventoryItem('alpha', 5, 16);
+    await manager.moveInventoryItem('alpha', 15, 45);
+    assert.equal(slots[45].count, 11);
+    assert.equal(bot.inventory.selectedItem, null);
 });
 
 test('auto-start preferences filter startup while allowing manual starts', async t => {

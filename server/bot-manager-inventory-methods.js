@@ -5,11 +5,24 @@ export const botManagerInventoryMethods = {
         return this.queueInventoryAction(id, sourceSlot, async (bot, item, record) => {
             this.validateInventorySlot(bot, destinationSlot);
             if (sourceSlot === destinationSlot) throw new Error('Choose a different destination slot');
-            if (bot.inventory.slots[destinationSlot]) throw new Error('Destination slot must be empty');
+            if (bot.inventory.selectedItem) throw new Error('Place the cursor-held item before moving inventory');
+            validateArmorDestination(item, destinationSlot);
+            validateArmorDestination(bot.inventory.slots[destinationSlot], sourceSlot);
             if (typeof bot.moveSlotItem !== 'function') throw new Error('Inventory moves are unavailable');
-            await bot.moveSlotItem(sourceSlot, destinationSlot);
-            this.appendLog(record, `Inventory: moved ${item.count} x ${this.inventoryItemName(item)} from slot ${sourceSlot} to ${destinationSlot}`);
-            return { id, sourceSlot, destinationSlot, moved: item.count };
+            const count = item.count;
+            try {
+                await bot.moveSlotItem(sourceSlot, destinationSlot);
+                const remaining = bot.inventory.slots[sourceSlot];
+                const sameItem = remaining === item || item.constructor.equal?.(item, remaining, false);
+                const moved = count - (sameItem ? remaining.count : 0);
+                if (bot.inventory.selectedItem) throw new Error('The move left an item on the cursor; check inventory before retrying');
+                if (moved === 0) throw new Error('Destination is full or cannot accept this item');
+                this.appendLog(record, `Inventory: moved ${moved} x ${this.inventoryItemName(item)} from slot ${sourceSlot} to ${destinationSlot}`);
+                return { id, sourceSlot, destinationSlot, moved };
+            } catch (error) {
+                this.emitState(record);
+                throw error;
+            }
         });
     },
 
@@ -106,6 +119,15 @@ export const botManagerInventoryMethods = {
             item.displayName || item.name || 'Unknown item';
     }
 };
+
+function validateArmorDestination(item, slot) {
+    if (!item || slot < 5 || slot > 8) return;
+    const names = [/(?:_helmet|_head|_skull)$|^(?:carved_pumpkin|pumpkin)$/, /_chestplate$|^elytra$/, /_leggings$/, /_boots$/];
+    const componentSlot = item.componentMap?.get('equippable')?.data?.slot;
+    const equipmentSlot = ['head', 'chest', 'legs', 'feet'][slot - 5];
+    const fits = componentSlot ? componentSlot === equipmentSlot : names[slot - 5].test(item.name);
+    if (!fits || item.count !== 1) throw new Error('Armor slots require one compatible equipment item');
+}
 
 function validateClick(mouseButton, mode, context) {
     if (![0, 1].includes(mouseButton) || ![0, 1].includes(mode)) {

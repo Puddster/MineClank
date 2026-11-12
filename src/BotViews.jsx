@@ -1,4 +1,5 @@
-import { BookOpen, Package, Palette, PanelsTopLeft, Radio, Settings, Users } from 'lucide-react'
+import { BookOpen, HeartPulse, Package, Palette, PanelsTopLeft, Radio, Settings, Users } from 'lucide-react'
+import BotPlayerStats from './BotPlayerStats.jsx'
 import BotSettingsView from './BotSettingsView.jsx'
 import InventoryView from './InventoryView.jsx'
 import LiveStreamView from './LiveStreamView.jsx'
@@ -8,6 +9,7 @@ import ServerMenuView from './ServerMenuView.jsx'
 
 function ViewTabs({ activeView, setActiveView, bot, openWindow, inventoryItemCount, savedMessageCount, menuItemCount, chatColorsEnabled, setChatColorsEnabled }) {
   const tabs = [
+    { id: 'status', panel: 'status-panel', icon: HeartPulse, label: 'Player Status' },
     { id: 'stream', panel: 'stream-panel', icon: Radio, label: 'Live stream' },
     { id: 'inventory', panel: 'inventory-panel', icon: Package, label: 'Inventory', count: inventoryItemCount },
     { id: 'saved', panel: 'saved-messages-panel', icon: BookOpen, label: 'Saved Messages', count: savedMessageCount },
@@ -27,10 +29,12 @@ function ViewTabs({ activeView, setActiveView, bot, openWindow, inventoryItemCou
             role="tab"
             aria-selected={activeView === id}
             aria-controls={panel}
+            aria-label={label}
+            title={label}
             className={`detail-tab ${activeView === id ? 'selected' : ''}`}
             onClick={() => setActiveView(id)}
           >
-            <Icon size={15} /> {label}
+            <Icon size={15} aria-hidden="true" /><span className="tab-label">{label}</span>
             {count !== undefined && <span className="tab-count">{count}</span>}
           </button>
         ))}
@@ -54,6 +58,9 @@ function ViewTabs({ activeView, setActiveView, bot, openWindow, inventoryItemCou
 
 function ActiveView(props) {
   const { activeView, bot, openWindow } = props
+  if (activeView === 'status') {
+    return <section className="status-view detail-view" id="status-panel" role="tabpanel" aria-labelledby="status-tab"><BotPlayerStats bot={bot} /></section>
+  }
   if (activeView === 'stream') {
     return <LiveStreamView bot={bot} chatColorsEnabled={props.chatColorsEnabled} onCommand={props.onCommand} onPlayer={props.onPlayer} />
   }
@@ -62,6 +69,7 @@ function ActiveView(props) {
   }
   if (activeView === 'inventory') {
     return <InventoryView
+      key={JSON.stringify([bot.id, bot.status, props.connection, openWindow?.id, props.inventorySlots])}
       selectedBot={bot}
       inventorySlots={props.inventorySlots}
       inventoryItemCount={props.inventoryItemCount}
@@ -71,8 +79,8 @@ function ActiveView(props) {
       setInventoryActionsOpen={props.setInventoryActionsOpen}
       setSelectedInventorySlot={props.setSelectedInventorySlot}
       setConfirmDropSlot={props.setConfirmDropSlot}
-      actionsRef={props.actionsRef}
-      actionsButtonRef={props.actionsButtonRef}
+      confirmDropSlot={props.confirmDropSlot}
+      connection={props.connection}
       isPending={props.isPending}
       sendAction={props.sendAction}
     />

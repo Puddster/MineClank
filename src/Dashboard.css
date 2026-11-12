@@ -205,6 +205,8 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
 .detail-tab:hover { color: var(--ink); }
 .detail-tab.selected { border-bottom-color: var(--green); color: var(--ink); font-weight: 700; }
 .detail-tab.selected svg { color: var(--green); }
+.detail-tab svg { flex-shrink: 0; }
+.status-view { padding: 4px 0 12px; }
 .tab-count { min-width: 18px; padding: 1px 5px; border-radius: 9px; color: var(--green); background: var(--surface-action); font: 9px var(--mono); text-align: center; }
 .detail-view { min-height: 0; flex: 1; }
 .detail-view[hidden] { display: none; }
@@ -267,6 +269,11 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
 .inventory-slot { text-align: center; font: inherit; cursor: pointer; }
 .inventory-slot:disabled { opacity: .55; cursor: default; }
 .inventory-slot.selected { outline: 2px solid var(--green-selected); outline-offset: -2px; }
+.inventory-slot { user-select: none; -webkit-touch-callout: none; }
+.inventory-slot.drag-source { opacity: .35; }
+.inventory-slot.drag-target { outline: 2px solid var(--green); outline-offset: -2px; background: var(--surface-selected); }
+.inventory-slot:focus-visible { outline: 2px solid var(--green-selected); outline-offset: -2px; }
+.inventory-drag-preview { width: 100%; height: 100%; pointer-events: none; box-shadow: 0 6px 16px #0004; }
 .inventory-category-icon {
   flex: 0 0 auto;
   width: 22px;
@@ -306,8 +313,10 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
 .inventory-detail-group li { overflow-wrap: anywhere; color: var(--ink-soft); font-size: 11px; }
 .inventory-select-hint { grid-column: 1 / -1; color: var(--muted); font-size: 11px; }
 .inventory-item-actions { position: relative; grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; padding-top: 8px; border-top: 1px solid var(--line); }
-.inventory-context-menu { position: absolute; z-index: 5; top: calc(100% + 5px); left: 0; min-width: 150px; display: grid; gap: 2px; padding: 4px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); box-shadow: 0 8px 24px rgba(27, 45, 37, .16); }
-.inventory-context-menu button { min-height: 32px; padding: 0 9px; border: 0; border-radius: 4px; color: var(--ink-soft); background: transparent; text-align: left; font: 11px var(--sans); cursor: pointer; }
+.inventory-context-menu { position: fixed; z-index: 30; min-width: 150px; max-width: calc(100vw - 16px); display: grid; gap: 2px; padding: 4px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); box-shadow: 0 8px 24px rgba(27, 45, 37, .16); }
+.inventory-context-menu button { min-height: 40px; display: flex; align-items: center; gap: 8px; padding: 0 9px; border: 0; border-radius: 4px; color: var(--ink-soft); background: transparent; text-align: left; font: 11px var(--sans); cursor: pointer; }
+.inventory-context-menu button:focus-visible { outline: 2px solid var(--green-selected); outline-offset: -2px; }
+.inventory-menu-trigger { width: 36px; display: grid; place-items: center; padding: 0; }
 .inventory-context-menu button:hover:not(:disabled) { color: var(--forest); background: var(--surface-selected); }
 .inventory-context-menu button:last-child { color: var(--danger-text); }
 .inventory-context-menu button:disabled { opacity: .5; cursor: not-allowed; }
@@ -429,6 +438,15 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
 .spin { animation: spin 1.1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+@media (width < 1280px) {
+  .detail-tab { width: 36px; min-height: 40px; justify-content: center; padding: 0; }
+  .detail-tab .tab-label, .detail-tab .tab-count { display: none; }
+  .detail-tab.selected { width: auto; padding: 0 11px; }
+  .detail-tab.selected .tab-label { display: inline; }
+  .detail-view-header { flex-wrap: wrap; gap: 4px; }
+  .detail-tabs { gap: 1px; }
+}
+
 @media (max-width: 800px) {
   .app-shell { padding: 0 20px; }
   .control-grid { grid-template-columns: minmax(0, 1fr); }
@@ -457,7 +475,7 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
   .metric-value { font-size: 10px; }
   .log-stream { min-height: 220px; padding: 9px; }
   .log-line { grid-template-columns: 54px minmax(0, 1fr); gap: 6px; font-size: 10px; }
-  .detail-tab { padding: 0 8px; font-size: 11px; }
+  .detail-tab { font-size: 11px; }
   .saved-message-filters { grid-template-columns: minmax(0, 1fr); }
   .saved-message-dialog { padding: 16px; }
   .equipment-grid { gap: 4px; }

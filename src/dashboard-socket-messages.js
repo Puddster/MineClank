@@ -7,6 +7,7 @@ const actionMessages = {
   'bot:profile-update': 'Bot profile updated',
   'bot:profile-delete': 'Bot profile deleted',
   'bot:inventory-click': 'Inventory clicked',
+  'bot:inventory-move': 'Inventory updated',
   'bot:inventory-drop-one': 'Dropped one item',
   'bot:inventory-drop-stack': 'Dropped the stack',
   'bot:window-click': 'Server menu clicked',
@@ -41,7 +42,7 @@ function handleBotState(message, handlers) {
     handlers.setSelectedId(bot.id)
     handlers.setActiveView('menu')
   } else if (!hasWindow && hadWindow) {
-    handlers.setActiveView(current => current === 'menu' ? 'stream' : current)
+    handlers.setActiveView(current => current === 'menu' ? 'status' : current)
   }
   updateBot(handlers.setBots, bot.id, current => ({ ...current, ...bot, logs: current.logs || [] }))
   if (bot.status !== 'online') {
@@ -65,7 +66,7 @@ function handleSuccessfulAction(message, action, handlers) {
     handlers.setBotProfileDraft(null)
   } else if (action === 'bot:profile-delete') {
     handlers.setSelectedId(current => current === message.result.id ? null : current)
-    handlers.setActiveView('stream')
+    handlers.setActiveView('status')
     handlers.setBotProfileToDelete(null)
   } else if (action === 'bot:auth-start') {
     handlers.setBotToReauthenticate(null)

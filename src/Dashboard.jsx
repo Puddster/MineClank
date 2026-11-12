@@ -8,7 +8,6 @@ import { useCommandController } from './useCommandController.js'
 import { useSavedMessageController } from './useSavedMessageController.js'
 import { formatOnlinePlayerDisplayName } from './online-player-display-name.js'
 import { useDashboardSocket } from './useDashboardSocket.js'
-import { useInventoryActionMenu } from './useInventoryActionMenu.js'
 import './Dashboard.css'
 
 function Dashboard() {
@@ -18,12 +17,11 @@ function Dashboard() {
   const [pending, setPending] = useState({})
   const [notice, setNotice] = useState('')
   const [chatColorsEnabled, setChatColorsEnabled] = useState(true)
-  const [activeView, setActiveView] = useState('stream')
+  const [activeView, setActiveView] = useState('status')
   const [selectedInventorySlot, setSelectedInventorySlot] = useState(null)
   const [inventoryActionsOpen, setInventoryActionsOpen] = useState(false)
-  const [confirmDropSlot, setConfirmDropSlot] = useState(null)
+  const [dropConfirmation, setDropConfirmation] = useState(null)
   const pendingRef = useRef({})
-  const { inventoryActionsRef, inventoryActionsButtonRef } = useInventoryActionMenu(inventoryActionsOpen, setInventoryActionsOpen)
   const openWindowsRef = useRef({})
   const commandDraft = useCommandDraft()
   const { command, setCommand, suggestions, setSuggestions, commandHistoryRef, historyNavigationRef,
@@ -105,7 +103,17 @@ function Dashboard() {
     ?.slice(0, openWindow.inventoryStart)
     .filter(Boolean).length || 0
   const selectedInventoryItem = selectedInventorySlot === null ? null : inventorySlots[selectedInventorySlot]
+  const validDropConfirmation = dropConfirmation?.id === selectedBot?.id && activeView === 'inventory' &&
+    selectedBot?.status === 'online' && connection === 'online' && !openWindow &&
+    dropConfirmation.item === JSON.stringify(inventorySlots[dropConfirmation.slot])
+  const confirmDropSlot = validDropConfirmation ? dropConfirmation.slot : null
   const isPending = action => Object.values(pending).includes(action)
+
+  if (dropConfirmation && !validDropConfirmation) setDropConfirmation(null)
+
+  function setConfirmDropSlot(slot) {
+    setDropConfirmation(slot === null ? null : { id: selectedBot.id, slot, item: JSON.stringify(inventorySlots[slot]) })
+  }
 
   function sendAction(type, values = {}) {
     if (socketRef.current?.readyState !== WebSocket.OPEN) {
@@ -142,17 +150,24 @@ function Dashboard() {
     profileController={profileController}
     authenticationPrompt={authenticationPrompt}
     panelProps={{
-      isPending, sendAction, activeView, setActiveView, openWindow, menuItemCount,
+      isPending, sendAction, connection, activeView, setActiveView, openWindow, menuItemCount,
       inventoryItemCount, savedMessages, inventorySlots, selectedInventorySlot,
       selectedInventoryItem, inventoryActionsOpen, confirmDropSlot, setInventoryActionsOpen,
-      setSelectedInventorySlot, setConfirmDropSlot, inventoryActionsRef,
-      inventoryActionsButtonRef, chatColorsEnabled, setChatColorsEnabled,
+      setSelectedInventorySlot, setConfirmDropSlot,
+      chatColorsEnabled, setChatColorsEnabled,
       command, suggestions, commandInputRef, commandController,
       savedMessageCategories, filteredSavedMessages, savedMessageSearch,
       setSavedMessageSearch, savedMessageCategory, setSavedMessageCategory,
       onAddSavedMessage: () => setSavedMessageDraft({ id: null, title: '', category: '', message: '' }),
-      chooseSavedMessage, setSavedMessageDraft, setSavedMessageToDelete,
+      onChooseSavedMessage: chooseSavedMessage,
+      onEditSavedMessage: setSavedMessageDraft,
+      onDeleteSavedMessage: setSavedMessageToDelete,
       nearbyPlayers, allOnlinePlayers,
+      onPlayer: username => {
+        setActiveView('stream')
+        commandController.fillWhisperCommand(username)
+      },
+      onCommand: commandController.fillCommand,
       openEditBotProfile: profileController.openEditBotProfile,
       onDeleteBot: profileController.setBotProfileToDelete,
       onReauthenticate: profileController.setBotToReauthenticate,

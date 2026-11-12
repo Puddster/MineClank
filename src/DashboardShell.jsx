@@ -1,7 +1,6 @@
 import { Activity, Bot } from 'lucide-react'
 import BotLifecycleActions from './BotLifecycleActions.jsx'
 import BotMetrics from './BotMetrics.jsx'
-import BotPlayerStats from './BotPlayerStats.jsx'
 import BotProfileDialogs from './BotProfileDialogs.jsx'
 import BotViews from './BotViews.jsx'
 import CommandComposer from './CommandComposer.jsx'
@@ -61,14 +60,12 @@ export default function DashboardShell({
                 <BotLifecycleActions bot={selectedBot} isPending={isPending} sendAction={sendAction} />
               </div>
               <BotMetrics bot={selectedBot} />
-              <BotPlayerStats bot={selectedBot} />
               {selectedBot.lastError && <div className="error-banner">{selectedBot.lastError}</div>}
               <BotViews bot={selectedBot} {...panelProps} />
               <InventoryDropConfirmation
                 slot={confirmDropSlot}
                 inventorySlots={inventorySlots}
                 isPending={isPending}
-                sendAction={sendAction}
                 onCancel={onCancelDrop}
                 onComplete={() => onConfirmDrop(confirmDropSlot)}
               />
