@@ -217,6 +217,34 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
 .player-stat-label svg { color: var(--muted-icon); }
 .player-stat strong { overflow: hidden; color: var(--ink-soft); font-size: 12px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
 .player-stat small { min-height: 11px; overflow: hidden; color: var(--muted); font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+.pin-target { min-width: 0; padding: 0; border: 0; border-radius: 4px; background: transparent; text-align: left; cursor: pointer; }
+.pin-target.is-pinned, .saved-message-card.is-pinned { outline: 2px solid var(--green-selected); outline-offset: -2px; }
+.pin-target:focus-visible, .pinboard button:focus-visible { outline: 2px solid var(--green-selected); outline-offset: 2px; }
+.pinboard { margin-top: 14px; }
+.pinboard-heading { min-height: 28px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.pinboard-heading .panel-kicker { display: flex; align-items: center; gap: 6px; }
+.pinboard-edit { width: 28px; height: 28px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 4px; color: var(--muted); background: var(--surface); cursor: pointer; }
+.pinboard-edit.selected { color: var(--green); border-color: var(--green-selected); background: var(--surface-selected); }
+.pinboard-edit:disabled, .pinboard button:disabled { opacity: .5; cursor: default; }
+.pinboard-empty { padding: 10px 0 3px; color: var(--muted); font-size: 11px; }
+.pinboard-notice { padding-top: 7px; color: var(--danger-text); font-size: 11px; }
+.pinboard-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 7px; margin-top: 6px; }
+.pinboard-item { position: relative; min-width: 0; border: 1px solid var(--line); border-radius: 4px; background: var(--surface-subtle); }
+.pinboard-item.is-dragging { opacity: .8; box-shadow: 0 4px 12px #0003; }
+.pinboard-item.is-over { outline: 2px solid var(--green-selected); outline-offset: -2px; }
+.pinboard-content { width: 100%; min-width: 0; min-height: 58px; display: block; padding: 0; overflow: hidden; border: 0; border-radius: 4px; color: var(--ink-soft); background: transparent; font: inherit; text-align: left; }
+button.pinboard-content { cursor: pointer; }
+button.pinboard-content:hover { background: var(--surface-selected); }
+.pinboard-content .player-stat { min-height: 58px; box-sizing: border-box; background: transparent; }
+.pinboard-item-content { min-width: 0; min-height: 58px; display: flex; align-items: center; gap: 8px; padding: 8px; box-sizing: border-box; }
+.pinboard-item-content > svg, .pinboard-item-content > .inventory-icon-wrap { flex: 0 0 auto; color: var(--muted-icon); }
+.pinboard-item-text { min-width: 0; display: grid; gap: 5px; }
+.pinboard-item-text small, .pinboard-item-text strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pinboard-item-text small { color: var(--text-subtle); font: 9px var(--mono); }
+.pinboard-item-text strong { color: var(--ink-soft); font-size: 11px; }
+.pinboard-order { display: flex; justify-content: center; border-top: 1px solid var(--line); }
+.pinboard-order button { flex: 1; height: 27px; display: grid; place-items: center; border: 0; color: var(--muted); background: transparent; cursor: pointer; touch-action: none; }
+.pinboard-order button:hover:not(:disabled) { color: var(--green); background: var(--surface-selected); }
 .error-banner { margin-top: 12px; padding: 9px 11px; border: 1px solid var(--danger-border); border-radius: 5px; color: var(--danger-text); background: var(--surface-error); font-size: 12px; }
 .detail-view-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; border-bottom: 1px solid var(--line); }
 .detail-tabs { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; min-width: 0; }

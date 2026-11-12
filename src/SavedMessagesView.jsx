@@ -11,7 +11,8 @@ export default function SavedMessagesView({
   onAdd,
   onChoose,
   onEdit,
-  onDelete
+  onDelete,
+  pinBoard
 }) {
   return (
     <section className="saved-messages-view detail-view" id="saved-messages-panel" role="tabpanel" aria-labelledby="saved-messages-tab">
@@ -44,8 +45,11 @@ export default function SavedMessagesView({
       {filteredEntries.length ? (
         <div className="saved-message-list">
           {filteredEntries.map(entry => (
-            <article className="saved-message-card" key={entry.id}>
-              <button type="button" className="saved-message-insert" title="Fill the chat box without sending" onClick={() => onChoose(entry)}>
+            <article className={`saved-message-card ${pinBoard?.editing && pinBoard.has('message', entry.id) ? 'is-pinned' : ''}`} key={entry.id}>
+              <button type="button" className="saved-message-insert" title={pinBoard?.editing ? 'Toggle pin' : 'Fill the chat box without sending'}
+                aria-pressed={pinBoard?.editing ? pinBoard.has('message', entry.id) : undefined}
+                disabled={pinBoard?.editing && pinBoard.disabled}
+                onClick={() => pinBoard?.editing ? pinBoard.toggle('message', entry.id) : onChoose(entry)}>
                 <span className="saved-message-card-heading">
                   <strong>{entry.title}</strong>
                   <span>{entry.category || 'Uncategorized'}</span>
@@ -53,8 +57,8 @@ export default function SavedMessagesView({
                 <span className="saved-message-preview">{entry.message}</span>
               </button>
               <div className="saved-message-card-actions">
-                <button type="button" aria-label={`Edit ${entry.title}`} title="Edit" onClick={() => onEdit(entry)}><Pencil size={14} /></button>
-                <button type="button" aria-label={`Delete ${entry.title}`} title="Delete" onClick={() => onDelete(entry)}><Trash2 size={14} /></button>
+                <button type="button" aria-label={`Edit ${entry.title}`} title="Edit" disabled={pinBoard?.editing} onClick={() => onEdit(entry)}><Pencil size={14} /></button>
+                <button type="button" aria-label={`Delete ${entry.title}`} title="Delete" disabled={pinBoard?.editing} onClick={() => onDelete(entry)}><Trash2 size={14} /></button>
               </div>
             </article>
           ))}
@@ -65,7 +69,7 @@ export default function SavedMessagesView({
           <span>{entries.length ? 'No saved messages match this filter.' : 'No saved messages yet. Add one to get started.'}</span>
         </div>
       )}
-      <p className="saved-message-hint">Select a message to fill the chat box. It will not be sent until you press Send.</p>
+      {!pinBoard?.editing && <p className="saved-message-hint">Select a message to fill the chat box. It will not be sent until you press Send.</p>}
     </section>
   )
 }

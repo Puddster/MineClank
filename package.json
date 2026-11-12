@@ -11,7 +11,7 @@
     "preview": "vite preview",
     "server": "node server/index.js",
     "start": "node server/index.js",
-    "test": "node --test test/bot-manager.test.js test/bot-settings.test.js test/chat-colors.test.js test/chat-player-links.test.js test/client.test.js test/command-input.test.js test/config-loader.test.js test/saved-messages.test.js test/ws.test.js"
+    "test": "node --test test/bot-manager.test.js test/bot-settings.test.js test/chat-colors.test.js test/chat-player-links.test.js test/client.test.js test/command-input.test.js test/config-loader.test.js test/saved-messages.test.js test/pin-boards.test.js test/ws.test.js"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

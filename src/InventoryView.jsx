@@ -29,7 +29,8 @@ export default function InventoryView({
   confirmDropSlot,
   connection,
   isPending,
-  sendAction
+  sendAction,
+  pinBoard
 }) {
   const [activeSlot, setActiveSlot] = useState(null)
   const suppressClickUntil = useRef(0)
@@ -72,8 +73,9 @@ export default function InventoryView({
 
   function renderSlot(slot, label) {
     return <InventorySlot key={slot} slot={slot} label={label} item={inventorySlots[slot]}
-      selected={selectedInventorySlot === slot} disabled={disabled} menuOpen={Boolean(inventoryActionsOpen)}
-      onSelect={selectSlot} onMenu={openMenu} />
+      selected={selectedInventorySlot === slot} disabled={pinBoard?.editing ? pinBoard.disabled : disabled} menuOpen={Boolean(inventoryActionsOpen)}
+      pinMode={pinBoard?.editing} pinned={pinBoard?.has('inventory', String(slot))}
+      onSelect={pinBoard?.editing ? () => pinBoard.toggle('inventory', String(slot)) : selectSlot} onMenu={openMenu} />
   }
 
   return (
@@ -111,12 +113,12 @@ export default function InventoryView({
               {hotbarSlots.map(slot => renderSlot(slot, String(slot - 35)))}
             </div>
           </section>
-          {selectedInventoryItem ? (
+          {!pinBoard?.editing && (selectedInventoryItem ? (
             <InventoryItemDetails item={selectedInventoryItem} slot={selectedInventorySlot}
               disabled={disabled} menuOpen={Boolean(inventoryActionsOpen)} onMenu={openMenu} />
           ) : (
             <div className="inventory-select-hint">Select an occupied slot to inspect custom item data.</div>
-          )}
+          ))}
         </>
       )}
       {inventoryActionsOpen && createPortal(

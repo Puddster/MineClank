@@ -8,6 +8,7 @@ import CommandComposer from './CommandComposer.jsx'
 import ConnectionStatus from './ConnectionStatus.jsx'
 import FleetPanel from './FleetPanel.jsx'
 import InventoryDropConfirmation from './InventoryDropConfirmation.jsx'
+import PinBoard from './PinBoard.jsx'
 import SavedMessageDialogs from './SavedMessageDialogs.jsx'
 import ThemeToggle from './ThemeToggle.jsx'
 
@@ -70,6 +71,8 @@ export default function DashboardShell({
               </div>
               <BotMetrics bot={selectedBot} />
               {selectedBot.lastError && <div className="error-banner">{selectedBot.lastError}</div>}
+              <PinBoard bot={selectedBot} pinBoard={panelProps.pinBoard} inventorySlots={inventorySlots}
+                savedMessages={panelProps.savedMessages} onActivate={panelProps.onActivatePin} />
               <BotViews bot={selectedBot} {...panelProps} />
               <InventoryDropConfirmation
                 slot={confirmDropSlot}

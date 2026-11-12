@@ -85,6 +85,11 @@ function handleActionResult(message, handlers) {
   const errorMessage = message.error === 'Unsupported action' && action === 'bot:complete'
     ? 'Restart the backend to enable command completion'
     : message.error
+  if (action?.startsWith('pin-board:')) {
+    handlers.setPinNotice(message.ok ? '' : errorMessage === 'Unsupported action'
+      ? 'Restart the backend to enable pin boards' : errorMessage)
+    return
+  }
   if (action?.startsWith('bot:profile-')) handlers.setBotProfileError(message.ok ? '' : errorMessage)
   const notice = action === 'bot:skin-refresh' && message.ok && !message.result.skinFound
     ? 'No public Minecraft skin was found for this username'
@@ -117,6 +122,8 @@ export function createDashboardMessageHandler(handlers) {
     ['snapshot', handleSnapshot],
     ['saved-messages:snapshot', (message, state) => state.setSavedMessages(message.messages)],
     ['saved-messages:update', (message, state) => state.setSavedMessages(message.messages)],
+    ['pin-boards:snapshot', (message, state) => state.setPinBoards(message.boards)],
+    ['pin-board:update', (message, state) => state.setPinBoards(current => ({ ...current, [message.id]: message.pins }))],
     ['bot:state', handleBotState],
     ['bot:authentication', handleAuthentication],
     ['bot:log', handleLog],

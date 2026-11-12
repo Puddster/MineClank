@@ -61,7 +61,7 @@ function ViewTabs({ activeView, setActiveView, bot, openWindow, inventoryItemCou
 function ActiveView(props) {
   const { activeView, bot, openWindow } = props
   if (activeView === 'status') {
-    return <section className="status-view detail-view" id="status-panel" role="tabpanel" aria-labelledby="status-tab"><BotPlayerStats bot={bot} /></section>
+    return <section className="status-view detail-view" id="status-panel" role="tabpanel" aria-labelledby="status-tab"><BotPlayerStats bot={bot} pinBoard={props.pinBoard} /></section>
   }
   if (activeView === 'stream') {
     return <LiveStreamView bot={bot} chatColorsEnabled={props.chatColorsEnabled} onCommand={props.onCommand} onPlayer={props.onPlayer} />
@@ -88,6 +88,7 @@ function ActiveView(props) {
       connection={props.connection}
       isPending={props.isPending}
       sendAction={props.sendAction}
+      pinBoard={props.pinBoard}
     />
   }
   if (activeView === 'saved') {
@@ -103,6 +104,7 @@ function ActiveView(props) {
       onChoose={props.onChooseSavedMessage}
       onEdit={props.onEditSavedMessage}
       onDelete={props.onDeleteSavedMessage}
+      pinBoard={props.pinBoard}
     />
   }
   if (activeView === 'players') {

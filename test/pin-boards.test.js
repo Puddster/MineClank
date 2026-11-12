@@ -1,0 +1,34 @@
+import assert from 'node:assert/strict';
+import { mkdtemp, rm } from 'node:fs/promises';
+import os from 'node:os';
+import { join } from 'node:path';
+import test from 'node:test';
+import { PinBoards } from '../server/pin-boards.js';
+
+test('persists ordered, unique pins and isolates bot boards', async t => {
+    const directory = await mkdtemp(join(os.tmpdir(), 'mineclank-pin-boards-'));
+    const path = join(directory, 'pins.sqlite');
+    let store = new PinBoards(path);
+    t.after(async () => { store.close(); await rm(directory, { recursive: true, force: true }); });
+    const health = { type: 'status', ref: 'health' };
+    const slot = { type: 'inventory', ref: '45' };
+    const message = { type: 'message', ref: 'message-1' };
+    store.set('alpha', health, true);
+    store.set('alpha', slot, true);
+    store.set('alpha', message, true);
+    store.set('alpha', health, true);
+    store.set('beta', message, true);
+    assert.deepEqual(store.move('alpha', message, health, false), [message, health, slot]);
+    assert.throws(() => store.move('alpha', slot, { type: 'status', ref: 'air' }, false), /changed/);
+    store.close();
+    store = new PinBoards(path);
+    assert.deepEqual(store.list('alpha'), [message, health, slot]);
+    assert.deepEqual(store.deleteMessage('message-1').sort(), ['alpha', 'beta']);
+    assert.deepEqual(store.list('alpha'), [health, slot]);
+    const air = { type: 'status', ref: 'air' };
+    assert.deepEqual(store.set('alpha', air, true), [health, slot, air]);
+    store.deleteBot('alpha');
+    assert.deepEqual(store.listAll(), {});
+    assert.throws(() => store.set('alpha', { type: 'inventory', ref: '1' }, true), /Invalid/);
+    assert.throws(() => store.set('alpha', { type: 'status', ref: 'bogus' }, true), /Invalid/);
+});

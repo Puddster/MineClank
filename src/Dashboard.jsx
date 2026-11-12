@@ -18,6 +18,9 @@ function Dashboard() {
   const [notice, setNotice] = useState('')
   const [chatColorsEnabled, setChatColorsEnabled] = useState(true)
   const [activeView, setActiveView] = useState('status')
+  const [pinBoards, setPinBoards] = useState({})
+  const [pinEditBotId, setPinEditBotId] = useState(null)
+  const [pinNotice, setPinNotice] = useState('')
   const [selectedInventorySlot, setSelectedInventorySlot] = useState(null)
   const [inventoryActionsOpen, setInventoryActionsOpen] = useState(false)
   const [dropConfirmation, setDropConfirmation] = useState(null)
@@ -63,6 +66,8 @@ function Dashboard() {
     setSelectedId,
     setActiveView,
     setSavedMessages,
+    setPinBoards,
+    setPinNotice,
     setSuggestions,
     setInventoryActionsOpen,
     setConfirmDropSlot,
@@ -108,8 +113,28 @@ function Dashboard() {
     dropConfirmation.item === JSON.stringify(inventorySlots[dropConfirmation.slot])
   const confirmDropSlot = validDropConfirmation ? dropConfirmation.slot : null
   const isPending = action => Object.values(pending).includes(action)
+  const pins = pinBoards[selectedBot?.id] || []
+  const pinBoard = {
+    pins,
+    notice: pinNotice,
+    editing: Boolean(selectedBot && pinEditBotId === selectedBot.id),
+    disabled: connection !== 'online' || isPending('pin-board:set') || isPending('pin-board:move'),
+    inventoryDisabled: connection !== 'online' || Boolean(openWindow) || ['bot:inventory-move', 'bot:inventory-click', 'bot:inventory-drop-one', 'bot:inventory-drop-stack'].some(isPending),
+    has: (type, ref) => pins.some(pin => pin.type === type && pin.ref === ref),
+    toggle: (type, ref) => sendAction('pin-board:set', {
+      pin: { type, ref }, enabled: !pins.some(pin => pin.type === type && pin.ref === ref)
+    }),
+    move: (source, target, after) => sendAction('pin-board:move', { source, target, after }),
+    setEditing: enabled => {
+      setPinNotice('')
+      setPinEditBotId(enabled ? selectedBot?.id : null)
+      setInventoryActionsOpen(false)
+      setDropConfirmation(null)
+    }
+  }
 
   if (dropConfirmation && !validDropConfirmation) setDropConfirmation(null)
+  if (pinEditBotId && pinEditBotId !== selectedBot?.id) setPinEditBotId(null)
 
   function setConfirmDropSlot(slot) {
     setDropConfirmation(slot === null ? null : { id: selectedBot.id, slot, item: JSON.stringify(inventorySlots[slot]) })
@@ -151,6 +176,7 @@ function Dashboard() {
     authenticationPrompt={authenticationPrompt}
     panelProps={{
       isPending, sendAction, connection, activeView, setActiveView, openWindow, menuItemCount,
+      pinBoard,
       inventoryItemCount, savedMessages, inventorySlots, selectedInventorySlot,
       selectedInventoryItem, inventoryActionsOpen, confirmDropSlot, setInventoryActionsOpen,
       setSelectedInventorySlot, setConfirmDropSlot,
@@ -160,6 +186,21 @@ function Dashboard() {
       setSavedMessageSearch, savedMessageCategory, setSavedMessageCategory,
       onAddSavedMessage: () => setSavedMessageDraft({ id: null, title: '', category: '', message: '' }),
       onChooseSavedMessage: chooseSavedMessage,
+      onActivatePin: pin => {
+        if (pin.type === 'inventory') {
+          setSelectedInventorySlot(Number(pin.ref))
+          setInventoryActionsOpen(false)
+          setActiveView('inventory')
+        } else if (pin.type === 'message') {
+          const entry = savedMessages.find(message => message.id === pin.ref)
+          if (!entry) return
+          if (activeView === 'direct-messages') setActiveView('saved')
+          chooseSavedMessage(entry)
+          if (activeView === 'direct-messages' && !/\{\{[A-Za-z][A-Za-z0-9_]*\}\}/.test(entry.message)) {
+            window.requestAnimationFrame(() => commandInputRef.current?.focus())
+          }
+        }
+      },
       onEditSavedMessage: setSavedMessageDraft,
       onDeleteSavedMessage: setSavedMessageToDelete,
       nearbyPlayers, allOnlinePlayers,
@@ -185,6 +226,7 @@ function Dashboard() {
       onConfirmDelete: confirmDeleteSavedMessage, isPending
     }}
     onSelectBot={bot => {
+      setPinEditBotId(null)
       setSelectedId(bot.id)
       setSelectedInventorySlot(null)
       setInventoryActionsOpen(false)

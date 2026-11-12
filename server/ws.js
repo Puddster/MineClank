@@ -31,6 +31,7 @@ function defaultRequireProxyAuth() {
 export function createControlServer({
     manager,
     savedMessages,
+    pinBoards,
     requireProxyAuth = defaultRequireProxyAuth(),
     proxyUserHeader = (process.env.PROXY_USER_HEADER || 'x-auth-request-user').toLowerCase(),
     allowedOrigins = process.env.ALLOWED_ORIGINS
@@ -51,7 +52,13 @@ export function createControlServer({
             if (client.readyState === WebSocket.OPEN) client.send(payload);
         }
     };
-    const actionHandlers = createActionHandlers({ manager, savedMessages, broadcastSavedMessages });
+    const broadcastPinBoard = id => {
+        const payload = JSON.stringify({ type: 'pin-board:update', id, pins: pinBoards.list(id) });
+        for (const client of webSockets.clients) {
+            if (client.readyState === WebSocket.OPEN) client.send(payload);
+        }
+    };
+    const actionHandlers = createActionHandlers({ manager, savedMessages, pinBoards, broadcastSavedMessages, broadcastPinBoard });
 
     const isAuthenticated = request => !requireProxyAuth || Boolean(request.headers[proxyUserHeader]);
     const validOrigin = (origin, request) => {
@@ -99,6 +106,7 @@ export function createControlServer({
         if (savedMessages) {
             sendJson(socket, { type: 'saved-messages:snapshot', messages: savedMessages.list() });
         }
+        if (pinBoards) sendJson(socket, { type: 'pin-boards:snapshot', boards: pinBoards.listAll() });
 
         socket.on('message', async (data, isBinary) => {
             let requestId;

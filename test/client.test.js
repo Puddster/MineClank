@@ -77,3 +77,22 @@ test('direct message events are retained through bot state updates', () => {
     assert.deepEqual(bots[0].directMessages, [entry]);
     assert.deepEqual(bots[1].directMessages, []);
 });
+
+test('replaces pin boards on snapshot and updates only the affected bot', () => {
+    let boards = {};
+    let notice = '';
+    let pending = { request: 'pin-board:set' };
+    const handler = createDashboardMessageHandler({
+        setPinBoards: update => { boards = typeof update === 'function' ? update(boards) : update; },
+        setPinNotice: value => { notice = value; },
+        pendingRef: { current: { ...pending } },
+        setPending: update => { pending = update(pending); }
+    });
+    const receive = message => handler({ data: JSON.stringify(message) });
+    receive({ type: 'pin-boards:snapshot', boards: { alpha: [{ type: 'status', ref: 'health' }], beta: [] } });
+    receive({ type: 'pin-board:update', id: 'beta', pins: [{ type: 'inventory', ref: '9' }] });
+    assert.deepEqual(boards, { alpha: [{ type: 'status', ref: 'health' }], beta: [{ type: 'inventory', ref: '9' }] });
+    receive({ type: 'action:result', requestId: 'request', ok: false, error: 'Unsupported action' });
+    assert.match(notice, /Restart the backend/);
+    assert.deepEqual(pending, {});
+});

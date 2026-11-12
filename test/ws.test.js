@@ -6,6 +6,7 @@ import { join } from 'node:path';
 import test from 'node:test';
 import WebSocket from 'ws';
 import { createControlServer } from '../server/ws.js';
+import { PinBoards } from '../server/pin-boards.js';
 
 class FakeManager extends EventEmitter {
     constructor() {
@@ -464,6 +465,60 @@ test('streams and updates the shared saved-message library', async t => {
         result: { id: 'saved-1' }
     });
     socket.close();
+});
+
+test('synchronizes pin boards and removes deleted message references', async t => {
+    const directory = await mkdtemp(join(tmpdir(), 'mineclank-pin-socket-'));
+    const pinBoards = new PinBoards(join(directory, 'pins.sqlite'));
+    t.after(async () => { pinBoards.close(); await rm(directory, { recursive: true, force: true }); });
+    const savedMessages = new FakeSavedMessages();
+    savedMessages.create({ title: 'Welcome', category: '', message: 'Hello' });
+    const { url } = await openServer(t, { savedMessages, pinBoards });
+    const first = new WebSocket(url, { headers: { origin: 'http://localhost:5173' } });
+    const second = new WebSocket(url, { headers: { origin: 'http://localhost:5173' } });
+    const snapshots = [nextSocketMessage(first, 'pin-boards:snapshot'), nextSocketMessage(second, 'pin-boards:snapshot')];
+    assert.deepEqual(await Promise.all(snapshots), [
+        { type: 'pin-boards:snapshot', boards: {} }, { type: 'pin-boards:snapshot', boards: {} }
+    ]);
+    const pin = { type: 'message', ref: 'saved-1' };
+    const updates = [nextSocketMessage(first, 'pin-board:update'), nextSocketMessage(second, 'pin-board:update')];
+    const result = nextSocketMessage(first, 'action:result');
+    first.send(JSON.stringify({ type: 'pin-board:set', id: 'alpha', pin, enabled: true, requestId: 'pin' }));
+    assert.deepEqual(await Promise.all(updates), [
+        { type: 'pin-board:update', id: 'alpha', pins: [pin] },
+        { type: 'pin-board:update', id: 'alpha', pins: [pin] }
+    ]);
+    assert.equal((await result).ok, true);
+    const removed = nextSocketMessage(second, 'pin-board:update');
+    const deletion = nextSocketMessage(first, 'action:result');
+    first.send(JSON.stringify({ type: 'saved-message:delete', messageId: 'saved-1', requestId: 'delete' }));
+    assert.deepEqual(await removed, { type: 'pin-board:update', id: 'alpha', pins: [] });
+    assert.equal((await deletion).ok, true);
+    const invalid = nextSocketMessage(first, 'action:result');
+    first.send(JSON.stringify({ type: 'pin-board:set', id: 'alpha', pin, enabled: true, requestId: 'missing' }));
+    assert.match((await invalid).error, /not found/);
+    const statusPin = { type: 'status', ref: 'health' };
+    const statusUpdate = nextSocketMessage(second, 'pin-board:update');
+    const statusResult = nextSocketMessage(first, 'action:result');
+    first.send(JSON.stringify({ type: 'pin-board:set', id: 'alpha', pin: statusPin, enabled: true, requestId: 'status' }));
+    assert.deepEqual((await statusUpdate).pins, [statusPin]);
+    assert.equal((await statusResult).ok, true);
+    const reconnected = new WebSocket(url, { headers: { origin: 'http://localhost:5173' } });
+    assert.deepEqual(await nextSocketMessage(reconnected, 'pin-boards:snapshot'), {
+        type: 'pin-boards:snapshot', boards: { alpha: [statusPin] }
+    });
+    const stale = nextSocketMessage(first, 'action:result');
+    first.send(JSON.stringify({ type: 'pin-board:move', id: 'alpha', source: statusPin,
+        target: { type: 'status', ref: 'air' }, after: true, requestId: 'stale' }));
+    assert.match((await stale).error, /changed/);
+    const removedBot = nextSocketMessage(second, 'pin-board:update');
+    const deletedBot = nextSocketMessage(first, 'action:result');
+    first.send(JSON.stringify({ type: 'bot:profile-delete', id: 'alpha', requestId: 'delete-bot' }));
+    assert.deepEqual(await removedBot, { type: 'pin-board:update', id: 'alpha', pins: [] });
+    assert.equal((await deletedBot).ok, true);
+    reconnected.close();
+    first.close();
+    second.close();
 });
 
 test('rejects websocket connections without proxy identity or an allowed origin', async t => {
