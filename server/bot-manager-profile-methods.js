@@ -36,7 +36,9 @@ export const botManagerProfileMethods = {
         parseConfig(id, JSON.stringify(profile), this.authDir);
         if (this.records.has(id)) throw new Error(`Bot already exists: ${id}`);
         const savedConfig = this.botSettings.createProfile(id, profile, autoStart, this.authDir);
-        this.records.set(id, this.createRecord(savedConfig));
+        const record = this.createRecord(savedConfig);
+        this.records.set(id, record);
+        this.scheduleSkinLookup(record);
         this.publishSnapshot();
         return { id, autoStart };
     },
@@ -47,7 +49,10 @@ export const botManagerProfileMethods = {
         if (typeof autoStart !== 'boolean') throw new Error('Auto-start setting must be a boolean');
         parseConfig(id, JSON.stringify(profile), this.authDir);
         if (record.status !== 'stopped') await this.stop(id);
+        const previousUsername = record.config.username;
         record.config = this.botSettings.updateProfile(id, profile, autoStart, this.authDir);
+        if (previousUsername.toLowerCase() !== record.config.username.toLowerCase()) record.skinUrl = null;
+        this.scheduleSkinLookup(record);
         this.emitState(record);
         return { id, autoStart };
     },

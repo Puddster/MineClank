@@ -3,6 +3,7 @@ const actionMessages = {
   'bot:auto-start': 'Auto-start setting saved',
   'bot:auth-reset': 'Microsoft login cache cleared',
   'bot:auth-start': 'Microsoft sign-in started',
+  'bot:skin-refresh': 'Skin refreshed',
   'bot:profile-create': 'Bot profile added',
   'bot:profile-update': 'Bot profile updated',
   'bot:profile-delete': 'Bot profile deleted',
@@ -85,7 +86,10 @@ function handleActionResult(message, handlers) {
     ? 'Restart the backend to enable command completion'
     : message.error
   if (action?.startsWith('bot:profile-')) handlers.setBotProfileError(message.ok ? '' : errorMessage)
-  handlers.setNotice(message.ok ? actionMessages[action] || 'Bot action complete' : errorMessage)
+  const notice = action === 'bot:skin-refresh' && message.ok && !message.result.skinFound
+    ? 'No public Minecraft skin was found for this username'
+    : actionMessages[action] || 'Bot action complete'
+  handlers.setNotice(message.ok ? notice : errorMessage)
   if (message.ok) handleSuccessfulAction(message, action, handlers)
   window.setTimeout(() => handlers.setNotice(''), 3500)
 }

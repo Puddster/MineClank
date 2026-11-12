@@ -1,4 +1,5 @@
 import { Activity, Bot } from 'lucide-react'
+import { useState } from 'react'
 import BotLifecycleActions from './BotLifecycleActions.jsx'
 import BotMetrics from './BotMetrics.jsx'
 import BotProfileDialogs from './BotProfileDialogs.jsx'
@@ -26,6 +27,7 @@ export default function DashboardShell({
   onCancelDrop
 }) {
   const { inventorySlots, confirmDropSlot, isPending, sendAction } = panelProps
+  const [fleetCollapsed, setFleetCollapsed] = useState(false)
   return (
     <main className="app-shell">
       <header className="topbar">
@@ -47,8 +49,15 @@ export default function DashboardShell({
           <span className="total-caption">ONLINE</span>
         </div>
       </section>
-      <section className="control-grid">
-        <FleetPanel bots={bots} selectedBotId={selectedBot?.id} onAdd={profileController.openNewBotProfile} onSelect={onSelectBot} />
+      <section className={`control-grid ${fleetCollapsed ? 'fleet-collapsed' : ''}`}>
+        <FleetPanel
+          bots={bots}
+          selectedBotId={selectedBot?.id}
+          onAdd={profileController.openNewBotProfile}
+          onSelect={onSelectBot}
+          collapsed={fleetCollapsed}
+          onToggleCollapsed={() => setFleetCollapsed(collapsed => !collapsed)}
+        />
         <section className={`detail-panel panel ${selectedBot ? '' : 'detail-empty'}`} aria-label="Selected bot details">
           {selectedBot ? (
             <>

@@ -10,6 +10,7 @@ import { botManagerConnectionMethods } from './bot-manager-connection-methods.js
 import { botManagerRetryMethods } from './bot-manager-retry-methods.js';
 import { onlinePlayersSnapshot, playerStatsSnapshot, positionSnapshot, profileSnapshot } from './bot-manager-state.js';
 import { botManagerEventMethods } from './bot-manager-event-methods.js';
+import { botManagerSkinMethods } from './bot-manager-skin-methods.js';
 
 export class BotManager extends EventEmitter {
     constructor({
@@ -24,7 +25,9 @@ export class BotManager extends EventEmitter {
         loginRetryMaxMs = 600_000,
         maxLogs = 200,
         joinCommandDelayMs = 6_000,
-        botSettings = null
+        botSettings = null,
+        fetchImpl = globalThis.fetch,
+        logger = console
     }) {
         super();
         if (!configDir || !authDir) throw new Error('configDir and authDir are required');
@@ -41,7 +44,11 @@ export class BotManager extends EventEmitter {
         this.maxLogs = maxLogs;
         this.joinCommandDelayMs = joinCommandDelayMs;
         this.botSettings = botSettings;
+        this.fetchImpl = fetchImpl;
+        this.logger = logger;
         this.records = new Map();
+        this.skinLookupQueue = Promise.resolve();
+        this.skinLookupPromises = new Map();
         this.connectionQueue = Promise.resolve();
         this.shuttingDown = false;
         this.stateTimer = setInterval(() => {
@@ -64,6 +71,7 @@ export class BotManager extends EventEmitter {
             configs = await loadBotConfigs(this.configDir, this.authDir);
         }
         this.records = new Map(configs.map(config => [config.id, this.createRecord(config)]));
+        for (const record of this.records.values()) this.scheduleSkinLookup(record);
         this.publishSnapshot();
         return this.getSnapshot();
     }
@@ -83,6 +91,7 @@ export class BotManager extends EventEmitter {
     publicState(record) {
         const bot = record.status === 'online' ? record.bot : null;
         const entityPosition = bot?.entity?.position;
+        const onlinePlayers = bot ? onlinePlayersSnapshot(bot) : [];
         return {
             id: record.id,
             username: record.config.username,
@@ -91,12 +100,13 @@ export class BotManager extends EventEmitter {
             profile: profileSnapshot(record.config),
             autoStart: this.botSettings?.getAutoStart(record.id) ?? true,
             authentication: { ...record.authentication },
+            skinUrl: record.skinUrl || onlinePlayers.find(player => player.isSelf)?.skinUrl || null,
             status: record.status,
             uptimeSeconds: record.connectedAt ? Math.floor((Date.now() - record.connectedAt) / 1000) : 0,
             position: positionSnapshot(entityPosition),
             dimension: bot?.game?.dimension ?? null,
             playerStats: playerStatsSnapshot(bot),
-            onlinePlayers: bot ? onlinePlayersSnapshot(bot) : [],
+            onlinePlayers,
             openWindow: bot ? openWindowSnapshot(bot.currentWindow, bot.registry) : null,
             lastError: record.lastError,
             inventory: bot ? inventorySnapshot(bot) : []
@@ -183,7 +193,8 @@ export class BotManager extends EventEmitter {
             inventoryActionQueue: Promise.resolve(),
             windowActionQueue: Promise.resolve(),
             attempts: 0,
-            authentication: { status: 'idle' }
+            authentication: { status: 'idle' },
+            skinUrl: null
         };
     }
 
@@ -206,6 +217,7 @@ export class BotManager extends EventEmitter {
 }
 
 Object.assign(BotManager.prototype, botManagerProfileMethods);
+Object.assign(BotManager.prototype, botManagerSkinMethods);
 Object.assign(BotManager.prototype, botManagerInventoryMethods, botManagerCommandMethods);
 Object.assign(BotManager.prototype, botManagerConnectionMethods, botManagerRetryMethods);
 Object.assign(BotManager.prototype, botManagerEventMethods);

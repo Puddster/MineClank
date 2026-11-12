@@ -10,6 +10,7 @@ export function createActionHandlers({ manager, savedMessages, broadcastSavedMes
         ['bot:auto-start', request => manager.setAutoStart(request.id, request.enabled)],
         ['bot:auth-reset', request => manager.resetMicrosoftAuthentication(request.id)],
         ['bot:auth-start', request => manager.startMicrosoftAuthentication(request.id)],
+        ['bot:skin-refresh', request => manager.refreshMinecraftSkin(request.id)],
         ['bot:profile-create', request => manager.createBotProfile(request.id, request.profile, request.autoStart)],
         ['bot:profile-update', request => manager.updateBotProfile(request.id, request.profile, request.autoStart)],
         ['bot:profile-delete', request => manager.deleteBotProfile(request.id)],

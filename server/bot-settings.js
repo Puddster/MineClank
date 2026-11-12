@@ -43,8 +43,18 @@ export class BotSettings {
             CREATE TABLE IF NOT EXISTS bot_settings_metadata (
                 key TEXT PRIMARY KEY,
                 value TEXT NOT NULL
+            );
+            CREATE TABLE IF NOT EXISTS bot_skin_cache (
+                username TEXT PRIMARY KEY COLLATE NOCASE,
+                skin_url TEXT,
+                fetched_at INTEGER NOT NULL,
+                lookup_version INTEGER NOT NULL DEFAULT 0
             )
         `);
+        const skinCacheColumns = this.database.prepare('PRAGMA table_info(bot_skin_cache)').all();
+        if (!skinCacheColumns.some(column => column.name === 'lookup_version')) {
+            this.database.exec('ALTER TABLE bot_skin_cache ADD COLUMN lookup_version INTEGER NOT NULL DEFAULT 0');
+        }
         this.legacySettingsPath = legacySettingsPath;
         this.selectProfiles = this.database.prepare(
             'SELECT id, profile, auto_start AS autoStart FROM bot_profiles ORDER BY id COLLATE NOCASE'
@@ -62,6 +72,17 @@ export class BotSettings {
             'UPDATE bot_profiles SET auto_start = ? WHERE id = ?'
         );
         this.deleteProfileStatement = this.database.prepare('DELETE FROM bot_profiles WHERE id = ?');
+        this.selectSkinCache = this.database.prepare(
+            'SELECT skin_url AS skinUrl, fetched_at AS fetchedAt, lookup_version AS lookupVersion FROM bot_skin_cache WHERE username = ?'
+        );
+        this.upsertSkinCache = this.database.prepare(`
+            INSERT INTO bot_skin_cache (username, skin_url, fetched_at, lookup_version)
+            VALUES (?, ?, ?, 2)
+            ON CONFLICT(username) DO UPDATE SET
+                skin_url = excluded.skin_url,
+                fetched_at = excluded.fetched_at,
+                lookup_version = excluded.lookup_version
+        `);
         this.hasImportedLegacy = this.database.prepare(
             "SELECT value FROM bot_settings_metadata WHERE key = 'legacy_profiles_imported'"
         );
@@ -133,6 +154,17 @@ export class BotSettings {
     deleteProfile(id) {
         const result = this.deleteProfileStatement.run(id);
         if (!result.changes) throw new Error(`Unknown bot: ${id}`);
+    }
+
+    getCachedSkin(username) {
+        return this.selectSkinCache.get(username) || null;
+    }
+
+    cacheSkin(username, skinUrl, fetchedAt = Date.now()) {
+        if (typeof username !== 'string' || !username) throw new Error('A username is required for skin caching');
+        if (skinUrl !== null && typeof skinUrl !== 'string') throw new Error('Skin URL must be a string or null');
+        if (!Number.isFinite(fetchedAt)) throw new Error('Skin cache timestamp must be a number');
+        this.upsertSkinCache.run(username, skinUrl, fetchedAt);
     }
 
     close() {

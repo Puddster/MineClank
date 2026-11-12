@@ -133,7 +133,11 @@ class FakeBot extends EventEmitter {
     }
 }
 
-async function setupManager(t, { connectTimeoutMs = 100, botSettings = null } = {}) {
+async function setupManager(t, {
+    connectTimeoutMs = 100,
+    botSettings = null,
+    fetchImpl = async () => ({ status: 404, ok: false })
+} = {}) {
     const root = await mkdtemp(join(os.tmpdir(), 'mf-fe-manager-'));
     const configDir = join(root, 'configs');
     const authDir = join(root, 'auth');
@@ -145,13 +149,19 @@ async function setupManager(t, { connectTimeoutMs = 100, botSettings = null } = 
         onJoin: ['/survival'],
         physicsEnabled: false
     }));
-    await writeFile(join(configDir, 'beta.json'), JSON.stringify({ username: 'Beta', host: 'server.test' }));
+    await writeFile(join(configDir, 'beta.json'), JSON.stringify({
+        username: 'Beta',
+        host: 'server.test',
+        auth: 'offline'
+    }));
 
     const bots = [];
     const manager = new BotManager({
         configDir,
         authDir,
         botSettings,
+        fetchImpl,
+        logger: { warn() {} },
         connectTimeoutMs,
         joinCommandDelayMs: 0,
         reconnectBaseMs: 10_000,
@@ -242,6 +252,60 @@ test('categorizes blocks by realm and other items into their inventory groups', 
     assert.equal(getItemCategory({ name: 'zombie_spawn_egg' }, registry), 'spawn-eggs');
     assert.equal(getItemCategory({ name: 'apple' }, registry), 'food');
     assert.equal(getItemCategory({ name: 'oak_boat' }, registry), 'transport');
+});
+
+test('loads Minecraft heads for every profile, including offline bots', async t => {
+    const skinUrl = `http://textures.minecraft.net/texture/${'a'.repeat(64)}`;
+    const textureData = Buffer.from(JSON.stringify({ textures: { SKIN: { url: skinUrl } } })).toString('base64');
+    const fetchImpl = async url => {
+        if (url.startsWith('https://api.mojang.com/users/profiles/minecraft/')) {
+            return { status: 200, ok: true, json: async () => ({ id: '0123456789abcdef0123456789abcdef' }) };
+        }
+        return {
+            status: 200,
+            ok: true,
+            json: async () => ({ properties: [{ name: 'textures', value: textureData }] })
+        };
+    };
+    const { manager } = await setupManager(t, { fetchImpl });
+    await manager.skinLookupQueue;
+
+    const expectedSkinUrl = skinUrl.replace('http:', 'https:');
+    assert.equal(manager.getSnapshot().find(bot => bot.id === 'alpha').skinUrl, expectedSkinUrl);
+    assert.equal(manager.getSnapshot().find(bot => bot.id === 'beta').skinUrl, expectedSkinUrl);
+    assert.equal(manager.getSnapshot().find(bot => bot.id === 'beta').status, 'stopped');
+});
+
+test('refreshes a bot skin from Mojang even when its cache is still fresh', async t => {
+    const skinUrl = `https://textures.minecraft.net/texture/${'c'.repeat(64)}`;
+    const textureData = Buffer.from(JSON.stringify({ textures: { SKIN: { url: skinUrl } } })).toString('base64');
+    let profileRequests = 0;
+    const botSettings = {
+        getCachedSkin: () => ({
+            skinUrl: `https://textures.minecraft.net/texture/${'d'.repeat(64)}`,
+            fetchedAt: Date.now(),
+            lookupVersion: 2
+        }),
+        cacheSkin() {},
+        getAutoStart: () => true
+    };
+    const fetchImpl = async url => {
+        if (url.startsWith('https://api.mojang.com/users/profiles/minecraft/')) {
+            profileRequests += 1;
+            return { status: 200, ok: true, json: async () => ({ id: '0123456789abcdef0123456789abcdef' }) };
+        }
+        return {
+            status: 200,
+            ok: true,
+            json: async () => ({ properties: [{ name: 'textures', value: textureData }] })
+        };
+    };
+    const { manager } = await setupManager(t, { botSettings, fetchImpl });
+    const result = await manager.refreshMinecraftSkin('alpha');
+
+    assert.deepEqual(result, { id: 'alpha', skinFound: true });
+    assert.equal(profileRequests, 1);
+    assert.equal(manager.getSnapshot().find(bot => bot.id === 'alpha').skinUrl, skinUrl);
 });
 
 test('Microsoft device-code callback exposes only user-facing sign-in details', async t => {

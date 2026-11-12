@@ -34,6 +34,10 @@ class FakeManager extends EventEmitter {
         return { id, status: 'connecting', authenticationStarted: true };
     }
 
+    async refreshMinecraftSkin(id) {
+        return { id, skinFound: true };
+    }
+
     setAutoStart(id, enabled) {
         return { id, autoStart: enabled };
     }
@@ -232,6 +236,19 @@ test('streams a snapshot and dispatches validated bot commands', async t => {
         requestId: 'auth-start-1',
         ok: true,
         result: { id: 'alpha', status: 'connecting', authenticationStarted: true }
+    });
+
+    const skinRefreshResult = nextSocketMessage(socket, 'action:result');
+    socket.send(JSON.stringify({
+        type: 'bot:skin-refresh',
+        id: 'alpha',
+        requestId: 'skin-refresh-1'
+    }));
+    assert.deepEqual(await skinRefreshResult, {
+        type: 'action:result',
+        requestId: 'skin-refresh-1',
+        ok: true,
+        result: { id: 'alpha', skinFound: true }
     });
 
     const authEvent = nextSocketMessage(socket, 'bot:authentication');

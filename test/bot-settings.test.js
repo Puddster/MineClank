@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import Database from 'better-sqlite3';
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import { join } from 'node:path';
@@ -39,15 +40,47 @@ test('imports legacy profiles once and persists profile and auto-start changes i
         });
         settings.setAutoStart('beta', false);
         settings.updateProfile('beta', profile('Beta Updated', 'new.server.test'), true, authDir);
+        const skinUrl = `https://textures.minecraft.net/texture/${'b'.repeat(64)}`;
+        settings.cacheSkin('Beta Updated', skinUrl, 1234);
         assert.equal(settings.listProfiles(authDir).find(bot => bot.id === 'beta').host, 'new.server.test');
         assert.equal(settings.getAutoStart('beta'), true);
+        assert.deepEqual(settings.getCachedSkin('beta updated'), { skinUrl, fetchedAt: 1234, lookupVersion: 2 });
 
         settings.close();
         settings = new BotSettings(databasePath, { legacySettingsPath });
         assert.deepEqual(settings.listProfiles(authDir).map(bot => bot.id), ['alpha', 'beta']);
         assert.equal(settings.getAutoStart('alpha'), false);
+        assert.deepEqual(settings.getCachedSkin('BETA UPDATED'), { skinUrl, fetchedAt: 1234, lookupVersion: 2 });
         settings.deleteProfile('beta');
         assert.deepEqual(settings.listProfiles(authDir).map(bot => bot.id), ['alpha']);
+    } finally {
+        settings.close();
+        await rm(root, { recursive: true, force: true });
+    }
+});
+
+test('migrates existing cached skin records so they are looked up again', async () => {
+    const root = await mkdtemp(join(os.tmpdir(), 'mineclank-skin-cache-migration-'));
+    const databasePath = join(root, 'bots.sqlite');
+    const legacyDatabase = new Database(databasePath);
+    legacyDatabase.exec(`
+        CREATE TABLE bot_skin_cache (
+            username TEXT PRIMARY KEY COLLATE NOCASE,
+            skin_url TEXT,
+            fetched_at INTEGER NOT NULL
+        );
+        INSERT INTO bot_skin_cache (username, skin_url, fetched_at)
+        VALUES ('Bot', NULL, 1234)
+    `);
+    legacyDatabase.close();
+    const settings = new BotSettings(databasePath);
+
+    try {
+        assert.deepEqual(settings.getCachedSkin('bot'), {
+            skinUrl: null,
+            fetchedAt: 1234,
+            lookupVersion: 0
+        });
     } finally {
         settings.close();
         await rm(root, { recursive: true, force: true });
