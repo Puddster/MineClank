@@ -71,7 +71,8 @@ export class BotManager extends EventEmitter {
     getSnapshot() {
         return [...this.records.values()].map(record => ({
             ...this.publicState(record),
-            logs: [...record.logs]
+            logs: [...record.logs],
+            directMessages: [...record.directMessages]
         }));
     }
 
@@ -171,6 +172,7 @@ export class BotManager extends EventEmitter {
             desired: false,
             bot: null,
             logs: [],
+            directMessages: [],
             lastError: null,
             connectedAt: null,
             reconnectTimer: null,

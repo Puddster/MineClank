@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { EventEmitter } from 'node:events';
+import { EventEmitter, once } from 'node:events';
 import { access, mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import { join } from 'node:path';
@@ -10,6 +10,7 @@ import minecraftData from 'minecraft-data';
 import { BotManager } from '../server/bot-manager.js';
 import { BotSettings } from '../server/bot-settings.js';
 import { getItemCategory } from '../server/item-category.js';
+import { parseIncomingDirectMessage, parseOutgoingDirectMessage } from '../server/bot-manager-event-methods.js';
 
 const tick = () => new Promise(resolve => setImmediate(resolve));
 
@@ -168,6 +169,57 @@ async function setupManager(t, { connectTimeoutMs = 100, botSettings = null } = 
     });
     return { manager, bots };
 }
+
+test('parses only supported direct message formats', () => {
+    assert.deepEqual(parseIncomingDirectMessage('[survival] [Puddster -> me] TEST'), { player: 'Puddster', direction: 'incoming', text: 'TEST' });
+    assert.deepEqual(parseIncomingDirectMessage('[Player_1 -> ME] hello'), { player: 'Player_1', direction: 'incoming', text: 'hello' });
+    assert.equal(parseIncomingDirectMessage('[me -> Puddster] TEST'), null);
+    assert.equal(parseIncomingDirectMessage('Public chat [Puddster -> me] TEST'), null);
+    assert.equal(parseIncomingDirectMessage('[name-with-dashes -> me] TEST'), null);
+    assert.deepEqual(parseOutgoingDirectMessage('/w Puddster hello there'), { player: 'Puddster', direction: 'outgoing', text: 'hello there' });
+    assert.deepEqual(parseOutgoingDirectMessage('/msg puddster hello'), { player: 'puddster', direction: 'outgoing', text: 'hello' });
+    assert.equal(parseOutgoingDirectMessage('/msg Puddster'), null);
+    assert.equal(parseOutgoingDirectMessage('/msg invalid-name hello'), null);
+    assert.equal(parseOutgoingDirectMessage('/r hello'), null);
+});
+
+test('retains and emits direct messages independently of live feed and bot connections', async t => {
+    const { manager, bots } = await setupManager(t);
+    manager.requireRecord('alpha').config.onJoin = ['/w Puddster welcome'];
+    const events = [];
+    manager.on('bot-direct-message', event => events.push(event));
+    const joinMessage = once(manager, 'bot-direct-message');
+    const connection = manager.start('alpha');
+    await tick();
+    bots[0].emit('spawn');
+    await connection;
+    await joinMessage;
+    bots[0].emit('message', { toString: () => '[survival] [Puddster -> me] TEST' });
+    bots[0].emit('message', { toString: () => '[survival] [me -> Puddster] welcome' });
+    manager.sendCommand('alpha', '/msg puddster eyJabc.def.ghi');
+    for (let index = 0; index < 205; index++) manager.appendLog(manager.requireRecord('alpha'), 'other');
+
+    const alpha = manager.getSnapshot()[0];
+    assert.equal(alpha.logs.length, 200);
+    assert.deepEqual(alpha.directMessages.map(({ player, direction, text }) => ({ player, direction, text })), [
+        { player: 'Puddster', direction: 'outgoing', text: 'welcome' },
+        { player: 'Puddster', direction: 'incoming', text: 'TEST' },
+        { player: 'puddster', direction: 'outgoing', text: '[REDACTED TOKEN]' }
+    ]);
+    assert.equal(events.length, 3);
+    assert.deepEqual(manager.getSnapshot()[1].directMessages, []);
+    assert.equal(Object.hasOwn(manager.publicState(manager.requireRecord('alpha')), 'directMessages'), false);
+    await manager.stop('alpha');
+    assert.equal(manager.getSnapshot()[0].directMessages.length, 3);
+    assert.throws(() => manager.sendCommand('alpha', '/w Puddster fail'));
+    assert.equal(manager.getSnapshot()[0].directMessages.length, 3);
+    manager.requireRecord('alpha').config.onJoin = [];
+    const restarted = manager.start('alpha');
+    await tick();
+    bots[1].emit('spawn');
+    await restarted;
+    assert.equal(manager.getSnapshot()[0].directMessages.length, 3);
+});
 
 test('categorizes blocks by realm and other items into their inventory groups', () => {
     const registry = {

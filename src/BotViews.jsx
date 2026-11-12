@@ -1,6 +1,7 @@
-import { BookOpen, HeartPulse, Package, Palette, PanelsTopLeft, Radio, Settings, Users } from 'lucide-react'
+import { BookOpen, HeartPulse, MessageCircle, Package, Palette, PanelsTopLeft, Radio, Settings, Users } from 'lucide-react'
 import BotPlayerStats from './BotPlayerStats.jsx'
 import BotSettingsView from './BotSettingsView.jsx'
+import DirectMessagesView from './DirectMessagesView.jsx'
 import InventoryView from './InventoryView.jsx'
 import LiveStreamView from './LiveStreamView.jsx'
 import OnlinePlayersView from './OnlinePlayersView.jsx'
@@ -11,6 +12,7 @@ function ViewTabs({ activeView, setActiveView, bot, openWindow, inventoryItemCou
   const tabs = [
     { id: 'status', panel: 'status-panel', icon: HeartPulse, label: 'Player Status' },
     { id: 'stream', panel: 'stream-panel', icon: Radio, label: 'Live stream' },
+    { id: 'direct-messages', panel: 'direct-messages-panel', icon: MessageCircle, label: 'Direct Messages' },
     { id: 'inventory', panel: 'inventory-panel', icon: Package, label: 'Inventory', count: inventoryItemCount },
     { id: 'saved', panel: 'saved-messages-panel', icon: BookOpen, label: 'Saved Messages', count: savedMessageCount },
     { id: 'players', panel: 'online-players-panel', icon: Users, label: 'Online Players', count: bot.onlinePlayers?.length || 0 },
@@ -63,6 +65,9 @@ function ActiveView(props) {
   }
   if (activeView === 'stream') {
     return <LiveStreamView bot={bot} chatColorsEnabled={props.chatColorsEnabled} onCommand={props.onCommand} onPlayer={props.onPlayer} />
+  }
+  if (activeView === 'direct-messages') {
+    return <DirectMessagesView key={bot.id} bot={bot} connection={props.connection} isPending={props.isPending} sendAction={props.sendAction} notice={props.notice} />
   }
   if (activeView === 'settings') {
     return <BotSettingsView selectedBot={bot} isPending={props.isPending} openEditBotProfile={props.openEditBotProfile} onDelete={props.onDeleteBot} onReauthenticate={props.onReauthenticate} sendAction={props.sendAction} />

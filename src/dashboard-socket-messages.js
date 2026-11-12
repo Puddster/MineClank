@@ -104,6 +104,10 @@ function handleLog(message, handlers) {
   updateBot(handlers.setBots, message.id, bot => ({ ...bot, logs: [...(bot.logs || []), message.entry].slice(-200) }))
 }
 
+function handleDirectMessage(message, handlers) {
+  updateBot(handlers.setBots, message.id, bot => ({ ...bot, directMessages: [...(bot.directMessages || []), message.entry] }))
+}
+
 export function createDashboardMessageHandler(handlers) {
   const messageHandlers = new Map([
     ['snapshot', handleSnapshot],
@@ -112,6 +116,7 @@ export function createDashboardMessageHandler(handlers) {
     ['bot:state', handleBotState],
     ['bot:authentication', handleAuthentication],
     ['bot:log', handleLog],
+    ['bot:direct-message', handleDirectMessage],
     ['bot:completion', handleCompletion],
     ['action:result', handleActionResult]
   ])

@@ -2,6 +2,7 @@ import { ansiToColorRuns } from './chat-colors.js';
 import { extractPlayerLinks } from './chat-player-links.js';
 import { redact } from './bot-manager-utils.js';
 import { onlinePlayersSnapshot } from './bot-manager-state.js';
+import { parseIncomingDirectMessage } from './bot-manager-event-methods.js';
 
 export const botManagerConnectionMethods = {
     queueConnection(record) {
@@ -102,6 +103,7 @@ export const botManagerConnectionMethods = {
                 const formatted = component?.toAnsi?.() ?? text;
                 const safeText = redact(text);
                 this.appendLog(record, safeText, ansiToColorRuns(redact(formatted)), extractPlayerLinks(safeText, bot.players));
+                this.appendDirectMessage(record, parseIncomingDirectMessage(safeText));
             });
             bot.on('windowOpen', () => this.emitState(record));
             bot.on('windowClose', () => this.emitState(record));

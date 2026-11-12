@@ -378,6 +378,29 @@ test('streams a snapshot and dispatches validated bot commands', async t => {
     socket.close();
 });
 
+test('broadcasts direct messages to all clients and includes history in new snapshots', async t => {
+    const { manager, url } = await openServer(t);
+    manager.bots[0].directMessages = [];
+    const first = new WebSocket(url, { headers: { origin: 'http://localhost:5173' } });
+    const second = new WebSocket(url, { headers: { origin: 'http://localhost:5173' } });
+    const snapshots = [nextSocketMessage(first, 'snapshot'), nextSocketMessage(second, 'snapshot')];
+    await Promise.all(snapshots);
+    const entry = { at: '2026-01-01T00:00:00.000Z', player: 'Puddster', direction: 'incoming', text: 'TEST' };
+    const messages = [nextSocketMessage(first, 'bot:direct-message'), nextSocketMessage(second, 'bot:direct-message')];
+    manager.bots[0].directMessages.push(entry);
+    manager.emit('bot-direct-message', { id: 'alpha', entry });
+    assert.deepEqual(await Promise.all(messages), [
+        { type: 'bot:direct-message', id: 'alpha', entry },
+        { type: 'bot:direct-message', id: 'alpha', entry }
+    ]);
+    first.close();
+    second.close();
+    const reconnected = new WebSocket(url, { headers: { origin: 'http://localhost:5173' } });
+    const snapshot = await nextSocketMessage(reconnected, 'snapshot');
+    assert.deepEqual(snapshot.bots[0].directMessages, [entry]);
+    reconnected.close();
+});
+
 test('streams and updates the shared saved-message library', async t => {
     const savedMessages = new FakeSavedMessages();
     const { url } = await openServer(t, { savedMessages });

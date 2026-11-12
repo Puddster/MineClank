@@ -70,7 +70,7 @@ export default function DashboardShell({
                 onComplete={() => onConfirmDrop(confirmDropSlot)}
               />
               <SavedMessageDialogs {...savedDialogProps} />
-              <CommandComposer
+              {panelProps.activeView !== 'direct-messages' && <CommandComposer
                 bot={selectedBot}
                 command={panelProps.command}
                 suggestions={panelProps.suggestions}
@@ -82,7 +82,7 @@ export default function DashboardShell({
                 onChange={panelProps.commandController.updateCommand}
                 onSuggestion={panelProps.commandController.applySuggestion}
                 onQuickCommand={value => sendAction('bot:command', { command: value })}
-              />
+              />}
             </>
           ) : (
             <div className="no-selection">

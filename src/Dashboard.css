@@ -210,6 +210,36 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
 .tab-count { min-width: 18px; padding: 1px 5px; border-radius: 9px; color: var(--green); background: var(--surface-action); font: 9px var(--mono); text-align: center; }
 .detail-view { min-height: 0; flex: 1; }
 .detail-view[hidden] { display: none; }
+.direct-messages-view { padding: 14px 0 0; }
+.dm-layout { min-height: 360px; display: grid; grid-template-columns: minmax(150px, 220px) minmax(0, 1fr); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.dm-sidebar { min-width: 0; border-right: 1px solid var(--line); background: var(--surface-subtle); }
+.dm-sidebar-heading { display: flex; justify-content: space-between; align-items: center; padding: 13px 12px 9px; color: var(--muted); }
+.dm-new { display: flex; margin: 0 9px 9px; border: 1px solid var(--line); border-radius: 5px; background: var(--surface-input); overflow: hidden; }
+.dm-new input { width: 100%; min-width: 0; height: 34px; padding: 0 8px; border: 0; outline: 0; color: var(--ink); background: transparent; font-size: 11px; }
+.dm-new:focus-within { border-color: var(--green-selected); }
+.dm-new button { width: 34px; flex: 0 0 auto; display: grid; place-items: center; border: 0; color: var(--green); background: transparent; cursor: pointer; }
+.dm-new button:disabled { color: var(--text-disabled); cursor: default; }
+.dm-threads { max-height: 300px; overflow: auto; }
+.dm-thread { width: 100%; min-width: 0; display: grid; gap: 4px; padding: 10px 12px; border: 0; border-left: 2px solid transparent; color: var(--ink-soft); background: transparent; text-align: left; cursor: pointer; }
+.dm-thread:hover, .dm-thread.selected { background: var(--surface-selected); }
+.dm-thread.selected { border-left-color: var(--green); }
+.dm-thread strong, .dm-thread span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dm-thread strong { font-size: 11px; }
+.dm-thread span, .dm-empty-list { color: var(--muted); font-size: 10px; }
+.dm-empty-list { padding: 12px; }
+.dm-conversation { min-width: 0; display: flex; flex-direction: column; padding: 0 12px 12px; }
+.dm-conversation-heading { min-height: 46px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--line); color: var(--green); }
+.dm-conversation-heading strong { min-width: 0; overflow: hidden; color: var(--ink); font-size: 12px; text-overflow: ellipsis; }
+.dm-conversation-heading span { margin-left: auto; color: var(--muted); font: 9px var(--mono); white-space: nowrap; }
+.dm-messages { min-height: 220px; max-height: 320px; flex: 1; display: flex; flex-direction: column; gap: 10px; padding: 14px 0; overflow: auto; }
+.dm-message { width: fit-content; max-width: 88%; padding: 8px 10px; border-radius: 5px; background: var(--surface-subtle); }
+.dm-message.outgoing { align-self: flex-end; background: var(--surface-selected); }
+.dm-message-meta { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; font-size: 10px; }
+.dm-message-meta strong { color: var(--green-action); }
+.dm-message-meta time { color: var(--muted); font: 9px var(--mono); }
+.dm-message-text { color: var(--ink-soft); font-size: 12px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.dm-empty { min-height: 150px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px; color: var(--muted); font-size: 11px; text-align: center; }
+.dm-compose { flex: 0 0 auto; }
 .log-stream.detail-view { margin-top: 10px; }
 .bot-settings-view { display: flex; flex-direction: column; gap: 18px; padding: 18px 0 4px; }
 .settings-section { display: grid; gap: 10px; }
@@ -476,6 +506,9 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
   .log-stream { min-height: 220px; padding: 9px; }
   .log-line { grid-template-columns: 54px minmax(0, 1fr); gap: 6px; font-size: 10px; }
   .detail-tab { font-size: 11px; }
+  .dm-layout { grid-template-columns: minmax(0, 1fr); }
+  .dm-sidebar { border-right: 0; border-bottom: 1px solid var(--line); }
+  .dm-threads { max-height: 115px; }
   .saved-message-filters { grid-template-columns: minmax(0, 1fr); }
   .saved-message-dialog { padding: 16px; }
   .equipment-grid { gap: 4px; }

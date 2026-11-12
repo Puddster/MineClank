@@ -142,6 +142,12 @@ export function createControlServer({
             if (client.readyState === WebSocket.OPEN) client.send(payload);
         }
     });
+    manager.on('bot-direct-message', event => {
+        const payload = JSON.stringify({ type: 'bot:direct-message', ...event });
+        for (const client of webSockets.clients) {
+            if (client.readyState === WebSocket.OPEN) client.send(payload);
+        }
+    });
     manager.on('bot-authentication', event => {
         const authentication = {
             status: event.authentication?.status,

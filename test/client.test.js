@@ -62,3 +62,18 @@ test('closing a server menu returns to status without overriding an explicitly c
     handler(state(null));
     assert.equal(activeView, 'inventory');
 });
+
+test('direct message events are retained through bot state updates', () => {
+    let bots = [{ id: 'alpha', logs: [], directMessages: [] }, { id: 'beta', directMessages: [] }];
+    const handler = createDashboardMessageHandler({
+        openWindowsRef: { current: {} },
+        setBots: update => { bots = typeof update === 'function' ? update(bots) : update; },
+        setActiveView() {},
+        setSelectedId() {}
+    });
+    const entry = { player: 'Puddster', text: 'hello', direction: 'incoming', at: '2026-01-01T00:00:00.000Z' };
+    handler({ data: JSON.stringify({ type: 'bot:direct-message', id: 'alpha', entry }) });
+    handler({ data: JSON.stringify({ type: 'bot:state', bot: { id: 'alpha', status: 'online', openWindow: null } }) });
+    assert.deepEqual(bots[0].directMessages, [entry]);
+    assert.deepEqual(bots[1].directMessages, []);
+});

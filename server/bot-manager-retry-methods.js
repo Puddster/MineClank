@@ -1,4 +1,5 @@
 import { redact } from './bot-manager-utils.js';
+import { parseOutgoingDirectMessage } from './bot-manager-event-methods.js';
 
 export const botManagerRetryMethods = {
     handleAttemptFailure(record, bot, error) {
@@ -70,6 +71,7 @@ export const botManagerRetryMethods = {
             try {
                 bot.chat(command);
                 this.appendLog(record, `You: ${command}`);
+                this.appendDirectMessage(record, parseOutgoingDirectMessage(command));
             } catch (error) {
                 this.appendLog(record, `Join command failed: ${error.message}`);
             }

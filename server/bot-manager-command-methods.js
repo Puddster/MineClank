@@ -1,4 +1,5 @@
 import { validateSingleLineText } from './bot-manager-utils.js';
+import { parseOutgoingDirectMessage } from './bot-manager-event-methods.js';
 
 export const botManagerCommandMethods = {
     sendCommand(id, command) {
@@ -7,6 +8,7 @@ export const botManagerCommandMethods = {
         if (text === '/') throw new Error('Command cannot be empty');
         this.requireOnlineBot(record).chat(text);
         this.appendLog(record, `You: ${text}`);
+        this.appendDirectMessage(record, parseOutgoingDirectMessage(text));
         return { id, sent: text };
     },
 
