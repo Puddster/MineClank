@@ -1,14 +1,16 @@
-import { BookOpen, HeartPulse, MessageCircle, Package, Palette, PanelsTopLeft, Radio, Settings, Users } from 'lucide-react'
+import { Bell, BookOpen, HeartPulse, MessageCircle, Package, Palette, PanelsTopLeft, Radio, Settings, Users } from 'lucide-react'
 import BotPlayerStats from './BotPlayerStats.jsx'
 import BotSettingsView from './BotSettingsView.jsx'
 import DirectMessagesView from './DirectMessagesView.jsx'
 import InventoryView from './InventoryView.jsx'
 import LiveStreamView from './LiveStreamView.jsx'
 import OnlinePlayersView from './OnlinePlayersView.jsx'
+import NotificationsView from './NotificationsView.jsx'
 import SavedMessagesView from './SavedMessagesView.jsx'
 import ServerMenuView from './ServerMenuView.jsx'
+import { pushNotificationsAvailable } from './client.js'
 
-function ViewTabs({ activeView, setActiveView, bot, openWindow, inventoryItemCount, savedMessageCount, menuItemCount, chatColorsEnabled, setChatColorsEnabled }) {
+function ViewTabs({ activeView, setActiveView, bot, openWindow, inventoryItemCount, savedMessageCount, menuItemCount, chatColorsEnabled, setChatColorsEnabled, pushAvailable }) {
   const tabs = [
     { id: 'status', panel: 'status-panel', icon: HeartPulse, label: 'Player Status' },
     { id: 'stream', panel: 'stream-panel', icon: Radio, label: 'Live stream' },
@@ -18,6 +20,7 @@ function ViewTabs({ activeView, setActiveView, bot, openWindow, inventoryItemCou
     { id: 'players', panel: 'online-players-panel', icon: Users, label: 'Online Players', count: bot.onlinePlayers?.length || 0 },
     { id: 'settings', panel: 'settings-panel', icon: Settings, label: 'Settings' }
   ]
+  if (pushAvailable) tabs.splice(tabs.length - 1, 0, { id: 'notifications', panel: 'notifications-panel', icon: Bell, label: 'Notifications' })
   if (openWindow) tabs.push({ id: 'menu', panel: 'menu-panel', icon: PanelsTopLeft, label: 'Server Menu', count: menuItemCount })
 
   return (
@@ -72,6 +75,9 @@ function ActiveView(props) {
   if (activeView === 'settings') {
     return <BotSettingsView selectedBot={bot} isPending={props.isPending} openEditBotProfile={props.openEditBotProfile} onDelete={props.onDeleteBot} onReauthenticate={props.onReauthenticate} sendAction={props.sendAction} />
   }
+  if (activeView === 'notifications') {
+    return <NotificationsView key={bot.id} bot={bot} settings={props.notificationSettings[bot.id]} publicKey={props.pushPublicKey} connection={props.connection} sendAction={props.sendNotificationAction} />
+  }
   if (activeView === 'inventory') {
     return <InventoryView
       key={JSON.stringify([bot.id, bot.status, props.connection, openWindow?.id, props.inventorySlots])}
@@ -116,10 +122,12 @@ function ActiveView(props) {
 }
 
 export default function BotViews(props) {
+  const pushAvailable = pushNotificationsAvailable()
+  const activeView = !pushAvailable && props.activeView === 'notifications' ? 'status' : props.activeView
   return (
     <>
       <ViewTabs
-        activeView={props.activeView}
+        activeView={activeView}
         setActiveView={props.setActiveView}
         bot={props.bot}
         openWindow={props.openWindow}
@@ -128,8 +136,9 @@ export default function BotViews(props) {
         menuItemCount={props.menuItemCount}
         chatColorsEnabled={props.chatColorsEnabled}
         setChatColorsEnabled={props.setChatColorsEnabled}
+        pushAvailable={pushAvailable}
       />
-      <ActiveView {...props} />
+      <ActiveView {...props} activeView={activeView} />
     </>
   )
 }

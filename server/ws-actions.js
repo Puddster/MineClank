@@ -1,4 +1,4 @@
-export function createActionHandlers({ manager, savedMessages, pinBoards, broadcastSavedMessages, broadcastPinBoard }) {
+export function createActionHandlers({ manager, savedMessages, pinBoards, broadcastSavedMessages, broadcastPinBoard, notificationSettings, pushNotifications, notificationMonitor, broadcastNotificationSettings }) {
     const requireSavedMessages = () => {
         if (!savedMessages) throw new Error('Saved messages are unavailable');
         return savedMessages;
@@ -7,6 +7,10 @@ export function createActionHandlers({ manager, savedMessages, pinBoards, broadc
         if (!pinBoards) throw new Error('Pin boards are unavailable');
         if (!manager.getSnapshot().some(bot => bot.id === id)) throw new Error('Bot was not found');
         return pinBoards;
+    };
+    const requireNotifications = () => {
+        if (!notificationSettings || !pushNotifications) throw new Error('Notifications are unavailable');
+        return notificationSettings;
     };
 
     return new Map([
@@ -24,7 +28,32 @@ export function createActionHandlers({ manager, savedMessages, pinBoards, broadc
                 pinBoards.deleteBot(request.id);
                 broadcastPinBoard(request.id);
             }
+            notificationSettings?.deleteBot(request.id);
+            notificationMonitor?.deleteBot(request.id);
             return result;
+        }],
+        ['notifications:settings', request => {
+            const store = requireNotifications();
+            if (!manager.getSnapshot().some(bot => bot.id === request.id)) throw new Error('Bot was not found');
+            const settings = store.set(request.id, request.settings);
+            notificationMonitor?.reset(request.id);
+            broadcastNotificationSettings(request.id);
+            return { id: request.id, settings };
+        }],
+        ['notifications:subscribe', request => {
+            requireNotifications();
+            pushNotifications.subscribe(request.subscription);
+            return {};
+        }],
+        ['notifications:unsubscribe', request => {
+            requireNotifications();
+            pushNotifications.unsubscribe(request.endpoint);
+            return {};
+        }],
+        ['notifications:test', async request => {
+            requireNotifications();
+            await pushNotifications.test(request.endpoint);
+            return {};
         }],
         ['pin-board:set', request => {
             const board = requirePinBoard(request.id);

@@ -19,12 +19,15 @@ function Dashboard() {
   const [chatColorsEnabled, setChatColorsEnabled] = useState(true)
   const [activeView, setActiveView] = useState('status')
   const [pinBoards, setPinBoards] = useState({})
+  const [notificationSettings, setNotificationSettings] = useState({})
+  const [pushPublicKey, setPushPublicKey] = useState('')
   const [pinEditBotId, setPinEditBotId] = useState(null)
   const [pinNotice, setPinNotice] = useState('')
   const [selectedInventorySlot, setSelectedInventorySlot] = useState(null)
   const [inventoryActionsOpen, setInventoryActionsOpen] = useState(false)
   const [dropConfirmation, setDropConfirmation] = useState(null)
   const pendingRef = useRef({})
+  const pendingCallbacksRef = useRef({})
   const openWindowsRef = useRef({})
   const commandDraft = useCommandDraft()
   const { command, setCommand, suggestions, setSuggestions, commandHistoryRef, historyNavigationRef,
@@ -67,6 +70,8 @@ function Dashboard() {
     setActiveView,
     setSavedMessages,
     setPinBoards,
+    setNotificationSettings,
+    setPushPublicKey,
     setPinNotice,
     setSuggestions,
     setInventoryActionsOpen,
@@ -80,9 +85,12 @@ function Dashboard() {
     setBotProfileToDelete: profileController.setBotProfileToDelete,
     setBotToReauthenticate: profileController.setBotToReauthenticate,
     pendingRef,
+    pendingCallbacksRef,
     completionRequestRef,
     openWindowsRef,
     resetPendingState: () => {
+      Object.values(pendingCallbacksRef.current).forEach(({ reject }) => reject(new Error('Control service is offline')))
+      pendingCallbacksRef.current = {}
       pendingRef.current = {}
       completionRequestRef.current = null
     }
@@ -157,6 +165,17 @@ function Dashboard() {
     return true
   }
 
+  function sendNotificationAction(type, values = {}) {
+    if (socketRef.current?.readyState !== WebSocket.OPEN) return Promise.reject(new Error('Control service is offline'))
+    return new Promise((resolve, reject) => {
+      const requestId = createRequestId()
+      pendingCallbacksRef.current[requestId] = { resolve, reject }
+      pendingRef.current[requestId] = type
+      setPending({ ...pendingRef.current })
+      socketRef.current.send(JSON.stringify({ type, id: selectedBot?.id, requestId, ...values }))
+    })
+  }
+
   const commandController = useCommandController({
     draft: commandDraft,
     selectedBot,
@@ -176,6 +195,7 @@ function Dashboard() {
     authenticationPrompt={authenticationPrompt}
     panelProps={{
       isPending, sendAction, connection, activeView, setActiveView, openWindow, menuItemCount,
+      notificationSettings, pushPublicKey, sendNotificationAction,
       pinBoard,
       inventoryItemCount, savedMessages, inventorySlots, selectedInventorySlot,
       selectedInventoryItem, inventoryActionsOpen, confirmDropSlot, setInventoryActionsOpen,

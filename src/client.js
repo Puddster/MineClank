@@ -17,3 +17,8 @@ export function getWebSocketUrl() {
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
   return `${protocol}//${window.location.host}/ws`
 }
+
+export function pushNotificationsAvailable(browser = globalThis.window, browserNavigator = globalThis.navigator) {
+  return Boolean(browser?.isSecureContext && browserNavigator && 'Notification' in browser &&
+    'serviceWorker' in browserNavigator && 'PushManager' in browser)
+}

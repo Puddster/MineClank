@@ -7,6 +7,8 @@ import test from 'node:test';
 import WebSocket from 'ws';
 import { createControlServer } from '../server/ws.js';
 import { PinBoards } from '../server/pin-boards.js';
+import { NotificationSettings, defaultNotificationSettings } from '../server/notification-settings.js';
+import { PushNotifications } from '../server/push-notifications.js';
 
 class FakeManager extends EventEmitter {
     constructor() {
@@ -517,6 +519,45 @@ test('synchronizes pin boards and removes deleted message references', async t =
     assert.deepEqual(await removedBot, { type: 'pin-board:update', id: 'alpha', pins: [] });
     assert.equal((await deletedBot).ok, true);
     reconnected.close();
+    first.close();
+    second.close();
+});
+
+test('shares notification settings and validates device actions', async t => {
+    const directory = await mkdtemp(join(tmpdir(), 'mineclank-notification-socket-'));
+    const notificationSettings = new NotificationSettings(join(directory, 'notifications.sqlite'));
+    t.after(async () => { notificationSettings.close(); await rm(directory, { recursive: true, force: true }); });
+    const sent = [];
+    const pushNotifications = new PushNotifications(notificationSettings, { send: async (...args) => { sent.push(args); } });
+    const { url } = await openServer(t, { notificationSettings, pushNotifications });
+    const first = new WebSocket(url, { headers: { origin: 'http://localhost:5173' } });
+    const second = new WebSocket(url, { headers: { origin: 'http://localhost:5173' } });
+    const snapshots = await Promise.all([nextSocketMessage(first, 'notification-settings:snapshot'), nextSocketMessage(second, 'notification-settings:snapshot')]);
+    assert.equal(snapshots[0].publicKey, pushNotifications.publicKey);
+    assert.deepEqual(snapshots[0].settings, {});
+    const settings = { ...defaultNotificationSettings, death: true };
+    const update = nextSocketMessage(second, 'notification-settings:update');
+    const result = nextSocketMessage(first, 'action:result');
+    first.send(JSON.stringify({ type: 'notifications:settings', id: 'alpha', settings, requestId: 'save' }));
+    assert.deepEqual(await update, { type: 'notification-settings:update', id: 'alpha', settings });
+    assert.equal((await result).ok, true);
+    const invalid = nextSocketMessage(first, 'action:result');
+    first.send(JSON.stringify({ type: 'notifications:settings', id: 'missing', settings, requestId: 'invalid' }));
+    assert.match((await invalid).error, /not found/);
+    const subscription = { endpoint: 'https://fcm.googleapis.com/fcm/send/test', keys: {
+        p256dh: Buffer.alloc(65, 1).toString('base64url'), auth: Buffer.alloc(16, 2).toString('base64url')
+    } };
+    const subscribed = nextSocketMessage(first, 'action:result');
+    first.send(JSON.stringify({ type: 'notifications:subscribe', subscription, requestId: 'subscribe' }));
+    assert.equal((await subscribed).ok, true);
+    const tested = nextSocketMessage(first, 'action:result');
+    first.send(JSON.stringify({ type: 'notifications:test', endpoint: subscription.endpoint, requestId: 'test' }));
+    assert.equal((await tested).ok, true);
+    assert.equal(sent.length, 1);
+    const removed = nextSocketMessage(first, 'action:result');
+    first.send(JSON.stringify({ type: 'notifications:unsubscribe', endpoint: subscription.endpoint, requestId: 'remove' }));
+    assert.equal((await removed).ok, true);
+    assert.equal(notificationSettings.listSubscriptions().length, 0);
     first.close();
     second.close();
 });

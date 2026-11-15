@@ -76,12 +76,19 @@ function handleSuccessfulAction(message, action, handlers) {
 
 function handleActionResult(message, handlers) {
   const action = handlers.pendingRef.current[message.requestId]
+  const callback = handlers.pendingCallbacksRef?.current[message.requestId]
+  if (callback) {
+    delete handlers.pendingCallbacksRef.current[message.requestId]
+    if (message.ok) callback.resolve(message.result)
+    else callback.reject(new Error(message.error || 'Action failed'))
+  }
   delete handlers.pendingRef.current[message.requestId]
   handlers.setPending(current => {
     const next = { ...current }
     delete next[message.requestId]
     return next
   })
+  if (callback) return
   const errorMessage = message.error === 'Unsupported action' && action === 'bot:complete'
     ? 'Restart the backend to enable command completion'
     : message.error
@@ -124,6 +131,8 @@ export function createDashboardMessageHandler(handlers) {
     ['saved-messages:update', (message, state) => state.setSavedMessages(message.messages)],
     ['pin-boards:snapshot', (message, state) => state.setPinBoards(message.boards)],
     ['pin-board:update', (message, state) => state.setPinBoards(current => ({ ...current, [message.id]: message.pins }))],
+    ['notification-settings:snapshot', (message, state) => { state.setNotificationSettings(message.settings); state.setPushPublicKey(message.publicKey) }],
+    ['notification-settings:update', (message, state) => state.setNotificationSettings(current => ({ ...current, [message.id]: message.settings }))],
     ['bot:state', handleBotState],
     ['bot:authentication', handleAuthentication],
     ['bot:log', handleLog],

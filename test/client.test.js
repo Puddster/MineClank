@@ -1,8 +1,19 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createRequestId } from '../src/client.js';
+import { createRequestId, pushNotificationsAvailable } from '../src/client.js';
 import { inventoryKeyboardCoordinates } from '../src/inventory-drag.js';
 import { createDashboardMessageHandler } from '../src/dashboard-socket-messages.js';
+
+test('push availability requires a secure context and all browser APIs', () => {
+    const browser = { isSecureContext: true, Notification: { permission: 'denied' }, PushManager: {} };
+    const browserNavigator = { serviceWorker: {} };
+    assert.equal(pushNotificationsAvailable(browser, browserNavigator), true);
+    assert.equal(pushNotificationsAvailable({ ...browser, isSecureContext: false }, browserNavigator), false);
+    assert.equal(pushNotificationsAvailable({ isSecureContext: true, PushManager: {} }, browserNavigator), false);
+    assert.equal(pushNotificationsAvailable({ isSecureContext: true, Notification: {} }, browserNavigator), false);
+    assert.equal(pushNotificationsAvailable(browser, {}), false);
+    assert.equal(pushNotificationsAvailable(null, browserNavigator), false);
+});
 
 test('uses the browser UUID API when available', () => {
     assert.equal(createRequestId({ randomUUID: () => 'native-uuid' }), 'native-uuid');

@@ -32,6 +32,9 @@ export function createControlServer({
     manager,
     savedMessages,
     pinBoards,
+    notificationSettings,
+    pushNotifications,
+    notificationMonitor,
     requireProxyAuth = defaultRequireProxyAuth(),
     proxyUserHeader = (process.env.PROXY_USER_HEADER || 'x-auth-request-user').toLowerCase(),
     allowedOrigins = process.env.ALLOWED_ORIGINS
@@ -58,7 +61,13 @@ export function createControlServer({
             if (client.readyState === WebSocket.OPEN) client.send(payload);
         }
     };
-    const actionHandlers = createActionHandlers({ manager, savedMessages, pinBoards, broadcastSavedMessages, broadcastPinBoard });
+    const broadcastNotificationSettings = id => {
+        const payload = JSON.stringify({ type: 'notification-settings:update', id, settings: notificationSettings.get(id) });
+        for (const client of webSockets.clients) {
+            if (client.readyState === WebSocket.OPEN) client.send(payload);
+        }
+    };
+    const actionHandlers = createActionHandlers({ manager, savedMessages, pinBoards, broadcastSavedMessages, broadcastPinBoard, notificationSettings, pushNotifications, notificationMonitor, broadcastNotificationSettings });
 
     const isAuthenticated = request => !requireProxyAuth || Boolean(request.headers[proxyUserHeader]);
     const validOrigin = (origin, request) => {
@@ -107,6 +116,9 @@ export function createControlServer({
             sendJson(socket, { type: 'saved-messages:snapshot', messages: savedMessages.list() });
         }
         if (pinBoards) sendJson(socket, { type: 'pin-boards:snapshot', boards: pinBoards.listAll() });
+        if (notificationSettings && pushNotifications) {
+            sendJson(socket, { type: 'notification-settings:snapshot', settings: notificationSettings.listAll(), publicKey: pushNotifications.publicKey });
+        }
 
         socket.on('message', async (data, isBinary) => {
             let requestId;

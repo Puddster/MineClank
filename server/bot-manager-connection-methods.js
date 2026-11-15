@@ -107,12 +107,27 @@ export const botManagerConnectionMethods = {
             });
             bot.on('windowOpen', () => this.emitState(record));
             bot.on('windowClose', () => this.emitState(record));
+            bot.on('spawn', () => {
+                if (record.bot === bot && record.status === 'online') this.emitState(record);
+            });
+            bot.on('health', () => {
+                if (record.bot === bot && record.status === 'online') this.emitState(record);
+            });
+            bot.on('breath', () => {
+                if (record.bot === bot && record.status === 'online') this.emitState(record);
+            });
             bot.on('playerJoined', refreshOnlinePlayers);
             bot.on('playerUpdated', refreshOnlinePlayers);
             bot.on('playerLeft', refreshOnlinePlayers);
+            bot.on('death', () => {
+                if (record.bot === bot && record.status === 'online') this.emit('bot-death', { id: record.id });
+            });
             bot.on('kicked', reason => {
                 const text = typeof reason === 'string' ? reason : JSON.stringify(reason);
                 this.appendLog(record, `Kicked: ${text}`);
+                if (record.bot === bot && record.desired && !this.shuttingDown) {
+                    this.emit('bot-disconnected', { id: record.id, kicked: true, reason: redact(text) });
+                }
                 if (!spawned) fail(new Error(`Kicked before spawn: ${text}`));
             });
             bot.on('error', error => {
@@ -130,6 +145,7 @@ export const botManagerConnectionMethods = {
                 if (record.desired && !this.shuttingDown) {
                     record.status = 'reconnecting';
                     this.appendLog(record, `Disconnected${reason ? `: ${reason}` : ''}`);
+                    this.emit('bot-disconnected', { id: record.id, kicked: false, reason: redact(reason || '') });
                     this.emitState(record);
                     this.scheduleReconnect(record);
                 } else {

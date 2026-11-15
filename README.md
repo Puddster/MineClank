@@ -70,6 +70,14 @@ The Saved Messages tab stores reusable one-line chat messages and commands in SQ
 
 The Direct Messages tab groups conversations by Minecraft username. It captures incoming messages formatted like `[survival] [Player -> me] message` and outgoing `/msg` and `/w` commands, including on-join commands; other server-specific formats and aliases are not captured. Outgoing entries record commands sent, not confirmed delivery. History is held in the bot record and shared with connected dashboard clients, survives bot stop/start and browser refresh, and is cleared when the bot is removed or the backend restarts. It is not limited by the live feed's 200-line limit, so memory use grows with the history. Existing feed lines are not imported retroactively.
 
+## Push notifications
+
+The **Notifications** tab configures alerts for each bot. Enable individual alerts for unexpected disconnects or kicks, incoming direct messages, death, low health, hunger or air, and nearby players. All alerts are off by default; the initial stat thresholds are 6/20 and the nearby radius is 32 blocks. Settings are shared across browsers, while each device must separately select **Enable** and grant notification permission. Use **Test** to check delivery; **Disable** removes that device's subscription. Every subscribed device receives the enabled alerts for every bot.
+
+Browser push requires HTTPS or localhost, a browser and operating system with Web Push support, and outbound HTTPS access to Google, Mozilla, Apple, or Windows push services. The Notifications tab is hidden when the browser or current connection does not support Web Push. On iOS/iPadOS, add MineClank to the Home Screen and enable notifications from the installed app. Set `PUSH_VAPID_SUBJECT` to a contact URI such as `mailto:admin@example.net`. Notification rules, device subscriptions and the server's private push key are stored in `.data/notifications.sqlite`; keep the data directory private and persistent. Replacing the push key requires devices to enable notifications again. Messages and kick reasons may be visible on lock screens. Delivery is best-effort, and the Node service must be running even when the dashboard is closed.
+
+Direct-message alerts use the formats described above. Nearby alerts use 3D distance to currently tracked players, normally checked every two seconds; unavailable positions cannot trigger an alert. Low-stat and nearby alerts fire when a threshold is crossed, with a one-minute cooldown for repeated crossings. Disconnect alerts exclude deliberate stops and avoid repeated alerts during a reconnect cycle.
+
 ## Checks
 
 ```powershell

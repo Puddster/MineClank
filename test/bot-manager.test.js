@@ -609,6 +609,39 @@ test('continues the startup queue after a bot fails before spawn', async t => {
     assert.equal(manager.getSnapshot()[1].status, 'online');
 });
 
+test('emits sanitized unexpected disconnects and deaths but not intentional stops', async t => {
+    const { manager, bots } = await setupManager(t);
+    const events = [];
+    manager.on('bot-disconnected', event => events.push(event));
+    manager.on('bot-death', event => events.push({ ...event, death: true }));
+    const start = manager.start('alpha');
+    await tick();
+    bots[0].emit('spawn');
+    await start;
+    const stats = [];
+    manager.on('bot-state', state => { if (state.id === 'alpha') stats.push(state.playerStats); });
+    bots[0].health = 5;
+    bots[0].emit('health');
+    bots[0].oxygenLevel = 4;
+    bots[0].emit('breath');
+    assert.equal(stats[0].health, 5);
+    assert.equal(stats[1].oxygenLevel, 4);
+    bots[0].emit('death');
+    bots[0].emit('kicked', 'reason eyJabc.def.ghi');
+    bots[0].emit('end', 'lost');
+    assert.deepEqual(events, [
+        { id: 'alpha', death: true },
+        { id: 'alpha', kicked: true, reason: 'reason [REDACTED TOKEN]' },
+        { id: 'alpha', kicked: false, reason: 'lost' }
+    ]);
+    const restart = manager.start('beta');
+    await tick();
+    bots[1].emit('spawn');
+    await restart;
+    await manager.stop('beta');
+    assert.equal(events.length, 3);
+});
+
 test('backs off longer for login throttles and Mojang session service failures', async t => {
     const { manager, bots } = await setupManager(t);
 
