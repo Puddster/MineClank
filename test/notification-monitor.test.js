@@ -54,6 +54,47 @@ test('handles low hunger and air, unknown players, cooldowns and reconnects', ()
     monitor.close();
 });
 
+test('combines nearby players and limits notifications to one per minute', () => {
+    const manager = new EventEmitter();
+    manager.getSnapshot = () => [{ id: 'alpha', username: 'Alice' }];
+    const settings = { get: () => ({ ...defaultNotificationSettings, nearbyPlayer: true }) };
+    const messages = [];
+    const push = { broadcast: async payload => { messages.push(payload.body); } };
+    let time = 0;
+    const timers = [];
+    const monitor = new NotificationMonitor(manager, settings, push, {
+        now: () => time,
+        schedule: (callback, delay) => { timers.push({ callback, delay }); return timers.length; },
+        cancel: () => {}
+    });
+    const state = players => ({ id: 'alpha', status: 'online', playerStats: {}, onlinePlayers: players });
+    manager.emit('bot-state', state([{ username: 'Bob', distance: 5 }, { username: 'Carol', distance: 10 }, { username: 'Dave', distance: 2 }]));
+    assert.deepEqual(messages, ['3 players nearby: Bob (5 blocks), Carol (10 blocks), Dave (2 blocks)']);
+    time = 10000;
+    manager.emit('bot-state', state([{ username: 'Bob', distance: 5 }, { username: 'Eve', distance: 8 }]));
+    assert.equal(messages.length, 1);
+    assert.equal(timers.length, 1);
+    assert.equal(timers[0].delay, 50000);
+    time = 20000;
+    manager.emit('bot-state', state([{ username: 'Bob', distance: 5 }, { username: 'Eve', distance: 8 }, { username: 'Frank', distance: 3 }]));
+    assert.equal(timers.length, 1);
+    time = 30000;
+    manager.emit('bot-state', state([{ username: 'Bob', distance: 5 }, { username: 'Frank', distance: 3 }]));
+    time = 60001;
+    timers[0].callback();
+    assert.deepEqual(messages.slice(1), ['Frank nearby (3 blocks)']);
+    time = 70000;
+    manager.emit('bot-state', { ...state([]), status: 'reconnecting' });
+    manager.emit('bot-state', state([{ username: 'Bob', distance: 5 }, { username: 'Frank', distance: 3 }]));
+    assert.equal(messages.length, 2);
+    assert.equal(timers.length, 2);
+    assert.equal(timers[1].delay, 50001);
+    time = 120001;
+    timers[1].callback();
+    assert.deepEqual(messages.slice(2), ['2 players nearby: Bob (5 blocks), Frank (3 blocks)']);
+    monitor.close();
+});
+
 test('does not mistake respawn state for death', () => {
     const manager = new EventEmitter();
     manager.getSnapshot = () => [{ id: 'alpha' }];

@@ -1,9 +1,11 @@
 export class NotificationMonitor {
-    constructor(manager, settings, push, { now = Date.now } = {}) {
+    constructor(manager, settings, push, { now = Date.now, schedule = setTimeout, cancel = clearTimeout } = {}) {
         this.manager = manager;
         this.settings = settings;
         this.push = push;
         this.now = now;
+        this.schedule = schedule;
+        this.cancel = cancel;
         this.states = new Map();
         this.handlers = {
             'bot-state': bot => this.onState(bot),
@@ -15,17 +17,31 @@ export class NotificationMonitor {
     }
 
     state(id) {
-        if (!this.states.has(id)) this.states.set(id, { active: new Set(), cooldowns: new Map(), connected: false, disconnected: false, dead: false });
+        if (!this.states.has(id)) {
+            this.states.set(id, {
+                active: new Set(), cooldowns: new Map(), connected: false, disconnected: false, dead: false,
+                nearbyPending: new Map(), nearbyLast: null, nearbyTimer: null
+            });
+        }
         return this.states.get(id);
     }
 
     reset(id) {
         const state = this.state(id);
         state.active.clear();
+        state.nearbyPending.clear();
         state.dead = false;
     }
 
+    clearNearbyTimer(state) {
+        if (state.nearbyTimer === null) return;
+        this.cancel(state.nearbyTimer);
+        state.nearbyTimer = null;
+    }
+
     deleteBot(id) {
+        const state = this.states.get(id);
+        if (state) this.clearNearbyTimer(state);
         this.states.delete(id);
     }
 
@@ -70,16 +86,56 @@ export class NotificationMonitor {
             if (!Number.isFinite(value)) continue;
             this.crossing(bot.id, key, enabled && value <= threshold && !(key === 'health' && (value <= 0 || state.dead || stats.isAlive === false)), `${label} low: ${value}/20`);
         }
+        this.trackNearby(bot, state, settings);
+    }
+
+    trackNearby(bot, state, settings) {
         const nearby = new Set();
         for (const player of bot.onlinePlayers || []) {
-            if (player.isSelf || !player.username || !Number.isFinite(player.distance)) continue;
+            if (!this.isNearby(player, settings)) continue;
             const key = `player:${player.username.toLowerCase()}`;
-            if (settings.nearbyPlayer && player.distance <= settings.nearbyDistance) nearby.add(key);
-            this.crossing(bot.id, key, nearby.has(key), `${player.username} nearby (${player.distance} blocks)`);
+            nearby.add(key);
+            if (!state.active.has(key) || state.nearbyPending.has(key)) {
+                state.active.add(key);
+                state.nearbyPending.set(key, { username: player.username, distance: player.distance });
+            }
         }
         for (const key of state.active) {
-            if (key.startsWith('player:') && !nearby.has(key)) state.active.delete(key);
+            if (key.startsWith('player:') && !nearby.has(key)) {
+                state.active.delete(key);
+                state.nearbyPending.delete(key);
+            }
         }
+        this.flushNearby(bot.id);
+    }
+
+    isNearby(player, settings) {
+        return settings.nearbyPlayer && !player.isSelf && Boolean(player.username)
+            && Number.isFinite(player.distance) && player.distance <= settings.nearbyDistance;
+    }
+
+    flushNearby(id) {
+        const state = this.state(id);
+        if (!state.nearbyPending.size) return;
+        const elapsed = state.nearbyLast === null ? Infinity : this.now() - state.nearbyLast;
+        if (elapsed < 60000) {
+            // Rate-limited: keep accumulating players and flush once the minute window ends.
+            if (state.nearbyTimer === null) {
+                state.nearbyTimer = this.schedule(() => {
+                    state.nearbyTimer = null;
+                    this.flushNearby(id);
+                }, 60000 - elapsed);
+            }
+            return;
+        }
+        this.clearNearbyTimer(state);
+        const players = [...state.nearbyPending.values()];
+        state.nearbyPending.clear();
+        state.nearbyLast = this.now();
+        const body = players.length === 1
+            ? `${players[0].username} nearby (${players[0].distance} blocks)`
+            : `${players.length} players nearby: ${players.map(player => `${player.username} (${player.distance} blocks)`).join(', ')}`;
+        this.notify(id, body);
     }
 
     onMessage({ id, entry }) {
@@ -102,5 +158,6 @@ export class NotificationMonitor {
 
     close() {
         for (const [event, handler] of Object.entries(this.handlers)) this.manager.off(event, handler);
+        for (const state of this.states.values()) this.clearNearbyTimer(state);
     }
 }
