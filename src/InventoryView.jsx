@@ -3,8 +3,10 @@ import { createPortal } from 'react-dom'
 import { DndContext, DragOverlay, KeyboardSensor, MouseSensor, TouchSensor, pointerWithin, rectIntersection, useSensor, useSensors } from '@dnd-kit/core'
 import { MoreVertical, PackageMinus, Trash2 } from 'lucide-react'
 import InventorySlot, { InventorySlotContents } from './InventorySlot.jsx'
+import InventoryContainerContents, { ShulkerTooltip } from './InventoryContainerContents.jsx'
 import { inventoryKeyboardCoordinates } from './inventory-drag.js'
 import { useInventoryActionMenu } from './useInventoryActionMenu.js'
+import { useShulkerTooltip } from './useShulkerTooltip.js'
 
 const equipmentSlots = [
   { slot: 5, label: 'Head' },
@@ -42,6 +44,7 @@ export default function InventoryView({
   )
   const busy = ['bot:inventory-move', 'bot:inventory-click', 'bot:inventory-drop-one', 'bot:inventory-drop-stack'].some(isPending)
   const disabled = selectedBot.status !== 'online' || connection !== 'online' || Boolean(selectedBot.openWindow) || busy || confirmDropSlot !== null
+  const preview = useShulkerTooltip(inventorySlots, disabled || Boolean(inventoryActionsOpen) || activeSlot !== null || pinBoard?.editing)
 
   useEffect(() => () => setInventoryActionsOpen(false), [setInventoryActionsOpen])
 
@@ -74,6 +77,7 @@ export default function InventoryView({
   function renderSlot(slot, label) {
     return <InventorySlot key={slot} slot={slot} label={label} item={inventorySlots[slot]}
       selected={selectedInventorySlot === slot} disabled={pinBoard?.editing ? pinBoard.disabled : disabled} menuOpen={Boolean(inventoryActionsOpen)}
+      preview={preview.slotProps(slot)}
       pinMode={pinBoard?.editing} pinned={pinBoard?.has('inventory', String(slot))}
       onSelect={pinBoard?.editing ? () => pinBoard.toggle('inventory', String(slot)) : selectSlot} onMenu={openMenu} />
   }
@@ -101,6 +105,7 @@ export default function InventoryView({
               {equipmentSlots.map(({ slot, label }) => renderSlot(slot, label))}
             </div>
           </section>
+          {preview.tooltipProps && <ShulkerTooltip {...preview.tooltipProps} />}
           <section className="inventory-section" aria-label="Main inventory">
             <div className="inventory-section-heading"><h4>Storage</h4><span>27 slots</span></div>
             <div className="inventory-grid" role="grid">
@@ -169,7 +174,13 @@ function InventoryItemDetails({ item: selectedInventoryItem, slot: selectedInven
                   <ul>{selectedInventoryItem.lore.map((line, index) => <li key={index}>{line}</li>)}</ul>
                 </div>
               )}
-              {!selectedInventoryItem.customName && !selectedInventoryItem.enchantments?.length && !selectedInventoryItem.lore?.length && (
+              {selectedInventoryItem.containerItems?.length > 0 && (
+                <div className="inventory-detail-group inventory-detail-contents">
+                  <span className="inventory-detail-label">CONTENTS</span>
+                  <InventoryContainerContents items={selectedInventoryItem.containerItems} />
+                </div>
+              )}
+              {!selectedInventoryItem.customName && !selectedInventoryItem.enchantments?.length && !selectedInventoryItem.lore?.length && !selectedInventoryItem.containerItems?.length && (
                 <span className="inventory-select-hint">No custom name, enchantments, or lore</span>
               )}
               <div className="inventory-item-actions">

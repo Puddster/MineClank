@@ -398,7 +398,8 @@ test('starts configured bots sequentially and sends chat and commands', async t 
         customName: 'Prismatic Diamond',
         enchantments: [{ name: 'sharpness', level: 3 }],
         hasEnchantmentGlint: true,
-        lore: ['Forged in light', 'Second line']
+        lore: ['Forged in light', 'Second line'],
+        containerItems: []
     });
     assert.equal(manager.getSnapshot()[0].inventory[36].category, 'blocks-other');
     assert.deepEqual(manager.getSnapshot()[0].inventory[36].enchantments, [{ name: 'sharpness', level: 2 }]);
@@ -852,7 +853,8 @@ test('exposes and safely dispatches clicks to open server menus', async t => {
                 customName: null,
                 enchantments: [],
                 hasEnchantmentGlint: false,
-                lore: ['Top listing']
+                lore: ['Top listing'],
+                containerItems: []
             },
             ...Array(49).fill(null)
         ],

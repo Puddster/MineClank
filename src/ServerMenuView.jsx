@@ -1,7 +1,10 @@
 import { X } from 'lucide-react'
 import InventoryItemIcon from './InventoryItemIcon.jsx'
+import { ShulkerTooltip } from './InventoryContainerContents.jsx'
+import { useShulkerTooltip } from './useShulkerTooltip.js'
 
-function renderMenuSlot(item, slot, { windowId, selectedBot, isPending, sendAction }) {
+function renderMenuSlot(item, slot, { windowId, disabled, sendAction, preview }) {
+  const { showNativeTitle, ...previewHandlers } = preview.slotProps(slot)
   const name = item ? item.customName || item.displayName || item.name : 'Empty'
   const description = item
     ? `${item.count} x ${name}${item.lore?.length ? `\n${item.lore.join('\n')}` : ''}`
@@ -18,13 +21,14 @@ function renderMenuSlot(item, slot, { windowId, selectedBot, isPending, sendActi
 
   return (
     <button
+      {...previewHandlers}
       key={slot}
       type="button"
       className={`inventory-slot menu-slot ${item ? 'filled' : ''}`}
       role="gridcell"
       aria-label={`Menu slot ${slot}: ${item ? `${item.count} x ${name}` : 'empty'}`}
-      title={description}
-      disabled={selectedBot.status !== 'online' || isPending('bot:window-click')}
+      title={showNativeTitle ? description : undefined}
+      disabled={disabled}
       onClick={event => click(event, 0)}
       onContextMenu={event => click(event, 1)}
     >
@@ -41,7 +45,10 @@ function renderMenuSlot(item, slot, { windowId, selectedBot, isPending, sendActi
 }
 
 export default function ServerMenuView({ openWindow, selectedBot, menuItemCount, isPending, sendAction }) {
-  const slotContext = { windowId: openWindow.id, selectedBot, isPending, sendAction }
+  const disabled = selectedBot.status !== 'online' || isPending('bot:window-click')
+  const closing = isPending('bot:window-close')
+  const preview = useShulkerTooltip(openWindow.slots, disabled || closing)
+  const slotContext = { windowId: openWindow.id, disabled, sendAction, preview }
   return (
     <section className="menu-view detail-view" id="menu-panel" role="tabpanel" aria-labelledby="menu-tab">
       <div className="inventory-summary">
@@ -52,7 +59,7 @@ export default function ServerMenuView({ openWindow, selectedBot, menuItemCount,
         <button
           type="button"
           className="inventory-action-button menu-close-button"
-          disabled={isPending('bot:window-close')}
+          disabled={closing}
           onClick={() => sendAction('bot:window-close', { windowId: openWindow.id })}
         ><X size={14} /> Close menu</button>
       </div>
@@ -85,6 +92,7 @@ export default function ServerMenuView({ openWindow, selectedBot, menuItemCount,
           ? ` On cursor: ${openWindow.selectedItem.count} x ${openWindow.selectedItem.customName || openWindow.selectedItem.displayName || openWindow.selectedItem.name}.`
           : ' Cursor: empty.'}
       </p>
+      {preview.tooltipProps && <ShulkerTooltip {...preview.tooltipProps} showLore />}
     </section>
   )
 }

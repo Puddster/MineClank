@@ -410,6 +410,15 @@ button.pinboard-content:hover { background: var(--surface-selected); }
 .inventory-detail-label { color: var(--text-subtle); font: 9px var(--mono); letter-spacing: .06em; }
 .inventory-detail-group ul { display: grid; gap: 3px; margin: 5px 0 0; padding: 0; list-style: none; }
 .inventory-detail-group li { overflow-wrap: anywhere; color: var(--ink-soft); font-size: 11px; }
+.inventory-detail-contents { grid-column: 1 / -1; }
+.inventory-container-contents { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+.inventory-container-contents li { display: flex; align-items: center; gap: 5px; min-width: 0; }
+.inventory-container-contents .inventory-icon-wrap { flex: 0 0 auto; width: 16px; height: 16px; }
+.inventory-container-item-name { overflow: hidden; min-width: 0; text-overflow: ellipsis; white-space: nowrap; }
+.inventory-container-item-count { flex: 0 0 auto; color: var(--text-subtle); font: 10px var(--mono); }
+.inventory-container-tooltip { position: fixed; top: 0; left: 0; z-index: 19; width: min(340px, calc(100vw - 16px)); max-height: calc(100dvh - 16px); overflow: hidden; box-sizing: border-box; padding: 10px; pointer-events: none; border: 1px solid var(--border-action); border-radius: 6px; background: var(--surface); box-shadow: 0 6px 16px #0004; }
+.inventory-container-tooltip > strong { display: block; overflow: hidden; color: var(--ink); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.inventory-container-tooltip .inventory-container-contents { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3px 10px; }
 .inventory-select-hint { grid-column: 1 / -1; color: var(--muted); font-size: 11px; }
 .inventory-item-actions { position: relative; grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; padding-top: 8px; border-top: 1px solid var(--line); }
 .inventory-context-menu { position: fixed; z-index: 30; min-width: 150px; max-width: calc(100vw - 16px); display: grid; gap: 2px; padding: 4px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); box-shadow: 0 8px 24px rgba(27, 45, 37, .16); }

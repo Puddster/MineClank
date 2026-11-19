@@ -89,6 +89,70 @@ function readCustomName(item) {
     }
 }
 
+const maxContainerItems = 27;
+
+function nestedComponentText(components, type) {
+    const component = Array.isArray(components) ? components.find(entry => entry?.type === type) : null;
+    return component ? itemComponentText(component.data) : '';
+}
+
+// 1.20.5+ "container" component: { contents: [networkSlot, ...] } with numeric item ids.
+function containedItemFromComponent(entry, slot, registry) {
+    if (!Number.isInteger(entry?.itemId) || entry.itemId <= 0 || !entry.itemCount) return null;
+    const info = registry?.items?.[entry.itemId];
+    const name = info?.name ?? `item_${entry.itemId}`;
+    const customName = nestedComponentText(entry.components, 'custom_name') ||
+        nestedComponentText(entry.components, 'item_name');
+    return {
+        slot,
+        name,
+        category: getItemCategory({ name }, registry),
+        displayName: info?.displayName || name,
+        count: Number.isInteger(entry.itemCount) ? entry.itemCount : 1,
+        customName: customName || null
+    };
+}
+
+// Pre-1.20.5 NBT format: BlockEntityTag.Items is a list of { Slot, id, Count }.
+function containedItemFromNbt(entry, registry) {
+    const id = entry?.id?.value;
+    if (typeof id !== 'string') return null;
+    const name = id.replace(/^minecraft:/, '');
+    const info = registry?.itemsByName?.[name];
+    const customNameTag = entry.tag?.value?.display?.value?.Name?.value;
+    return {
+        slot: Number.isInteger(entry.Slot?.value) ? entry.Slot.value : 0,
+        name,
+        category: getItemCategory({ name }, registry),
+        displayName: info?.displayName || name,
+        count: Number.isInteger(entry.Count?.value) ? entry.Count.value : 1,
+        customName: typeof customNameTag === 'string' ? itemComponentText(customNameTag) || null : null
+    };
+}
+
+function readContainerItems(item, registry) {
+    try {
+        const componentData = item.componentMap?.get('container')?.data;
+        const componentContents = Array.isArray(componentData) ? componentData : componentData?.contents;
+        if (Array.isArray(componentContents)) {
+            return componentContents
+                .map((entry, slot) => containedItemFromComponent(entry, slot, registry))
+                .filter(Boolean)
+                .slice(0, maxContainerItems);
+        }
+        const nbtItems = item.nbt?.value?.BlockEntityTag?.value?.Items?.value?.value;
+        if (Array.isArray(nbtItems)) {
+            return nbtItems
+                .map(entry => containedItemFromNbt(entry, registry))
+                .filter(Boolean)
+                .slice(0, maxContainerItems);
+        }
+        return [];
+    } catch {
+        return [];
+    }
+}
+
 function itemSlotSnapshot(item, slot, registry) {
     if (!item) return null;
     const displayName = typeof item.displayName === 'string'
@@ -104,7 +168,8 @@ function itemSlotSnapshot(item, slot, registry) {
         customName: readCustomName(item),
         enchantments,
         hasEnchantmentGlint,
-        lore: readLore(item)
+        lore: readLore(item),
+        containerItems: readContainerItems(item, registry)
     };
 }
 

@@ -117,7 +117,7 @@ function ActiveView(props) {
     return <OnlinePlayersView bot={bot} onlinePlayers={bot.onlinePlayers || []} nearbyPlayers={props.nearbyPlayers} allPlayers={props.allOnlinePlayers} onMessage={props.onPlayer} />
   }
   return openWindow
-    ? <ServerMenuView openWindow={openWindow} selectedBot={bot} menuItemCount={props.menuItemCount} isPending={props.isPending} sendAction={props.sendAction} />
+    ? <ServerMenuView key={`${bot.id}:${openWindow.id}`} openWindow={openWindow} selectedBot={bot} menuItemCount={props.menuItemCount} isPending={props.isPending} sendAction={props.sendAction} />
     : <div className="inventory-empty">No server menu is open.</div>
 }
 

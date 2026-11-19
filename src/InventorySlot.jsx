@@ -12,12 +12,13 @@ export function InventorySlotContents({ item, label }) {
   </>
 }
 
-export default function InventorySlot({ slot, label, item, selected, disabled, menuOpen, onSelect, onMenu, pinMode = false, pinned = false }) {
+export default function InventorySlot({ slot, label, item, selected, disabled, menuOpen, onSelect, onMenu, pinMode = false, pinned = false, preview }) {
   const { attributes, listeners, setNodeRef: setDragRef, isDragging } = useDraggable({
     id: slot, disabled: disabled || !item || menuOpen || pinMode
   })
   const { setNodeRef: setDropRef, isOver } = useDroppable({ id: slot, disabled: disabled || pinMode })
   const description = item ? `${item.count} x ${item.customName || item.displayName || item.name}` : 'Empty'
+  const { showNativeTitle = true, ...previewHandlers } = preview ?? {}
 
   function onKeyDown(event) {
     if (pinMode) return
@@ -32,6 +33,7 @@ export default function InventorySlot({ slot, label, item, selected, disabled, m
   return <button
     {...attributes}
     {...listeners}
+    {...previewHandlers}
     ref={node => { setDragRef(node); setDropRef(node) }}
     type="button"
     data-inventory-slot={slot}
@@ -41,7 +43,7 @@ export default function InventorySlot({ slot, label, item, selected, disabled, m
     aria-disabled={disabled}
     aria-pressed={pinMode ? pinned : selected}
     aria-haspopup={!pinMode && item ? 'menu' : undefined}
-    title={`${label}: ${description}`}
+    title={showNativeTitle ? `${label}: ${description}` : undefined}
     disabled={disabled}
     onClick={event => onSelect(event, slot)}
     onContextMenu={event => { event.preventDefault(); if (!pinMode) onMenu(event, slot) }}
