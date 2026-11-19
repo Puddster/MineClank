@@ -462,7 +462,8 @@ button.pinboard-content:hover { background: var(--surface-selected); }
 .command-topline { display: flex; justify-content: space-between; align-items: center; }
 .command-topline .panel-kicker { display: flex; align-items: center; gap: 6px; color: var(--text-command); }
 .command-target { color: var(--muted); font-size: 9px; }
-.quick-commands { display: flex; gap: 7px; margin: 11px 0 9px; }
+.quick-commands { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin: 11px 0 9px; }
+.quick-commands-hint { color: var(--text-subtle); font: 9px var(--mono); }
 .quick-commands button { display: inline-flex; align-items: center; gap: 7px; padding: 6px 9px; border: 1px solid var(--border-action); border-radius: 5px; color: var(--green-action); background: var(--surface-action); font: 11px var(--mono); cursor: pointer; }
 .quick-commands button:hover:not(:disabled) { border-color: var(--command-border); background: var(--surface-action-hover); }
 .command-form { display: flex; min-height: 42px; border: 1px solid var(--soft-green-border); border-radius: 6px; background: var(--surface-input); overflow: hidden; }

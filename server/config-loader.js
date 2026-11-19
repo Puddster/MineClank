@@ -3,7 +3,7 @@ import { basename, resolve } from 'node:path';
 
 const idPattern = /^[a-z0-9][a-z0-9_-]{0,47}$/i;
 const supportedAuth = new Set(['microsoft', 'offline']);
-const supportedKeys = new Set(['username', 'host', 'port', 'auth', 'version', 'onJoin', 'physicsEnabled']);
+const supportedKeys = new Set(['username', 'host', 'port', 'auth', 'version', 'onJoin', 'quickCommands', 'physicsEnabled']);
 
 function parseConfigJson(id, text) {
     let raw;
@@ -59,14 +59,14 @@ function validateOptionalFields(id, raw) {
     return { port, auth };
 }
 
-function normalizeJoinCommands(id, raw) {
-    const onJoin = raw.onJoin ?? [];
-    if (!Array.isArray(onJoin) || onJoin.length > 20 || onJoin.some(command =>
+function normalizeCommands(id, raw, field, limit) {
+    const commands = raw[field] ?? [];
+    if (!Array.isArray(commands) || commands.length > limit || commands.some(command =>
         typeof command !== 'string' || command.length > 256 || /[\r\n]/.test(command) || !command.trim().startsWith('/') || command.trim() === '/'
     )) {
-        throw new Error(`${id}.json onJoin must be an array of up to 20 single-line slash commands.`);
+        throw new Error(`${id}.json ${field} must be an array of up to ${limit} single-line slash commands.`);
     }
-    return onJoin.map(command => command.trim());
+    return commands.map(command => command.trim());
 }
 
 export function parseConfig(id, text, authDir) {
@@ -75,7 +75,8 @@ export function parseConfig(id, text, authDir) {
     validateSupportedKeys(id, raw);
     validateRequiredFields(id, raw);
     const { port, auth } = validateOptionalFields(id, raw);
-    const onJoin = normalizeJoinCommands(id, raw);
+    const onJoin = normalizeCommands(id, raw, 'onJoin', 20);
+    const quickCommands = normalizeCommands(id, raw, 'quickCommands', 10);
 
     return {
         id,
@@ -86,6 +87,7 @@ export function parseConfig(id, text, authDir) {
         ...(raw.version ? { version: raw.version.trim() } : {}),
         physicsEnabled: raw.physicsEnabled ?? true,
         onJoin,
+        quickCommands,
         profilesFolder: resolve(authDir, id)
     };
 }

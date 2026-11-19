@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 import Database from 'better-sqlite3';
 import { parseConfig } from './config-loader.js';
+import { DEFAULT_QUICK_COMMANDS } from '../shared/quick-commands.js';
 
 function storedProfile(config) {
     return {
@@ -11,7 +12,8 @@ function storedProfile(config) {
         auth: config.auth,
         ...(config.version ? { version: config.version } : {}),
         physicsEnabled: config.physicsEnabled,
-        onJoin: config.onJoin
+        onJoin: config.onJoin,
+        quickCommands: config.quickCommands
     };
 }
 
@@ -127,7 +129,10 @@ export class BotSettings {
     }
 
     createProfile(id, profile, autoStart, authDir) {
-        const config = parseConfig(id, JSON.stringify(profile), authDir);
+        const newProfile = profile?.quickCommands === undefined
+            ? { ...profile, quickCommands: DEFAULT_QUICK_COMMANDS }
+            : profile;
+        const config = parseConfig(id, JSON.stringify(newProfile), authDir);
         if (typeof autoStart !== 'boolean') throw new Error('Auto-start setting must be a boolean');
         this.insertProfile.run(id, JSON.stringify(storedProfile(config)), autoStart ? 1 : 0);
         return { ...config, autoStart };

@@ -1,22 +1,24 @@
-import { ArrowUpRight, Send, Terminal } from 'lucide-react'
-
-const quickCommands = ['/survival', '/hub1']
+import { Send, Terminal } from 'lucide-react'
 
 export default function CommandComposer({ bot, command, suggestions, notice, inputRef, isPending, onSubmit, onKeyDown, onChange, onSuggestion, onQuickCommand }) {
   const canSend = bot.status === 'online'
+  const quickCommands = bot.profile.quickCommands
   return (
     <div className="command-area">
       <div className="command-topline">
         <span className="panel-kicker"><Terminal size={13} /> SERVER CHAT / COMMAND</span>
         <span className="command-target">TO {bot.username}</span>
       </div>
-      <div className="quick-commands">
-        {quickCommands.map(value => (
-          <button key={value} type="button" disabled={!canSend || isPending('bot:command')} onClick={() => onQuickCommand(value)}>
-            {value}<ArrowUpRight size={12} />
-          </button>
-        ))}
-      </div>
+      {quickCommands.length > 0 && <>
+        <span className="panel-kicker">Quick Commands - sent on click</span>
+        <div className="quick-commands">
+          {quickCommands.map((value, index) => (
+            <button key={`${value}-${index}`} type="button" title={`Send ${value} immediately`} disabled={!canSend || isPending('bot:command')} onClick={() => onQuickCommand(value)}>
+              {value}<Send size={12} />
+            </button>
+          ))}
+        </div>
+      </>}
       <div className="command-entry">
         <form className="command-form" autoComplete="off" onSubmit={onSubmit}>
           <input

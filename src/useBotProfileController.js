@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { DEFAULT_QUICK_COMMANDS } from '../shared/quick-commands.js'
 
 export function useBotProfileController({ selectedBot, sendAction, setNotice }) {
   const [botProfileDraft, setBotProfileDraft] = useState(null)
@@ -10,7 +11,8 @@ export function useBotProfileController({ selectedBot, sendAction, setNotice }) 
     setBotProfileError('')
     setBotProfileDraft({
       mode: 'create', id: '', username: '', host: '', port: '25565',
-      auth: 'microsoft', version: '', physicsEnabled: true, onJoinText: '', autoStart: true
+      auth: 'microsoft', version: '', physicsEnabled: true, onJoinText: '',
+      quickCommandsText: DEFAULT_QUICK_COMMANDS.join('\n'), autoStart: true
     })
   }
 
@@ -24,6 +26,7 @@ export function useBotProfileController({ selectedBot, sendAction, setNotice }) 
       port: String(selectedBot.profile.port),
       version: selectedBot.profile.version || '',
       onJoinText: (selectedBot.profile.onJoin || []).join('\n'),
+      quickCommandsText: (selectedBot.profile.quickCommands || []).join('\n'),
       autoStart: selectedBot.autoStart !== false
     })
   }
@@ -31,14 +34,15 @@ export function useBotProfileController({ selectedBot, sendAction, setNotice }) 
   function saveBotProfile(event) {
     event.preventDefault()
     if (!botProfileDraft) return
-    const { mode, id, autoStart, onJoinText, version, ...fields } = botProfileDraft
+    const { mode, id, autoStart, onJoinText, quickCommandsText, version, ...fields } = botProfileDraft
     sendAction(mode === 'edit' ? 'bot:profile-update' : 'bot:profile-create', {
       id,
       profile: {
         ...fields,
         port: Number(fields.port),
         ...(version.trim() ? { version: version.trim() } : {}),
-        onJoin: onJoinText.split(/\r?\n/).map(command => command.trim()).filter(Boolean)
+        onJoin: onJoinText.split(/\r?\n/).map(command => command.trim()).filter(Boolean),
+        quickCommands: quickCommandsText.split(/\r?\n/).map(command => command.trim()).filter(Boolean)
       },
       autoStart
     })

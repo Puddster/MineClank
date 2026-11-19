@@ -43,6 +43,10 @@ function BotProfileEditor({ draft, setDraft, onSave, error, connection, isPendin
           <span>Commands on join <small>One slash command per line, up to 20</small></span>
           <textarea rows="3" value={draft.onJoinText} onChange={update('onJoinText')} />
         </label>
+        <label>
+          <span>Quick commands <small>One slash command per line, up to 10. Buttons send immediately.</small></span>
+          <textarea rows="3" value={draft.quickCommandsText} onChange={update('quickCommandsText')} />
+        </label>
         <label className="bot-profile-checkbox">
           <input type="checkbox" checked={draft.physicsEnabled} onChange={updateChecked('physicsEnabled')} />
           <span>Enable physics simulation</span>

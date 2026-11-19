@@ -3,7 +3,7 @@ import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
-import { loadBotConfigs } from '../server/config-loader.js';
+import { loadBotConfigs, parseConfig } from '../server/config-loader.js';
 
 test('loads bot configs in filename order with isolated auth folders', async () => {
     const root = await mkdtemp(join(os.tmpdir(), 'mf-fe-config-'));
@@ -57,5 +57,18 @@ test('rejects custom auth paths and invalid ports', async () => {
         await assert.rejects(loadBotConfigs(configsPath, join(root, 'auth')), /physicsEnabled must be a boolean/);
     } finally {
         await rm(root, { recursive: true, force: true });
+    }
+});
+
+test('normalizes and validates quick commands independently of join commands', () => {
+    const parse = quickCommands => parseConfig('bot', JSON.stringify({
+        username: 'Bot', host: 'server.test', quickCommands
+    }), 'auth');
+    assert.deepEqual(parse(undefined).quickCommands, []);
+    assert.deepEqual(parse([]).quickCommands, []);
+    assert.deepEqual(parse([' /bal ', '/spawn']).quickCommands, ['/bal', '/spawn']);
+    assert.equal(parse(Array(10).fill('/ok')).quickCommands.length, 10);
+    for (const invalid of [Array(11).fill('/ok'), ['hello'], ['/'], ['/ok\n/other'], [`/${'x'.repeat(256)}`], 'not an array']) {
+        assert.throws(() => parse(invalid), /quickCommands must be an array of up to 10 single-line slash commands/);
     }
 });

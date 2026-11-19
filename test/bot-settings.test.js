@@ -35,6 +35,7 @@ test('imports legacy profiles once and persists profile and auto-start changes i
         assert.deepEqual(settings.createProfile('beta', profile('Beta'), true, authDir), {
             id: 'beta',
             ...profile('Beta'),
+            quickCommands: ['/bal', '/spawn'],
             profilesFolder: join(authDir, 'beta'),
             autoStart: true
         });
@@ -53,6 +54,31 @@ test('imports legacy profiles once and persists profile and auto-start changes i
         assert.deepEqual(settings.getCachedSkin('BETA UPDATED'), { skinUrl, fetchedAt: 1234, lookupVersion: 2 });
         settings.deleteProfile('beta');
         assert.deepEqual(settings.listProfiles(authDir).map(bot => bot.id), ['alpha']);
+    } finally {
+        settings.close();
+        await rm(root, { recursive: true, force: true });
+    }
+});
+
+test('quick commands default only on creation and preserve empty and legacy profiles', async () => {
+    const root = await mkdtemp(join(os.tmpdir(), 'mineclank-quick-commands-'));
+    const databasePath = join(root, 'bots.sqlite');
+    let settings = new BotSettings(databasePath);
+    try {
+        settings.insertProfile.run('legacy', JSON.stringify(profile('Legacy')), 1);
+        assert.deepEqual(settings.listProfiles(root).find(bot => bot.id === 'legacy').quickCommands, []);
+        assert.deepEqual(settings.createProfile('defaults', profile('Defaults'), true, root).quickCommands, ['/bal', '/spawn']);
+        assert.deepEqual(settings.createProfile('empty', { ...profile('Empty'), quickCommands: [] }, true, root).quickCommands, []);
+        settings.updateProfile('defaults', { ...profile('Defaults'), quickCommands: [] }, true, root);
+        settings.updateProfile('legacy', { ...profile('Legacy'), quickCommands: [' /home '] }, true, root);
+        settings.close();
+        settings = new BotSettings(databasePath);
+        const profiles = settings.listProfiles(root);
+        assert.deepEqual(profiles.find(bot => bot.id === 'defaults').quickCommands, []);
+        assert.deepEqual(profiles.find(bot => bot.id === 'empty').quickCommands, []);
+        assert.deepEqual(profiles.find(bot => bot.id === 'legacy').quickCommands, ['/home']);
+        settings.updateProfile('legacy', profile('Legacy'), true, root);
+        assert.deepEqual(settings.listProfiles(root).find(bot => bot.id === 'legacy').quickCommands, []);
     } finally {
         settings.close();
         await rm(root, { recursive: true, force: true });

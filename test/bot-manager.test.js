@@ -566,6 +566,8 @@ test('creates, updates, and deletes database-backed bot profiles safely', async 
         onJoin: []
     }, false), { id: 'gamma', autoStart: false });
     assert.equal(manager.getSnapshot().find(bot => bot.id === 'gamma').profile.auth, 'offline');
+    assert.deepEqual(manager.getSnapshot().find(bot => bot.id === 'gamma').profile.quickCommands, ['/bal', '/spawn']);
+    assert.deepEqual(manager.getSnapshot().find(bot => bot.id === 'alpha').profile.quickCommands, []);
 
     const starting = manager.start('gamma');
     await tick();
@@ -577,13 +579,15 @@ test('creates, updates, and deletes database-backed bot profiles safely', async 
         port: 25566,
         auth: 'offline',
         physicsEnabled: false,
-        onJoin: ['/lobby']
+        onJoin: ['/lobby'],
+        quickCommands: ['/home']
     }, true), { id: 'gamma', autoStart: true });
     const updated = manager.getSnapshot().find(bot => bot.id === 'gamma');
     assert.equal(updated.status, 'stopped');
     assert.equal(updated.username, 'GammaUpdated');
     assert.equal(updated.host, 'new.server.test');
     assert.equal(updated.autoStart, true);
+    assert.deepEqual(updated.profile.quickCommands, ['/home']);
 
     const restart = manager.start('gamma');
     await tick();

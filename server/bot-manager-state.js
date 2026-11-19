@@ -69,7 +69,8 @@ export function profileSnapshot(config) {
         auth: config.auth,
         ...(config.version ? { version: config.version } : {}),
         physicsEnabled: config.physicsEnabled,
-        onJoin: [...config.onJoin]
+        onJoin: [...config.onJoin],
+        quickCommands: [...config.quickCommands]
     };
 }
 
