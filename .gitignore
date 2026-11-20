@@ -27,3 +27,6 @@ configs/bots/*.json
 *.njsproj
 *.sln
 *.sw?
+
+# Hosting crap
+deploy/*
